@@ -1,0 +1,53 @@
+<link href="css/bootstrap-switch.min.css" rel="stylesheet">
+<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+<link href="css/easy-button.css" rel="stylesheet" />
+
+<link href="css/leaflet.css" rel="stylesheet" />
+<link href='css/mapbox-gl.css' rel='stylesheet' />
+<link href="css/jquery-ui.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/dashboard.css" type="text/css" rel="stylesheet">
+<link href="css/bootstrap-combobox.css" type="text/css" rel="stylesheet">
+<link href="css/main.css" rel="stylesheet" type="text/css">
+
+<title>E-Commerce</title>
+
+<script src="js/jquery/jquery-3.3.1.min.js"></script>
+
+<script src="js/pixi/pixi.min.js"></script>
+<script src="js/leaflet/leaflet.min.js"> </script>
+<script src="js/html/d3.v4.min.js"></script>
+<script src='js/mapbox/mapbox-gl.js'></script>
+<script src="js/echarts/echarts.js"></script>
+
+<script src="js/jquery/jquery-ui.min.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
+<script src="js/leaflet/leaflet-heat.js"></script>
+
+<script src="js/leaflet/easy-button.js"></script>
+<nav class="navbar navbar-dark sticky-top  flex-md-nowrap p-0" style="border-bottom:3px solid rgb(79, 79, 247);">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" style="background-color:white;box-shadow:none;color:black;font-size:1.5em;">胜利油田</a>
+
+
+
+</nav>
+
+<main id="main" role="main" class="col-md-12 ml-sm-auto col-lg-12 " id="main" style="padding-left:0px;">
+    <div id="left-view">
+        <div id="data-infor"></div>
+        <div id="parameter-set">
+            <span style="margin-left:10%;margin-top:5%;position:absolute">采样率： </span>
+            <input type="text" id="sample_rate" value=50>
+            <div id="rate_slider"></div>
+            <button id="sample" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sample</button>
+        </div>
+        <div id="other"></div>
+
+    </div>
+    <div id="map"></div>
+    <div id="right-view"></div>
+</main>
+<script src="js/my/drawPoint.js"></script>
+<script src="js/my/mapView.js"></script>
+<script src="js/my/option.js"></script>

@@ -1,0 +1,127 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+table {
+    font-size: 1em;
+}
+
+
+#map {
+    width: 60%;
+    height: 100%;
+    position: absolute;
+    left: 20%
+}
+
+#left-view {
+    position: absolute;
+    width: 20%;
+    left: 0%;
+    height: 100%;
+}
+
+#right-view {
+    position: absolute;
+    width: 20%;
+    height: 100%;
+    right: 0%;
+}
+
+div#data-infor {
+    width: 100%;
+    height: 30%;
+}
+
+div#parameter-set {
+    width: 100%;
+    height: 50%;
+}
+div#other {
+    width: 100%;
+    height: 20%;
+}
+
+.ui-draggable,
+.ui-droppable {
+    background-position: top;
+}
+
+div#rate_slider .ui-slider-range {
+    background: #4AA8FF;
+}
+
+div#rate_slider .ui-slider-handle {
+    border-color: #4AA8FF;
+}
+
+div#rate_slider {
+    width: 100px;
+    margin-left: 50%;
+    margin-top:6.5%;
+    position: absolute
+}
+
+#main {
+    right: 0%;
+    width: 100%;
+    height: 93%;
+    position: absolute;
+}
+
+button#sample {
+    position: absolute;
+    top:75%;
+    margin-left:35%;
+    padding-left: 5;
+    padding-right: 5;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+input#sample_rate {
+    width: 5%;
+    margin-left: 28%;
+    margin-top: 5%;
+    position: absolute;
+    border: none;
+}
+
+
+.nav-link {
+    padding-top: .2em;
+    padding-bottom: .2em;
+}
+
+.inputText {
+    border: none;
+}
+
+.masthead {
+    margin-bottom: 2rem;
+}
+
+.masthead-brand {
+    margin-bottom: 0;
+}
+
+.nav-masthead .nav-link {
+    padding: .25rem 0;
+    color: rgba(255, 255, 255, .5);
+    background-color: transparent;
+    border-bottom: .25rem solid transparent;
+}
+
+.nav-masthead .nav-link:hover,
+.nav-masthead .nav-link:focus {
+    border-bottom-color: rgba(255, 255, 255, .25);
+}
+
+.nav-masthead .nav-link+.nav-link {
+    margin-left: 1rem;
+}
+
+.nav-masthead .active {
+    color: #fff;
+    border-bottom-color: #fff;
+}
