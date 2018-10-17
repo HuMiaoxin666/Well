@@ -1,32 +1,48 @@
-var drawPoint = (function(){
-    function draw(rate){
-        d3.selectAll("path").remove();
-        d3.csv("/data/sample_0.csv", function (error, data_0) {
-            d3.csv("/data/sample_10.csv", function (error, data_10) {
-                d3.csv("/data/sample_20.csv", function (error, data_20) {
-                 d3.csv("/data/sample_30.csv", function (error, data_30) {
-            d3.csv("/data/sample_40.csv", function (error, data_40) {
-        d3.csv("/data/sample_50.csv", function (error, data_50) {
-            var data_arr = [data_0,data_10,data_20,data_30,data_40,data_50];
-            let data = data_arr[rate/10];
-            console.log('data: ', data);
-            var color = "black";
-            for (var i = 0; i < data.length; i++) {
-                data[i].lat = parseFloat(data[i].lat);
-                data[i].lng = parseFloat(data[i].lng);
-                if(data[i].status == 1)
-                    color = "red";
-                else
-                    color = "blue";
-                L.circle([data[i].lat, data[i].lng], {
+var drawPoint = (function () {
+
+    //画井
+    function draw(data) {
+        d3.select("#map").selectAll("path").remove();
+
+        for (var i = 0; i < data.length; i++) {
+
+            data[i].color = "blue";
+            if (data[i].latlng.length > 0) {
+                var circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
                     radius: 5,
-                    color: color
+                    data:data[i],
+                    color: data[i].color
                 }).addTo(mapView.map);
+                circle.on("click", function () {
+                    lineChart.drawLineChart(this.options.data);
+                })
             }
-        }); }); }); }); }); });
+        }
+
+
+        // var map = mapView.map;
+        // var d3Overlay = L.d3SvgOverlay(function (selection, projection) {
+        //     console.log('selection: ', selection);
+        //     var updateSelection = selection.selectAll('circle').data(data);
+        //     updateSelection.enter()
+        //         .append('circle')
+        //         .attr("r",2)
+        //         .attr("cx", function (d) {
+        //             return projection.latLngToLayerPoint(d.latLng).x;
+        //         })
+        //         .attr("cy", function (d) {
+        //             return projection.latLngToLayerPoint(d.latLng).y
+        //         })
+        //         .attr("fill", function (d) {
+        //             return d.color;
+        //         });
+
+        // });
+        // d3Overlay.addTo(mapView.map);
+
 
     }
-    return{
-        draw:draw
-    }    
+    return {
+        draw: draw
+    }
 })()
