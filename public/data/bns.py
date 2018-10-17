@@ -165,7 +165,15 @@ def fun(seq, pds_r):
     # coverage_file = ori_file + '_coverage.txt'
     # ebt_file = ori_file + '_ebt.txt'
     # id2com_file = 'WZ_Com_18.csv'
-
+    f= open("id_lat&lng.csv", 'r', encoding='utf-8')
+    id_data = csv.reader(f)
+    index = 0
+    id_arr = []
+    for row in id_data:
+        if index > 0:
+            id_arr.append(row[0])
+        index += 1
+    print(id_arr)
     # max_iteration = 100
     seq_type = ''
     for t in seq:
@@ -188,11 +196,13 @@ def fun(seq, pds_r):
     index_arr, samples, samples_index = generate_points(kde, gene_data, station_data, pds_r)
     out_arr = []
     print(len(index_arr))
+    tmp_index = 0
     for arr in station_data:
-        out_arr.append([arr[0], arr[1], 0])
+        out_arr.append([id_arr[tmp_index], arr[0], arr[1], 0])
+        tmp_index += 1
     for index in index_arr:
         out_arr[index][-1] = 1
-    outfile = open("sample_0.csv", 'w', newline='')
+    outfile = open("sample_50.csv", 'w', newline='')
     fw = csv.writer(outfile)
     fw.writerow(['lng', 'lat', 'status'])
     fw.writerows(out_arr)
@@ -218,4 +228,4 @@ def fun(seq, pds_r):
     # display(samples)
 attr_cbt = [[0, 1, 2]]
 pdsR_arr = [3, 5, 10, 15]
-fun([0], 100000)
+fun([0], 18)

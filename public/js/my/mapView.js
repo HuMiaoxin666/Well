@@ -25,7 +25,7 @@ var mapView = (function () {
     var svg_lineChart = d3.select("#lineChart").append("svg").attr("width",'100%').attr("height",'100%');
     getWellData().then(function(data){
         variable.allData = data;
-        drawPoint.draw(data);
+        drawPoint.draw(data,20);
         lineChart.drawLineChart(data[0]);
     })
 

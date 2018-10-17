@@ -16,7 +16,7 @@ var option = (function () {
 
 
     $("#sample").click(function () {
-        drawPoint.draw(variable.allData);
+        drawPoint.draw(variable.allData, sam_rate);
         console.log('variable.allData: ', variable.allData);
         // mapView.getWellData().then(function(data){
         //     lineChart.drawLineChart(data);

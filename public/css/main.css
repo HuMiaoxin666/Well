@@ -20,6 +20,24 @@ table {
     left: 0%;
     height: 100%;
 }
+div#left-view div#data-infor{
+    width: 100%;
+    height: 30%;
+    border-bottom: 2px solid rgb(216, 216, 216);
+}
+div#left-view div#data-infor{
+    border-bottom: 2px solid rgb(216, 216, 216);
+}
+
+div#left-view div#parameter-set {
+    width: 100%;
+    height: 40%;
+    border-bottom: 2px solid rgb(216, 216, 216);
+}
+div#left-view div#other {
+    width: 100%;
+    height: 30%;    
+}
 
 div#right-view {
     position: absolute;
@@ -32,20 +50,10 @@ div#right-view div#lineChart{
     width: 100%;
     height: 50%;
     right: 0%;
-}
-div#data-infor {
-    width: 100%;
-    height: 30%;
+    border-bottom: 2px solid rgb(216, 216, 216);
 }
 
-div#parameter-set {
-    width: 100%;
-    height: 50%;
-}
-div#other {
-    width: 100%;
-    height: 20%;
-}
+
 
 .ui-draggable,
 .ui-droppable {

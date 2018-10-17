@@ -1,23 +1,41 @@
 var drawPoint = (function () {
 
     //画井
-    function draw(data) {
+    function draw(data, sample_rate) {
         d3.select("#map").selectAll("path").remove();
-
-        for (var i = 0; i < data.length; i++) {
-
-            data[i].color = "blue";
-            if (data[i].latlng.length > 0) {
-                var circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
-                    radius: 5,
-                    data:data[i],
-                    color: data[i].color
-                }).addTo(mapView.map);
-                circle.on("click", function () {
-                    lineChart.drawLineChart(this.options.data);
-                })
+        let sampleStatus_index = parseInt(sample_rate / 10);
+        if(sampleStatus_index != 10){
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1) {
+                    
+    
+                    data[i].color = "blue";
+                    var circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
+                        radius: 5,
+                        data: data[i],
+                        color: data[i].color
+                    }).addTo(mapView.map);
+                    circle.on("click", function () {
+                        lineChart.drawLineChart(this.options.data);
+                    })
+                }
+            }
+        }else{
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].latlng.length > 0) {
+                    data[i].color = "blue";
+                    var circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
+                        radius: 5,
+                        data: data[i],
+                        color: data[i].color
+                    }).addTo(mapView.map);
+                    circle.on("click", function () {
+                        lineChart.drawLineChart(this.options.data);
+                    })
+                }
             }
         }
+        
 
 
         // var map = mapView.map;
