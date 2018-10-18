@@ -22,7 +22,7 @@ var mapView = (function () {
         //访问令牌
     }).addTo(map);
     //初始化各svg
-    var svg_lineChart = d3.select("#lineChart").append("svg").attr("width",'100%').attr("height",'100%');
+    var svg_lineChart = d3.select("#ChartSvg").attr("width",'100%').attr("height",'100%');
     getWellData().then(function(data){
         variable.allData = data;
         drawPoint.draw(data,20);

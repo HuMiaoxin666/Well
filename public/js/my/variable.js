@@ -1,7 +1,10 @@
 var variable = (function () {
-    var allData;
-    
+    let allData;
+    let chosenData; 
+    let type = true;
     return {
-        allData: allData
+        allData: allData,
+        chosenData:chosenData,
+        type:type
     }
 })()

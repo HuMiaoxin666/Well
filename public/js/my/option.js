@@ -22,6 +22,17 @@ var option = (function () {
         //     lineChart.drawLineChart(data);
         // })
     })
+    $("#Switch").click(function () {
+        variable.type = !variable.type;
+        if(variable.type == false){
+            lineChart.drawLineChart_2(variable.chosenData);
+            console.log('variable.chosenData: ', variable.chosenData);
+        }else{
+            lineChart.drawLineChart(variable.chosenData);
+            console.log('variable.chosenData: ', variable.chosenData);
+        }
+     
+    })
     return {
 
     }

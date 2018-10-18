@@ -101,6 +101,17 @@ button#sample {
     border-color: gray;
     color:gray;
 }
+button#Switch {
+    position: absolute;
+    top:49;
+    margin-left:75%;
+    padding-left: 5;
+    padding-right: 5;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-color: gray;
+    color:gray;
+}
 button.btn-outline-primary:hover{
     background-color: rgb(228, 225, 225);
     border-color: rgb(228, 225, 225);

@@ -16,6 +16,7 @@ var drawPoint = (function () {
                         color: data[i].color
                     }).addTo(mapView.map);
                     circle.on("click", function () {
+                        variable.chosenData = this.options.data;
                         lineChart.drawLineChart(this.options.data);
                     })
                 }
@@ -30,7 +31,9 @@ var drawPoint = (function () {
                         color: data[i].color
                     }).addTo(mapView.map);
                     circle.on("click", function () {
+                        variable.chosenData = this.options.data;
                         lineChart.drawLineChart(this.options.data);
+                        console.log('variable.chosenData: ', variable.chosenData);
                     })
                 }
             }
