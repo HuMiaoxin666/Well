@@ -26,7 +26,8 @@ var mapView = (function () {
     getWellData().then(function(data){
         variable.allData = data;
         drawPoint.draw(data,20);
-        lineChart.drawLineChart(data[0]);
+        lineChart.drawLineChart(data[200]);
+        MatchCal.CalMatrix([data[200],data[201]]);
     })
 
     function getWellData() {
