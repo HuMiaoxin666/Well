@@ -92,12 +92,31 @@ div#rate_slider {
 
 button#sample {
     position: absolute;
-    top:60%;
-    margin-left:35%;
+    top:55%;
+    margin-left:20%;
     padding-left: 5;
     padding-right: 5;
     padding-top: 0;
     padding-bottom: 0;
+    border-color: gray;
+    color:gray;
+}
+
+button#match {
+    position: absolute;
+    top:55%;
+    margin-left:55%;
+    padding-left: 5;
+    padding-right: 5;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-color: gray;
+    color:gray;
+}
+div#matchDiv{
+    position: absolute;
+    top:60%;
+    margin-left:20%;
     border-color: gray;
     color:gray;
 }

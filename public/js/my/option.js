@@ -33,6 +33,14 @@ var option = (function () {
         }
      
     })
+
+    $("#match").click(function () {
+        variable.match = !variable.match;
+        variable.chosenArr = [];
+    })
+
+
+
     return {
 
     }

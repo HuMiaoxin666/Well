@@ -22,13 +22,18 @@ var mapView = (function () {
         //访问令牌
     }).addTo(map);
     //初始化各svg
-    var svg_lineChart = d3.select("#ChartSvg").attr("width",'100%').attr("height",'100%');
-    getWellData().then(function(data){
+    var svg_lineChart = d3.select("#ChartSvg").attr("width", '100%').attr("height", '100%');
+    getWellData().then(function (data) {
         variable.allData = data;
-        drawPoint.draw(data,20);
-        lineChart.drawLineChart(data[200]);
-        MatchCal.CalMatrix([data[200],data[201]]);
+        drawPoint.draw(data, 20);
+        let oriId = variable.allData[200].id;
+
+        getChosenData(oriId).then(function (data_in) {
+            variable.chosenData = data_in;
+            lineChart.drawLineChart(data_in[0]);
+        })
     })
+    //设置初始选中井及相关View
 
     function getWellData() {
         return new Promise(function (resolve, reject) {
@@ -45,9 +50,26 @@ var mapView = (function () {
             });
         });
     }
+
+    function getChosenData(id) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: "get",
+                url: "/id/ChosenId",
+                data: {
+                    'id': id
+                },
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function () {}
+            });
+        });
+    }
     return {
         map: map,
-        svg_lineChart:svg_lineChart,
-        getWellData:getWellData
+        svg_lineChart: svg_lineChart,
+        getWellData: getWellData,
+        getChosenData
     }
 })()

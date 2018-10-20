@@ -8,6 +8,7 @@ var lineChart = (function () {
         // 求出一些基本值
         var max_arr = [],
             min_arr = [];
+        console.log()
         for (let i = 0; i < data.value[0].length; i++) {
             max_arr.push(data.value[0][i]);
             min_arr.push(data.value[0][i]);
@@ -22,16 +23,7 @@ var lineChart = (function () {
         }
         console.log(min_arr, max_arr);
 
-        //测试值
-        var test_data = [];
-        for (let t = 0; t < 5; t++) {
-            let tmp_arr = [];
-            for (var i = 0; i < 39; i++) {
-                tmp_arr.push([i * 2.5, Math.random() * 20 * (t + 1)]);
-            }
-            tmp_arr.push([i * 2.5, 10 * t + 10]);
-            test_data.push(tmp_arr);
-        }
+      
 
         //设置坐标轴
         let yScale = d3.scaleLinear().domain([min_arr[0], max_arr[0]]).range([0, svg_height * 0.85])
@@ -110,31 +102,6 @@ var lineChart = (function () {
                 d3.select("#"+ data.basic_attr[i+1]).attr("stroke-width",2).attr("opacity",1.0);
                 // d3.select("#y_axis").call(yAxis_arr[i]);
             })
-
-        // let yScale_arr = [], yAxis_arr = [];
-        // for (let i = 1; i < min_arr.length; i++) {
-        //     if (max_arr[i] < 0) {
-        //         let tmp_ys = d3.scaleLinear().domain([-max_arr[i] * 1.5, max_arr[i] * 1.5]).range([0, svg_height * 0.7])
-        //         yScale_arr.push(tmp_ys);
-        //         yAxis_arr.push(d3.axisLeft(tmp_ys).ticks(5).tickPadding(5).tickSize(5));
-        //     } else if (max_arr[i] > 0) {
-        //         let tmp_ys = d3.scaleLinear().domain([max_arr[i] * 1.5, -max_arr[i] * 1.5]).range([0, svg_height * 0.7])
-        //         yScale_arr.push(tmp_ys);
-        //         yAxis_arr.push(d3.axisLeft(tmp_ys).ticks(5).tickPadding(5).tickSize(5));
-        //     }else if(max_arr[i] == min_arr[i] && max_arr[i] == 0){
-        //         let tmp_ys = d3.scaleLinear().domain([-50, 50]).range([0, svg_height * 0.7]);
-        //         yScale_arr.push(tmp_ys);
-        //         yAxis_arr.push(d3.axisLeft(tmp_ys).ticks(5).tickPadding(5).tickSize(5));
-        //     }
-        // }
-        // // let yScale = d3.scaleLinear().domain([100, 0]).range([0, svg_height * 0.7])
-        // mapView.svg_lineChart.append('g')
-        //     .attr("class", "axis")
-        //     .attr("transform", "translate(40," + svg_height * 0.1 + ")")
-        //     .attr("id",'y_axis')
-        //     .call(yAxis_arr[0])
-
-
 
 
         for (let i = 1; i < 6; i++) {

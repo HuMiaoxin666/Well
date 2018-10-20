@@ -5,13 +5,12 @@ const Schema = mongoose.Schema,
 const poSchema = new Schema({
     id: String,
     latlng: Array,
-    basic_attr: Array,
-    value: Array,
+    basic_attr: Array
 }, {
-    collection: '100row'
+    collection: 'basicData'
 });
 
-var OIModel = mongoose.model('100row', poSchema);
-OIModel.createIndexes({"id":1});
+var BDModel = mongoose.model('basicData', poSchema);
+BDModel.createIndexes({"id":1});
 
-module.exports = OIModel;
+module.exports = BDModel;
