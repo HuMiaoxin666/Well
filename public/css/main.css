@@ -116,16 +116,19 @@ button#match {
 div#matchDiv{
     position: absolute;
     top:37%;
-    margin-left:10%;
+    margin-left:20%;
     border-color: gray;
     color:gray;
 }
 div#attrs_select{
-    position: absolute;
-    top:41%;
+    padding-top:30%;
     margin-left:10%;
     border-color: gray;
     color:gray;
+}
+div#attrs_select label{
+    position:absolute;
+    margin-bottom:0;
 }
 button#Switch {
     position: absolute;
