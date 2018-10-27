@@ -4,11 +4,13 @@ var variable = (function () {
     let chosenArr = [];
     let type = true;
     let match = false;
+    let attrs = [];
     return {
         allData,
         chosenData,
         type,
         chosenArr,
-        match
+        match,
+        attrs
     }
 })()

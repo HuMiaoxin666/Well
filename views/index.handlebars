@@ -29,8 +29,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
 <script src="js/leaflet/L.D3SvgOverlay.min.js"></script>
 <script src="js/leaflet/L.D3SvgOverlay.js"></script> --}}
-<nav class="navbar navbar-dark sticky-top  flex-md-nowrap p-0" style="border-bottom:3px solid rgb(79, 79, 247);">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" style="background-color:white;box-shadow:none;color:black;font-size:1.5em;">胜利油田</a>
+<nav class="navbar navbar-dark sticky-top  flex-md-nowrap p-0" style="border-bottom:3px solid rgb(216, 216, 216);">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" style="border-bottom:0.1px solid rgb(216, 216, 216);background-color:white;box-shadow:none;color:rgb(124, 124, 124);font-size:1.5em;">胜利油田</a>
     <button id="Switch" class="btn btn-outline-primary my-2 my-sm-0" type="submit" style="font-size:0.7em;">Switch</button>
 </nav>
 
@@ -42,10 +42,37 @@
             <input type="text" id="sample_rate" value=50>
             <div id="rate_slider"></div>
             <button id="sample" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sample</button>
-            <div class="checkbox"  id="matchDiv">
-                <label><input id="matchStatus" type="checkbox" value="" style = "margin-right:5px;">match</label>
+            <div class="checkbox" id="matchDiv">
+                <label><input id="matchStatus" type="checkbox" value="" style="padding-right:5px;">Match</label>
             </div>
-            <button id="match" class="btn btn-outline-primary my-2 my-sm-0" type="submit">match</button>
+            <div id="attrs_select" class="checkbox">
+                <label style="margin-left:0;margin-bottom:0;"><input id="spStatus" type="checkbox" value="" style="margin-right:5px;">SP</label>
+                <label style="margin-left:5px;margin-bottom:0;"><input id="condStatus" type="checkbox" value="" style="padding-right:5px;">COND</label>
+                <label style="margin-left:5px;margin-bottom:0;"><input id="ml1Status" type="checkbox" value="" style="padding-right:5px;">ML1</label>
+                <label style="margin-left:0;margin-bottom:0;"><input id="ml2Status" type="checkbox" value="" style="padding-right:5px;">ML2</label>
+                <label style="margin-left:5px;margin-bottom:0;"><input id="r4Status" type="checkbox" value="" style="padding-right:5px;">R4</label>
+                <label style="margin-left:5px;margin-bottom:0;"><input id="acStatus" type="checkbox" value="" style="padding-right:5px;">AC</label>
+
+            </div>
+            {{!-- <div class="checkbox" id="matchDiv">
+                <label><input id="spStatus" type="checkbox" value="" style="margin-right:5px;">SP</label>
+            </div>
+            <div class="checkbox" id="matchDiv">
+                <label><input id="condStatus" type="checkbox" value="" style="margin-right:5px;">COND</label>
+            </div>
+            <div class="checkbox" id="matchDiv">
+                <label><input id="ml1Status" type="checkbox" value="" style="margin-right:5px;">ML1</label>
+            </div>
+            <div class="checkbox" id="matchDiv">
+                <label><input id="ml2Status" type="checkbox" value="" style="margin-right:5px;">ML2</label>
+            </div>
+            <div class="checkbox" id="matchDiv">
+                <label><input id="r4Status" type="checkbox" value="" style="margin-right:5px;">R4</label>
+            </div>
+            <div class="checkbox" id="matchDiv">
+                <label><input id="acStatus" type="checkbox" value="" style="margin-right:5px;">AC</label>
+            </div> --}}
+            <button id="match" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Match</button>
         </div>
         <div id="other"></div>
     </div>

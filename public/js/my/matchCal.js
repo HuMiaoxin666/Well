@@ -8,13 +8,14 @@ var MatchCal = (function () {
     var attrs = ["dh", "fv", "mv", "rm", "maxv", "minv", "dtv", "topk", "botk"];
     var dis_able = 0;
     var dismax, dismin;
-
-    function showcurves(well_arr) {
+    var xiehmax = 315.7;    
+    function showcurves(well_arr ,attrs_arr) {
         wtdatas = [];
         wbdatas = [];
-
+        let tmp_attr = attrs_arr[0];
+        console.log('tmp_attr: ', tmp_attr);
         var attrnames = ["DEPT", "SP", "COND", "ML1", "ML2", "R4", "AC"];
-        var attrn = 6;
+        var attrn = attrnames.indexOf(tmp_attr);
         for (var n = 0; n < well_arr.length; n++) {
             let curved = well_arr[n].value; //存储1000-1500米之间的数据
 
@@ -186,10 +187,9 @@ var MatchCal = (function () {
                 var tempbd = {};
 
                 tempbd.indext = indext;
-                tempbd.indexb = indexb;
 
-                tempbd.th = fcd[indext].DEPT; //层顶深度
-                tempbd.bh = fcd[indexb].DEPT; //层底深度
+                tempbd.th = fcd[indext][0]; //层顶深度
+                tempbd.bh = fcd[indexb][0]; //层底深度
                 tempbd.dh = tempbd.bh - tempbd.th; //层的厚度
 
                 var bvs = [],
@@ -464,12 +464,13 @@ var MatchCal = (function () {
       disv+= wminv*Math.abs(bdatap.lminv-bdataq.lminv)/(gmaxv-gminv);
       disv+= wminp*Math.abs(bdatap.lminp-bdataq.lminp);
     }
+
     return disv;
   }
 
 
     function CalMatrix(well_arr) {
-        showcurves(well_arr);
+        showcurves(well_arr, variable.attrs);
 
         var lmdata = layermatch(wbdatas[0], wbdatas[1]);
         console.log('lmdata: ', lmdata);

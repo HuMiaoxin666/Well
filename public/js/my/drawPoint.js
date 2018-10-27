@@ -8,8 +8,7 @@ var drawPoint = (function () {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1) {
 
-
-                    data[i].color = "blue";
+                    data[i].color = "#7483FF";
                     var circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
                         radius: 5,
                         data: data[i],
@@ -20,9 +19,9 @@ var drawPoint = (function () {
                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                 variable.chosenArr.push(data[0]);
                             })
-                            if (variable.chosenArr.length == 2) {
-                                MatchCal.CalMatrix([variable.chosenArr[0], variable.chosenArr[1]]);
-                            }
+                            // if (variable.chosenArr.length == 2) {
+
+                            // }
                         } else {
                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                 variable.chosenData = data[0];
@@ -36,7 +35,7 @@ var drawPoint = (function () {
         } else {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].latlng.length > 0) {
-                    data[i].color = "blue";
+                    data[i].color = "#7483FF";
                     var circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
                         radius: 5,
                         data: data[i],
@@ -47,9 +46,9 @@ var drawPoint = (function () {
                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                 variable.chosenArr.push(data[0]);
                             })
-                            if (variable.chosenArr.length == 2) {
-                                MatchCal.CalMatrix([variable.chosenArr[0], variable.chosenArr[1]]);
-                            }
+                            // if (variable.chosenArr.length == 2) {
+                            //     MatchCal.CalMatrix([variable.chosenArr[0], variable.chosenArr[1]]);
+                            // }
                         } else {
                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                 variable.chosenData = data[0];

@@ -24,22 +24,47 @@ var option = (function () {
     })
     $("#Switch").click(function () {
         variable.type = !variable.type;
-        if(variable.type == false){
+        if (variable.type == false) {
             lineChart.drawLineChart_2(variable.chosenData);
             console.log('variable.chosenData: ', variable.chosenData);
-        }else{
+        } else {
             lineChart.drawLineChart(variable.chosenData);
             console.log('variable.chosenData: ', variable.chosenData);
         }
-     
+
     })
 
     $("#match").click(function () {
-        variable.match = !variable.match;
-        variable.chosenArr = [];
+        MatchCal.CalMatrix([variable.chosenArr[0], variable.chosenArr[1]]);
     })
 
+    var attr_status = ['sp', 'cond', 'ml1', 'ml2', 'r4', 'ac'];
 
+    $("#matchStatus").click(function () {
+        variable.match = this.checked;
+        variable.chosenArr = [];
+        if (this.checked == true)
+            for (let i = 0; i < attr_status.length; i++)
+                $("#" + attr_status[i] + 'Status').attr("disabled", false);
+        else
+            for (let i = 0; i < attr_status.length; i++)
+                $("#" + attr_status[i] + 'Status').attr("disabled", true);
+
+    })
+
+    for (let i = 0; i < attr_status.length; i++) {
+        $("#" + attr_status[i] + 'Status').attr("disabled", true);
+
+        $("#" + attr_status[i] + 'Status').click(function () {
+            let tmp_attr = String(attr_status[i]);
+            if (this.checked == true) {
+                variable.attrs.push(tmp_attr.toUpperCase());
+            } else {
+                let tmp_index = variable.attrs.indexOf(tmp_attr.toUpperCase());
+                variable.attrs.splice(tmp_index, 1);
+            }
+        })
+    }
 
     return {
 
