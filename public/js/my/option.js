@@ -1,23 +1,24 @@
 var option = (function () {
-    var sam_rate = 20;
+    var sam_rate = 10;
 
     var slider = $("#rate_slider").slider({
         orientation: "horizontal",
         range: "min",
         max: 100,
-        value: 20,
+        value: 10,
         slide: function (event, ui) {
             let cur_val = ui.value;
             sam_rate = ui.value;
             $("#sample_rate").val(cur_val);
         }
     })
-    $("#sample_rate").val(20);
+    $("#sample_rate").val(10);
 
 
     $("#sample").click(function () {
-        drawPoint.draw(variable.allData, sam_rate);
-        console.log('variable.allData: ', variable.allData);
+        variable.rate = sam_rate;
+        drawPoint.draw(variable.basicData, sam_rate);
+        console.log('variable.basicData: ', variable.basicData);
         // mapView.getWellData().then(function(data){
         //     lineChart.drawLineChart(data);
         // })
@@ -35,25 +36,28 @@ var option = (function () {
     })
 
     $("#match").click(function () {
-        MatchCal.CalMatrix([variable.chosenArr[0], variable.chosenArr[1]]);
+        let matchValue_arr = MatchCal.CalMatchValue([variable.chosenArr[0], variable.chosenArr[1]]);
+        console.log('matchValue_arr: ', matchValue_arr);
+        // MatchCal.ReSample(variable.basicData, variable.rate);
+        variable.chosenArr = [];
     })
 
     var attr_status = ['sp', 'cond', 'ml1', 'ml2', 'r4', 'ac'];
 
-    $("#matchStatus").click(function () {
+    $("#matchStatus").click(function (){
         variable.match = this.checked;
         variable.chosenArr = [];
-        if (this.checked == true)
-            for (let i = 0; i < attr_status.length; i++)
-                $("#" + attr_status[i] + 'Status').attr("disabled", false);
-        else
-            for (let i = 0; i < attr_status.length; i++)
-                $("#" + attr_status[i] + 'Status').attr("disabled", true);
+        // if (this.checked == true)
+        //     for (let i = 0; i < attr_status.length; i++)
+        //         $("#" + attr_status[i] + 'Status').attr("disabled", false);
+        // else
+        //     for (let i = 0; i < attr_status.length; i++)
+        //         $("#" + attr_status[i] + 'Status').attr("disabled", true);
 
     })
 
     for (let i = 0; i < attr_status.length; i++) {
-        $("#" + attr_status[i] + 'Status').attr("disabled", true);
+        // $("#" + attr_status[i] + 'Status').attr("disabled", true);
 
         $("#" + attr_status[i] + 'Status').click(function () {
             let tmp_attr = String(attr_status[i]);
@@ -66,7 +70,19 @@ var option = (function () {
         })
     }
 
-    return {
+    function getAroundPoints(id, rate_index){
+        console.log('rate_index: ', rate_index);
+        let tmp_data = variable.basicData;
+        for(let i = 0; i < tmp_data.length; i++){
+            if(tmp_data[i].id == id)
+                return tmp_data[i].around_points[rate_index];
+            else{
+                continue;
+            }
+        }
+    }
 
+    return {
+        getAroundPoints
     }
 })()

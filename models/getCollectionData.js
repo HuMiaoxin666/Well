@@ -7,10 +7,10 @@ const poSchema = new Schema({
     latlng: Array,
     basic_attr: Array
 }, {
-    collection: 'basicData'
+    collection: 'SamplesLoc'
 });
 
-var BDModel = mongoose.model('basicData', poSchema);
+var BDModel = mongoose.model('SamplesLoc', poSchema);
 BDModel.createIndexes({"id":1});
 
 module.exports = BDModel;

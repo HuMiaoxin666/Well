@@ -24,11 +24,10 @@ var mapView = (function () {
     //初始化各svg
     var svg_lineChart = d3.select("#ChartSvg").attr("width", '100%').attr("height", '100%');
     getWellData().then(function (data) {
-        variable.allData = data;
-        drawPoint.draw(data, 20);
-        let oriId = variable.allData[200].id;
-
-        getChosenData(oriId).then(function (data_in) {
+        variable.basicData = data;
+        drawPoint.draw(data, 10);
+        let oriId = variable.basicData[200].id;
+        getChosenData(oriId).then(function (data_in){
             variable.chosenData = data_in;
             lineChart.drawLineChart(data_in[0]);
         })

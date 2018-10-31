@@ -1,16 +1,22 @@
 var variable = (function () {
-    let allData;
+    let basicData;
     let chosenData; 
     let chosenArr = [];
     let type = true;
     let match = false;
     let attrs = [];
+    let rate = 10;
+    let circle_arr = [];
+    let around_circle = [];
     return {
-        allData,
+        basicData,
         chosenData,
         type,
         chosenArr,
         match,
-        attrs
+        attrs,
+        rate,
+        circle_arr,
+        around_circle
     }
 })()

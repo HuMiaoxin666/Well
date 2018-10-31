@@ -7,23 +7,39 @@ var drawPoint = (function () {
         if (sampleStatus_index != 10) {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1) {
-
                     data[i].color = "#7483FF";
-                    var circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
+                    let circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
+                        text: data[i].id,
+                        id: data[i].id,
                         radius: 5,
                         data: data[i],
                         color: data[i].color
                     }).addTo(mapView.map);
+                    variable.circle_arr.push(circle);
                     circle.on("click", function () {
+                        console.log('$(this): ', $(this));
                         if (variable.match == true) {
                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                 variable.chosenArr.push(data[0]);
                             })
-                            // if (variable.chosenArr.length == 2) {
-
-                            // }
                         } else {
+                            if (variable.around_circle.length != 0) {
+                                for (let i = 0; i < variable.around_circle.length; i++) {
+                                    variable.around_circle[i].remove();
+                                }
+                            }
+                            variable.around_circle = [];
+                            let tmp_aroundPt = this.options.data.around_points[sampleStatus_index];
+                            for (let i = 0; i < tmp_aroundPt.length; i++) {
+                                let circle_around = L.circle([tmp_aroundPt[i][0], tmp_aroundPt[i][1]], {
+                                    id: "around",
+                                    radius: 5,
+                                    color: "yellow"
+                                }).addTo(mapView.map);
+                                variable.around_circle.push(circle_around);
+                            }
                             mapView.getChosenData(this.options.data.id).then(function (data) {
+                                console.log('data: ', data);
                                 variable.chosenData = data[0];
                                 variable.chosenArr.push(data[0]);
                                 lineChart.drawLineChart(data[0]);
@@ -47,9 +63,11 @@ var drawPoint = (function () {
                                 variable.chosenArr.push(data[0]);
                             })
                             // if (variable.chosenArr.length == 2) {
-                            //     MatchCal.CalMatrix([variable.chosenArr[0], variable.chosenArr[1]]);
+                            //     MatchCal.CalMatchValue([variable.chosenArr[0], variable.chosenArr[1]]);
                             // }
                         } else {
+                            let tmp_aroundPt = option.getAroundPoints(this.options.data.id, sampleStatus_index);
+                            console.log('tmp_aroundPt: ', tmp_aroundPt);
                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                 variable.chosenData = data[0];
                                 variable.chosenArr.push(data[0]);

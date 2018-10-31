@@ -8,24 +8,24 @@ var MatchCal = (function () {
     var attrs = ["dh", "fv", "mv", "rm", "maxv", "minv", "dtv", "topk", "botk"];
     var dis_able = 0;
     var dismax, dismin;
-    var xiehmax = 315.7;    
-    function showcurves(well_arr ,attrs_arr) {
+    var xiehmax = 315.7;
+    var attrnames = ["DEPT", "SP", "COND", "ML1", "ML2", "R4", "AC"];
+
+    function showcurves(well_arr, attr) {
         wtdatas = [];
         wbdatas = [];
-        let tmp_attr = attrs_arr[0];
+        let tmp_attr = attr;
         console.log('tmp_attr: ', tmp_attr);
-        var attrnames = ["DEPT", "SP", "COND", "ML1", "ML2", "R4", "AC"];
-        var attrn = attrnames.indexOf(tmp_attr);
-        for (var n = 0; n < well_arr.length; n++) {
+        let attrn = attrnames.indexOf(tmp_attr);
+        for (let n = 0; n < well_arr.length; n++) {
             let curved = well_arr[n].value; //存储1000-1500米之间的数据
-
             ////////////绘制显示不同属性的曲线///////////////////////////////////////////////////////////////////////////////////
             ///////////////先绘制测试参数指定的属性//////////////////////////////////////////////////////////////////////////////
 
             var fcd = curved.filter(function (cd) {
                 return (cd[0] >= TopH) && (cd[0] <= BotH) && (cd[attrn] > -1000.0) && (cd[attrn] < 1000.0)
             });
-            console.log('fcd: ', fcd);
+            // console.log('fcd: ', fcd);
 
             //处理异常数据//////////////////////////////////////////////////
             if (attrn == 6) {
@@ -443,41 +443,75 @@ var MatchCal = (function () {
         return lmdata;
     }
 
-      //计算最终展示值函数
-  function disbdata(bdatap,bdataq)
-  {
-    var wattrs = [0.2, 0.3, 0.3, 0.1, 0.05, 0.05, 0.2, 0.1, 0.1];
-    var disv=0.0;
-    for(var k=0;k<attrs.length;k++)
-      disv+= (wattrs[k]*Math.abs(bdatap[attrs[k]]-bdataq[attrs[k]]));
+    //计算最终展示值函数
+    function disbdata(bdatap, bdataq) {
+        var wattrs = [0.2, 0.3, 0.3, 0.1, 0.05, 0.05, 0.2, 0.1, 0.1];
+        var disv = 0.0;
+        for (var k = 0; k < attrs.length; k++)
+            disv += (wattrs[k] * Math.abs(bdatap[attrs[k]] - bdataq[attrs[k]]));
 
-    //添加极大值极小值的影响
-    var wmaxv=0.1,wmaxp=0.1,wminv=0.1,wminp=0.1;
-    if(bdatap.lmaxv>=0.0 && bdataq.lmaxv>=0.0)
-    {
-      disv+= wmaxv*Math.abs(bdatap.lmaxv-bdataq.lmaxv)/(gmaxv-gminv);
-      disv+= wmaxp*Math.abs(bdatap.lmaxp-bdataq.lmaxp);
+        //添加极大值极小值的影响
+        var wmaxv = 0.1, wmaxp = 0.1, wminv = 0.1, wminp = 0.1;
+        if (bdatap.lmaxv >= 0.0 && bdataq.lmaxv >= 0.0) {
+            disv += wmaxv * Math.abs(bdatap.lmaxv - bdataq.lmaxv) / (gmaxv - gminv);
+            disv += wmaxp * Math.abs(bdatap.lmaxp - bdataq.lmaxp);
+        }
+
+        if (bdatap.lminv >= 0.0 && bdataq.lminv >= 0.0) {
+            disv += wminv * Math.abs(bdatap.lminv - bdataq.lminv) / (gmaxv - gminv);
+            disv += wminp * Math.abs(bdatap.lminp - bdataq.lminp);
+        }
+
+        return disv;
     }
 
-    if(bdatap.lminv>=0.0 && bdataq.lminv>=0.0)
-    {
-      disv+= wminv*Math.abs(bdatap.lminv-bdataq.lminv)/(gmaxv-gminv);
-      disv+= wminp*Math.abs(bdatap.lminp-bdataq.lminp);
+
+    function CalMatchValue(well_arr) {
+        let attrs_matchValue = [];
+        for(let i = 0; i < variable.attrs.length; i++){
+            showcurves(well_arr, variable.attrs[i]);
+            let lmdata = layermatch(wbdatas[0], wbdatas[1]);
+            let matchValue = 0;
+            let tmp_lm = lmdata.layerpairs;
+            for (let i = 0; i < tmp_lm.length; i++) {
+                matchValue += (wbdatas[0].bdata[tmp_lm[i][0]].dh + wbdatas[1].bdata[tmp_lm[i][1]].dh);
+            }
+            matchValue = matchValue / 100;
+            // console.log("temp_attr: ", variable.attrs[i])
+            // console.log('matchValue: ', matchValue);
+            // console.log('lmdata: ', lmdata);
+            attrs_matchValue.push(matchValue);
+        }
+        //
+
+        return attrs_matchValue;
     }
 
-    return disv;
-  }
-
-
-    function CalMatrix(well_arr) {
-        showcurves(well_arr, variable.attrs);
-
-        var lmdata = layermatch(wbdatas[0], wbdatas[1]);
-        console.log('lmdata: ', lmdata);
+    function ReSample(data, rate) {
+        console.log('data: ', data);
+        let rate_index = rate / 10;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].sample_status[rate_index] == 1) {
+                let tmp_chosenId = data[i].id;
+                let tmp_aroundIds = data[i].around_ids[rate_index];
+                if (tmp_aroundIds.length > 0) {
+                    for (let p = 0; p < tmp_aroundIds.length; p++) {
+                        mapView.getChosenData(tmp_aroundIds[p]).then(function(tmp_aroundWell){
+                            mapView.getChosenData(tmp_chosenId).then(function(tmp_chosenWell){
+                                let tmp_coefficient = CalMatchValue(tmp_chosenWell, tmp_aroundWell);
+                                console.log('tmp_coefficient: ', tmp_coefficient);
+                            });
+                        });
+                       
+                    }
+                }
+            }
+        }
     }
 
     return {
         showcurves,
-        CalMatrix
+        CalMatchValue,
+        ReSample
     }
 })()
