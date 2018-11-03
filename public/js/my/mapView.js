@@ -24,27 +24,19 @@ var mapView = (function () {
     //初始化各svg
     var svg_lineChart = d3.select("#ChartSvg").attr("width", '100%').attr("height", '100%');
     getWellData().then(function (data) {
-        // for(let i =0; i < data.length; i++){
-        //     $.ajax({
-        //         type: "get",
-        //         url: "/id/ChosenId",
-        //         data: {
-        //             'id': data[i].id
-        //         },
-        //         success: function (Welldata) {
-        //             //将新井的数据存入字典
-        //             variable.allData[data[i].id] = Welldata;
-        //         },
-        //         error: function () { }
-        //     });
-        // }
-        
+
+
         variable.basicData = data;
+        // console.log('data: ', data);
+        for(let i = 0; i < data.length; i++){
+            variable.index_dict[data[i].id] = i;
+        }
+        // console.log(variable.index_dict);
         drawPoint.draw(data, 10);
         let oriId = variable.basicData[200].id;
         getChosenData(oriId).then(function (data_in) {
             variable.chosenData = data_in;
-            lineChart.drawLineChart(data_in[0],true);
+            lineChart.drawLineChart(data_in[0], true);
         })
     })
     //设置初始选中井及相关View
@@ -78,7 +70,34 @@ var mapView = (function () {
         });
     }
 
-    function getMatch(ids){
+    // $.ajax({
+    //     type: "get",
+    //     url: "getMatchValue",
+    //     async: false,
+    //     data: {
+    //         'well_1': 'GD1-0-503',
+    //         'well_2': "GD1-0N4"
+    //     },
+    //     success: function (tmp_data) {
+    //         if (tmp_data.length > 0) {
+    //             console.log('tmp_data: ', tmp_data);
+    //         }
+    //         // console.log('tmp_data: ', tmp_data);
+    //     },
+    //     error: function () { }
+    // });
+    // let t = {'id':0, 'name':'hmx'};
+    // for( key in t){
+    //     console.log('key: ', key);
+        
+    // }
+    d3.json('data/sample_10.json', function(data){
+        variable.sample_10 = data;
+        // console.log('data: ', data);
+    });
+
+   
+    function getMatch(ids) {
         $.ajax({
             type: "get",
             url: "/get/test",
@@ -86,7 +105,7 @@ var mapView = (function () {
                 well_1: ids[0],
                 well_2: ids[1]
             },
-            success:function(data){
+            success: function (data) {
                 resolve(data);
             },
             error: function () { }
@@ -113,6 +132,7 @@ var mapView = (function () {
         svg_lineChart,
         getWellData,
         getChosenData,
-        postData
+        postData,
+        getMatch
     }
 })()

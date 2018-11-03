@@ -35,12 +35,7 @@ var option = (function () {
 
     })
     $("#match").click(function () {
-        // console.log("click");
-        // let matchValue_arr = MatchCal.CalMatchValue([variable.chosenArr[0], variable.chosenArr[1]]);
-        // console.log('matchValue_arr: ', matchValue_arr);
-        MatchCal.ReSample(variable.basicData, variable.rate);
-        // MatchCal.test(variable.basicData);
-        // console.log("length: ",variable.allData.length)
+        MatchCal.ReSample();
         variable.chosenArr = [];
     })
 

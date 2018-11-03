@@ -31,11 +31,10 @@ router.get("/(:Id)?/ChosenId", function (req, res) {
     });
 });
 
-router.get("/get/test", function (req, res) {
-    console.log('req: ', req.body);
+router.get("/getMatchValue", function (req, res) {
     InsertModel.find({
-        well_1: req.body.well_1,
-        well_2: req.body.well_2
+        'well_1': req.query.well_1,
+        'well_2': req.query.well_2
     },function(err, data){
         if (err) console.log(err);
         else {

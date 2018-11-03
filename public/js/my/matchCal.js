@@ -23,7 +23,7 @@ var MatchCal = (function () {
             let curved = well_arr[n].value; //存储1000-1500米之间的数据
             ////////////绘制显示不同属性的曲线///////////////////////////////////////////////////////////////////////////////////
             ///////////////先绘制测试参数指定的属性//////////////////////////////////////////////////////////////////////////////
-            var fcd = curved.filter(function(cd){
+            var fcd = curved.filter(function (cd) {
                 return (cd[0] >= TopH) && (cd[0] <= BotH) && (cd[attrn] > -1000.0) && (cd[attrn] < 1000.0)
             });
             // console.log('fcd: ', fcd);
@@ -491,168 +491,80 @@ var MatchCal = (function () {
         //
         console.log('attrs_matchValue: ', attrs_matchValue);
         return attrs_matchValue;
-        
-    }
 
-    function ReSample(data, rate) {
-        // console.log('data: ', data);
-        let rate_index = rate / 10;
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].sample_status[rate_index] == 1) {
-                let tmp_chosenId = data[i].id;
-                let tmp_aroundIds = data[i].around_ids[rate_index];
+    }
+    function ReSample() {
+        let rate_index = variable.rate / 10;
+        let index = 0;
+        for (let i = 0; i < variable.basicData.length; i++) {
+            if (variable.basicData[i].sample_status[rate_index] == 1) {
+                let tmp_chosenId = variable.basicData[i].id;
+                let MatchValue_arr = {};
+
+                let tmp_aroundIds = variable.basicData[i].around_ids[rate_index];
+
                 if (tmp_aroundIds.length > 0) {
-                    $.ajax({
-                        type: "get",
-                        url: "/id/ChosenId",
-                        data: {
-                            'id': tmp_chosenId
-                        },
-                        success: function (tmp_chosenWell) {
-                            // console.log('tmp_chosenWell: ', tmp_chosenWell);
-                            for (let p = 0; p < tmp_aroundIds.length; p++) {
-                                $.ajax({
-                                    type: "get",
-                                    url: "/id/ChosenId",
-                                    data: {
-                                        'id': tmp_aroundIds[p]
-                                    },
-                                    success: function (tmp_aroundWell) {
-                                        // console.log('tmp_aroundWell: ', tmp_aroundWell);
-                                        if (tmp_aroundWell.length > 0) {
-                                            // console.log('tmp_aroundWell: ', tmp_aroundWell);
-                                            let tmp_coefficient = CalMatchValue([tmp_chosenWell[0], tmp_aroundWell[0]]);
-                                            // console.log('tmp_coefficient: ', tmp_coefficient);
-                                            let tmp_insert = { 'well_1': tmp_chosenId, 'well_2': tmp_aroundIds[p], value: tmp_coefficient };
-                                            mapView.postData(tmp_insert);
-                                        }
-                                    },
-                                    error: function () { }
-                                });
-                            }
-                        },
-                        error: function () { }
-                    });
-                }
-            }
-            
-        }
-        console.log("end end end end end end end end end!");
-    }
+                    tmp_aroundIds.push(tmp_chosenId);
+                    for (let p = 0; p < tmp_aroundIds.length; p++) {
 
-    function test(data) {
-        let tmp_length = data.length;
-        for (let i = 0; i < 10; i++) {
-            let wellId_1 = data[i].id;
-            if (variable.allData[wellId_1]) {
-                //数据为well_1 和 well_2/Welldata_2
-                let well_1 = variable.allData[wellId_1];
-                if (well_1.length > 0) {
-                    for (let j = i + 1; j < tmp_length; j++) {
-                        let wellId_2 = data[j].id;
-                        console.log('wellId_2: ', wellId_2);
-                        //判断字典内是否有该数据
-                        if (variable.allData[wellId_2]) {
-                            //数据为well_1 和 well_2
-                            let well_2 = variable.allData[wellId_2];
-                            //开始匹配
-                            console.log('well_2.length : ', well_2.length);
-                            if (well_2.length > 0) {
-
-                                let tmp_coefficient = CalMatchValue([well_1[0], well_2[0]]);
-                                console.log('tmp_coefficient: ', tmp_coefficient);
-                                let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
-                                mapView.postData(tmp_insert);
-                            }
-                        } else {
-                            //数据为well_1 和 Welldata_2
-                            $.ajax({
-                                type: "get",
-                                url: "/id/ChosenId",
-                                data: {
-                                    'id': wellId_2,
-                                    index:j
-                                },
-                                success: function (Welldata_2) {
-                                    //将新井的数据存入字典
-                                    variable.allData[wellId_2] = Welldata_2;
-                                    //开始匹配
-                                    console.log('Welldata_2.length: ', Welldata_2.length);
-                                    if (Welldata_2.length > 0) {
-
-                                        let tmp_coefficient = CalMatchValue([well_1[0], Welldata_2[0]]);
-                                        console.log('tmp_coefficient: ', tmp_coefficient);
-                                        let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
-                                        mapView.postData(tmp_insert);
-                                    }
-                                },
-                                error: function () {}
-                            });
+                        if (tmp_aroundIds[p] in MatchValue_arr == false) {
+                            MatchValue_arr[tmp_aroundIds[p]] = 0;
                         }
+                        for (let q = p + 1; q < tmp_aroundIds.length; q++) {
+                            // console.log('tmp_aroundIds[p]: ', tmp_aroundIds[p]);
+                            // console.log('tmp_aroundIds[q]: ', tmp_aroundIds[q]);
+                            if (tmp_aroundIds[q] in MatchValue_arr == false) {
+                                MatchValue_arr[tmp_aroundIds[q]] = 0;
+                            }
+                            let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
+                            if (variable.sample_10[tmp_key]) {
+                                index += 1;
+
+                                let tmp_value = variable.sample_10[tmp_key].value;
+                                // console.log('tmp_data: ', tmp_value);
+                                for (let a = 0; a < tmp_value.length; a++) {
+                                    MatchValue_arr[tmp_aroundIds[p]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
+                                    MatchValue_arr[tmp_aroundIds[q]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
+                                }
+                            }
+                            // console.log('tmp_data: ', tmp_data);
+                        }
+                    }
+                    console.log('MatchValue_arr: ', MatchValue_arr);
+                    let max_id, max_value = 0;
+                    for (id in MatchValue_arr) {
+                        if (MatchValue_arr[id] > max_value){
+                            max_id = id;
+                            max_value = MatchValue_arr[id];
+                        }
+                    }
+                    
+                    if (max_id) {
+                        console.log('tmp_chosenId: ', tmp_chosenId);
+
+                        console.log('max_id: ', max_id);
+                        for (id_index in tmp_aroundIds) {
+                            variable.basicData[variable.index_dict[tmp_aroundIds[id_index]]].sample_status[rate_index] = 0;
+                        }
+                        // console.log('111 ', variable.basicData[variable.index_dict[max_id]]);
+                        variable.basicData[variable.index_dict[max_id]].sample_status[rate_index] = 1;
+
                     }
                 }
 
-            } else {
-                //数据为Welldata_1 和 well_2/Welldata_2
-                $.ajax({
-                    type: "get",
-                    url: "/id/ChosenId",
-                    data: {
-                        'id': wellId_1
-                    },
-                    success: function (Welldata_1) {
-                        //将新井的数据存入字典
-                        if (Welldata_1.length > 0) {
-                            //循环匹配
-                            for (let j = i + 1; j < tmp_length; j++) {
-                                let wellId_2 = data[j].id;
-                                //判断字典内是否有该数据
-                                if (variable.allData[wellId_2]) {
-                                    //数据为Welldata_1 和 well_2
-
-                                    let well_2 = variable.allData[wellId_2];
-                                    //匹配
-                                    if (well_2.length > 0) {
-                                        let tmp_coefficient = CalMatchValue([Welldata_1[0], well_2[0]]);
-                                        let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
-                                        mapView.postData(tmp_insert);
-                                    }
-                                } else {
-                                    //数据为Welldata_1 和Welldata_2
-                                    $.ajax({
-                                        type: "get",
-                                        url: "/id/ChosenId",
-                                        data: {
-                                            'id': wellId_2,
-                                            index:j
-                                        },
-                                        success: function (Welldata_2) {
-                                            //将新井的数据存入字典
-                                            variable.allData[wellId_2] = Welldata_2;
-                                            //匹配
-                                            if (Welldata_2.length > 0) {
-                                                let tmp_coefficient = CalMatchValue([Welldata_1[0], Welldata_2[0]]);
-                                                let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
-                                                mapView.postData(tmp_insert);
-                                            }
-                                        },
-                                        error: function () { }
-                                    });
-                                }
-                            }
-                        }
-
-                    },
-                    error: function () { }
-                });
             }
+
         }
+
+        console.log("index: ", index);
+
+        drawPoint.draw(variable.basicData, variable.rate);
     }
+
 
     return {
         showcurves,
         CalMatchValue,
-        ReSample,
-        test
+        ReSample
     }
 })()
