@@ -3,14 +3,15 @@ const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 const TestSchema = new Schema({
-    order_no: String,
-    start_date: String,
-    start_hour: String,
-    warehouse: String,
-    type: String,
+    well_1:String,
+    well_2:String,
+    value: Array,
 }, {
-    collection: 'test'
+    collection: 'insert_test'
 });
 
-var TestModel = mongoose.model('test', TestSchema);
+var TestModel = mongoose.model('insert_test', TestSchema);
+TestModel.createIndexes({"well_1":1});
+TestModel.createIndexes({"well_2":1});
+
 module.exports = TestModel;

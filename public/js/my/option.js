@@ -34,17 +34,19 @@ var option = (function () {
         }
 
     })
-
     $("#match").click(function () {
-        let matchValue_arr = MatchCal.CalMatchValue([variable.chosenArr[0], variable.chosenArr[1]]);
-        console.log('matchValue_arr: ', matchValue_arr);
-        // MatchCal.ReSample(variable.basicData, variable.rate);
+        // console.log("click");
+        // let matchValue_arr = MatchCal.CalMatchValue([variable.chosenArr[0], variable.chosenArr[1]]);
+        // console.log('matchValue_arr: ', matchValue_arr);
+        MatchCal.ReSample(variable.basicData, variable.rate);
+        // MatchCal.test(variable.basicData);
+        // console.log("length: ",variable.allData.length)
         variable.chosenArr = [];
     })
 
     var attr_status = ['sp', 'cond', 'ml1', 'ml2', 'r4', 'ac'];
 
-    $("#matchStatus").click(function (){
+    $("#matchStatus").click(function () {
         variable.match = this.checked;
         variable.chosenArr = [];
         // if (this.checked == true)
@@ -70,13 +72,13 @@ var option = (function () {
         })
     }
 
-    function getAroundPoints(id, rate_index){
+    function getAroundPoints(id, rate_index) {
         console.log('rate_index: ', rate_index);
         let tmp_data = variable.basicData;
-        for(let i = 0; i < tmp_data.length; i++){
-            if(tmp_data[i].id == id)
+        for (let i = 0; i < tmp_data.length; i++) {
+            if (tmp_data[i].id == id)
                 return tmp_data[i].around_points[rate_index];
-            else{
+            else {
                 continue;
             }
         }

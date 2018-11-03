@@ -8,6 +8,7 @@ var variable = (function () {
     let rate = 10;
     let circle_arr = [];
     let around_circle = [];
+    let allData = {};
     return {
         basicData,
         chosenData,
@@ -17,6 +18,7 @@ var variable = (function () {
         attrs,
         rate,
         circle_arr,
-        around_circle
+        around_circle,
+        allData
     }
 })()

@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var OIModel = require("../models/getCollectionData");
 var ADModel = require("../models/GetIdData");
+var InsertModel = require("../models/test_co");
 /* GET home page. */
 router.get("/", function (req, res, next) {
     res.render("index", {
@@ -22,7 +23,7 @@ router.get("/well_data", function (req, res) {
 router.get("/(:Id)?/ChosenId", function (req, res) {
     let id = req.query.id;
     console.log('id: ', id);
-    ADModel.find({'id':id}, function (err, data) {
+    ADModel.find({ 'id': id }, function (err, data) {
         if (err) console.log(err);
         else {
             res.json(data);
@@ -30,6 +31,29 @@ router.get("/(:Id)?/ChosenId", function (req, res) {
     });
 });
 
+router.get("/get/test", function (req, res) {
+    console.log('req: ', req.body);
+    InsertModel.find({
+        well_1: req.body.well_1,
+        well_2: req.body.well_2
+    },function(err, data){
+        if (err) console.log(err);
+        else {
+            res.json(data);
+        }
+    });
+});
+
+router.post("/insert/test", function (req, res) {
+    let data = req.body['value[]'];
+    console.log('req: ', req.body);
+    let tmp = new InsertModel({
+        well_1: req.body.well_1,
+        well_2: req.body.well_2,
+        value: data
+    });
+    tmp.save();
+});
 
 
 // router.get("/(:warehouse)?/(:type)?/orderInfor", function (req, res) {

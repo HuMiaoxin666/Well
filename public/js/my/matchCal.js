@@ -2,7 +2,7 @@ var MatchCal = (function () {
     //处理文件数据
     var gminv = 0.0,
         gmaxv = 10.0;
-    var TopH = 0,
+    var TopH = 1000,
         BotH = 1400; //定义绘制的区间
     //归一化两口井的所有层数据的属性值，层厚、均值、方差、相对重心等//////////
     var attrs = ["dh", "fv", "mv", "rm", "maxv", "minv", "dtv", "topk", "botk"];
@@ -17,29 +17,32 @@ var MatchCal = (function () {
         let tmp_attr = attr;
         console.log('tmp_attr: ', tmp_attr);
         let attrn = attrnames.indexOf(tmp_attr);
+        console.log('attrn: ', attrn);
         for (let n = 0; n < well_arr.length; n++) {
+
             let curved = well_arr[n].value; //存储1000-1500米之间的数据
             ////////////绘制显示不同属性的曲线///////////////////////////////////////////////////////////////////////////////////
             ///////////////先绘制测试参数指定的属性//////////////////////////////////////////////////////////////////////////////
-
-            var fcd = curved.filter(function (cd) {
+            var fcd = curved.filter(function(cd){
                 return (cd[0] >= TopH) && (cd[0] <= BotH) && (cd[attrn] > -1000.0) && (cd[attrn] < 1000.0)
             });
             // console.log('fcd: ', fcd);
+            // console.log('curved: ', curved);
+
 
             //处理异常数据//////////////////////////////////////////////////
-            if (attrn == 6) {
-                var fcdtemp = curved.filter(function (cd) {
-                    return (cd[0] >= TopH) && (cd[0] <= BotH) && (cd[attrn] > 50.0) && (cd[attrn] < 1000.0);
-                });
-                var fcdmean = d3.mean(fcdtemp, function (cd) {
-                    return cd[attrn]
-                });
+            // if (attrn == 6) {
+            //     var fcdtemp = curved.filter(function (cd) {
+            //         return (cd[0] >= TopH) && (cd[0] <= BotH) && (cd[attrn] > 50.0) && (cd[attrn] < 1000.0);
+            //     });
+            //     var fcdmean = d3.mean(fcdtemp, function (cd) {
+            //         return cd[attrn]
+            //     });
 
-                for (var i = 0; i < fcd.length; i++)
-                    if (fcd[i][attrn] < 50.0)
-                        fcd[i][attrn] = fcdmean;
-            }
+            //     for (var i = 0; i < fcd.length; i++)
+            //         if (fcd[i][attrn] < 50.0)
+            //             fcd[i][attrn] = fcdmean;
+            // }
 
             //保存原始曲线数据，用于绘制细节对比
             var curvedata = fcd;
@@ -98,8 +101,9 @@ var MatchCal = (function () {
 
             ////////////////1.3.根据中值计算活度函数及绘制///////////////////////////////////////////////////////////////////////
             var act_N = 15; //活度计算前后各取值的数量
-
+            console.log('fcd: ', fcd[0]);
             fcd[0]["AV_" + attrn] = 0.0;
+
             fcd[fcd.length - 1]["AV_" + attrn] = 0.0;
 
             var isiter = false;
@@ -248,11 +252,13 @@ var MatchCal = (function () {
                     tempbd.lminv = lminvs[0][0];
                     tempbd.lminp = (lminvs[0][1] - indext) / (indexb - indext);
                 }
+                // console.log('tempbd  : ', tempbd);
                 wbdata.bdata.push(tempbd);
+
             }
             wbdatas.push(wbdata);
         }
-        console.log(wbdatas)
+        // console.log(wbdatas)
     }
 
     function layermatch(wbdataA, wbdataB) {
@@ -468,7 +474,7 @@ var MatchCal = (function () {
 
     function CalMatchValue(well_arr) {
         let attrs_matchValue = [];
-        for(let i = 0; i < variable.attrs.length; i++){
+        for (let i = 0; i < variable.attrs.length; i++) {
             showcurves(well_arr, variable.attrs[i]);
             let lmdata = layermatch(wbdatas[0], wbdatas[1]);
             let matchValue = 0;
@@ -483,28 +489,162 @@ var MatchCal = (function () {
             attrs_matchValue.push(matchValue);
         }
         //
-
+        console.log('attrs_matchValue: ', attrs_matchValue);
         return attrs_matchValue;
+        
     }
 
     function ReSample(data, rate) {
-        console.log('data: ', data);
+        // console.log('data: ', data);
         let rate_index = rate / 10;
         for (let i = 0; i < data.length; i++) {
             if (data[i].sample_status[rate_index] == 1) {
                 let tmp_chosenId = data[i].id;
                 let tmp_aroundIds = data[i].around_ids[rate_index];
                 if (tmp_aroundIds.length > 0) {
-                    for (let p = 0; p < tmp_aroundIds.length; p++) {
-                        mapView.getChosenData(tmp_aroundIds[p]).then(function(tmp_aroundWell){
-                            mapView.getChosenData(tmp_chosenId).then(function(tmp_chosenWell){
-                                let tmp_coefficient = CalMatchValue(tmp_chosenWell, tmp_aroundWell);
+                    $.ajax({
+                        type: "get",
+                        url: "/id/ChosenId",
+                        data: {
+                            'id': tmp_chosenId
+                        },
+                        success: function (tmp_chosenWell) {
+                            // console.log('tmp_chosenWell: ', tmp_chosenWell);
+                            for (let p = 0; p < tmp_aroundIds.length; p++) {
+                                $.ajax({
+                                    type: "get",
+                                    url: "/id/ChosenId",
+                                    data: {
+                                        'id': tmp_aroundIds[p]
+                                    },
+                                    success: function (tmp_aroundWell) {
+                                        // console.log('tmp_aroundWell: ', tmp_aroundWell);
+                                        if (tmp_aroundWell.length > 0) {
+                                            // console.log('tmp_aroundWell: ', tmp_aroundWell);
+                                            let tmp_coefficient = CalMatchValue([tmp_chosenWell[0], tmp_aroundWell[0]]);
+                                            // console.log('tmp_coefficient: ', tmp_coefficient);
+                                            let tmp_insert = { 'well_1': tmp_chosenId, 'well_2': tmp_aroundIds[p], value: tmp_coefficient };
+                                            mapView.postData(tmp_insert);
+                                        }
+                                    },
+                                    error: function () { }
+                                });
+                            }
+                        },
+                        error: function () { }
+                    });
+                }
+            }
+            
+        }
+        console.log("end end end end end end end end end!");
+    }
+
+    function test(data) {
+        let tmp_length = data.length;
+        for (let i = 0; i < 10; i++) {
+            let wellId_1 = data[i].id;
+            if (variable.allData[wellId_1]) {
+                //数据为well_1 和 well_2/Welldata_2
+                let well_1 = variable.allData[wellId_1];
+                if (well_1.length > 0) {
+                    for (let j = i + 1; j < tmp_length; j++) {
+                        let wellId_2 = data[j].id;
+                        console.log('wellId_2: ', wellId_2);
+                        //判断字典内是否有该数据
+                        if (variable.allData[wellId_2]) {
+                            //数据为well_1 和 well_2
+                            let well_2 = variable.allData[wellId_2];
+                            //开始匹配
+                            console.log('well_2.length : ', well_2.length);
+                            if (well_2.length > 0) {
+
+                                let tmp_coefficient = CalMatchValue([well_1[0], well_2[0]]);
                                 console.log('tmp_coefficient: ', tmp_coefficient);
+                                let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
+                                mapView.postData(tmp_insert);
+                            }
+                        } else {
+                            //数据为well_1 和 Welldata_2
+                            $.ajax({
+                                type: "get",
+                                url: "/id/ChosenId",
+                                data: {
+                                    'id': wellId_2,
+                                    index:j
+                                },
+                                success: function (Welldata_2) {
+                                    //将新井的数据存入字典
+                                    variable.allData[wellId_2] = Welldata_2;
+                                    //开始匹配
+                                    console.log('Welldata_2.length: ', Welldata_2.length);
+                                    if (Welldata_2.length > 0) {
+
+                                        let tmp_coefficient = CalMatchValue([well_1[0], Welldata_2[0]]);
+                                        console.log('tmp_coefficient: ', tmp_coefficient);
+                                        let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
+                                        mapView.postData(tmp_insert);
+                                    }
+                                },
+                                error: function () {}
                             });
-                        });
-                       
+                        }
                     }
                 }
+
+            } else {
+                //数据为Welldata_1 和 well_2/Welldata_2
+                $.ajax({
+                    type: "get",
+                    url: "/id/ChosenId",
+                    data: {
+                        'id': wellId_1
+                    },
+                    success: function (Welldata_1) {
+                        //将新井的数据存入字典
+                        if (Welldata_1.length > 0) {
+                            //循环匹配
+                            for (let j = i + 1; j < tmp_length; j++) {
+                                let wellId_2 = data[j].id;
+                                //判断字典内是否有该数据
+                                if (variable.allData[wellId_2]) {
+                                    //数据为Welldata_1 和 well_2
+
+                                    let well_2 = variable.allData[wellId_2];
+                                    //匹配
+                                    if (well_2.length > 0) {
+                                        let tmp_coefficient = CalMatchValue([Welldata_1[0], well_2[0]]);
+                                        let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
+                                        mapView.postData(tmp_insert);
+                                    }
+                                } else {
+                                    //数据为Welldata_1 和Welldata_2
+                                    $.ajax({
+                                        type: "get",
+                                        url: "/id/ChosenId",
+                                        data: {
+                                            'id': wellId_2,
+                                            index:j
+                                        },
+                                        success: function (Welldata_2) {
+                                            //将新井的数据存入字典
+                                            variable.allData[wellId_2] = Welldata_2;
+                                            //匹配
+                                            if (Welldata_2.length > 0) {
+                                                let tmp_coefficient = CalMatchValue([Welldata_1[0], Welldata_2[0]]);
+                                                let tmp_insert = { 'well_1': wellId_1, 'well_2': wellId_2, value: tmp_coefficient };
+                                                mapView.postData(tmp_insert);
+                                            }
+                                        },
+                                        error: function () { }
+                                    });
+                                }
+                            }
+                        }
+
+                    },
+                    error: function () { }
+                });
             }
         }
     }
@@ -512,6 +652,7 @@ var MatchCal = (function () {
     return {
         showcurves,
         CalMatchValue,
-        ReSample
+        ReSample,
+        test
     }
 })()
