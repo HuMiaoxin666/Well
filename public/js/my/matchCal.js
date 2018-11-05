@@ -493,20 +493,44 @@ var MatchCal = (function () {
         return attrs_matchValue;
 
     }
+    //深拷贝函数
+    function deepCopy(o) {
+        if (o instanceof Array) {
+            var n = [];
+            for (var i = 0; i < o.length; ++i) {
+                n[i] = deepCopy(o[i]);
+            }
+            return n;
+        } else if (o instanceof Function) {
+            var n = new Function("return " + o.toString())();
+            return n
+        } else if (o instanceof Object) {
+            var n = {}
+            for (var i in o) {
+                n[i] = deepCopy(o[i]);
+            }
+            return n;
+        } else {
+            return o;
+        }
+    }
+
     function ReSample() {
-        let rate_index = variable.rate / 10;
+        let rate_index = parseInt(variable.rate / 10);
+        console.log('rate_index: ', rate_index);
         let index = 0;
         for (let i = 0; i < variable.basicData.length; i++) {
+            // console.log("i: ", i);
             if (variable.basicData[i].sample_status[rate_index] == 1) {
                 let tmp_chosenId = variable.basicData[i].id;
                 let MatchValue_arr = {};
 
-                let tmp_aroundIds = variable.basicData[i].around_ids[rate_index];
+                let tmp_aroundIds = deepCopy(variable.basicData[i].around_ids[rate_index]);
+                console.log('variable.basicData[i]: ', variable.basicData[i]);
 
                 if (tmp_aroundIds.length > 0) {
                     tmp_aroundIds.push(tmp_chosenId);
                     for (let p = 0; p < tmp_aroundIds.length; p++) {
-
                         if (tmp_aroundIds[p] in MatchValue_arr == false) {
                             MatchValue_arr[tmp_aroundIds[p]] = 0;
                         }
@@ -533,22 +557,30 @@ var MatchCal = (function () {
                     console.log('MatchValue_arr: ', MatchValue_arr);
                     let max_id, max_value = 0;
                     for (id in MatchValue_arr) {
-                        if (MatchValue_arr[id] > max_value){
+                        if (MatchValue_arr[id] > max_value) {
                             max_id = id;
                             max_value = MatchValue_arr[id];
                         }
                     }
-                    
-                    if (max_id) {
+                    if (max_id && max_id != tmp_chosenId) {
                         console.log('tmp_chosenId: ', tmp_chosenId);
-
                         console.log('max_id: ', max_id);
                         for (id_index in tmp_aroundIds) {
-                            variable.basicData[variable.index_dict[tmp_aroundIds[id_index]]].sample_status[rate_index] = 0;
+                            if(tmp_aroundIds[id_index] in variable.index_dict)
+                                variable.basicData[variable.index_dict[tmp_aroundIds[id_index]]].sample_status[rate_index] = 0;
                         }
+                        variable.basicData[variable.index_dict[tmp_chosenId]].sample_status[rate_index] = 2;
+                        // console.log('variable.basicData[variable.index_dict[tmp_chosenId]]: ', variable.basicData[variable.index_dict[tmp_chosenId]].sample_status);
+                        // console.log('variable.basicData[variable.index_dict[tmp_chosenId]]: ', variable.basicData[variable.index_dict[tmp_chosenId]]);
+
                         // console.log('111 ', variable.basicData[variable.index_dict[max_id]]);
                         variable.basicData[variable.index_dict[max_id]].sample_status[rate_index] = 1;
 
+                        variable.basicData[variable.index_dict[max_id]].around_ids[rate_index] =deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_ids[rate_index]);
+                        variable.basicData[variable.index_dict[max_id]].around_ids[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].id);
+                        variable.basicData[variable.index_dict[max_id]].around_points[rate_index] =deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_points[rate_index]);
+                        variable.basicData[variable.index_dict[max_id]].around_points[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].latlng);
+                        // console.log('variable.basicData[variable.index_dict[max_id]]: ', variable.basicData[variable.index_dict[max_id]]);
                     }
                 }
 

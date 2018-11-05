@@ -36,7 +36,7 @@ var mapView = (function () {
         let oriId = variable.basicData[200].id;
         getChosenData(oriId).then(function (data_in) {
             variable.chosenData = data_in;
-            lineChart.drawLineChart(data_in[0], true);
+            lineChart.drawLineChart(data_in[0], 1);
         })
     })
     //设置初始选中井及相关View
@@ -46,6 +46,7 @@ var mapView = (function () {
             $.ajax({
                 type: "get",
                 url: "/well_data",
+                async:false,
                 data: {},
                 success: function (data) {
                     resolve(data);
@@ -91,7 +92,7 @@ var mapView = (function () {
     //     console.log('key: ', key);
         
     // }
-    d3.json('data/sample_10.json', function(data){
+    d3.json('data/sample_10&20.json', function(data){
         variable.sample_10 = data;
         // console.log('data: ', data);
     });
@@ -101,6 +102,7 @@ var mapView = (function () {
         $.ajax({
             type: "get",
             url: "/get/test",
+            async:false,
             data: {
                 well_1: ids[0],
                 well_2: ids[1]
@@ -117,6 +119,7 @@ var mapView = (function () {
             $.ajax({
                 type: "get",
                 url: "/id/ChosenId",
+                async:false,
                 data: {
                     'id': id
                 },

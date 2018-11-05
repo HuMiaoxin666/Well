@@ -1,8 +1,7 @@
 var lineChart = (function () {
     function drawLineChart(data, sampleStatus) {
-        console.log('data: ', data);
-      
-        console.log('data[0].basic_attr: ', data.basic_attr);
+        // console.log('data: ', data);
+        // console.log('data[0].basic_attr: ', data.basic_attr);
         var svg_width = $("#lineChart")[0].scrollWidth;
         var svg_height = $("#lineChart")[0].scrollHeight;
         // 求出一些基本值
@@ -21,14 +20,14 @@ var lineChart = (function () {
                     min_arr[j] = data.value[i][j];
             }
         }
-        console.log(min_arr, max_arr);
+        // console.log(min_arr, max_arr);
 
 
 
         //设置坐标轴
         let yScale = d3.scaleLinear().domain([min_arr[0], max_arr[0]]).range([0, svg_height * 0.85])
         let y_axis = d3.axisLeft(yScale).tickPadding(5).tickSize(5);
-        if (sampleStatus == true) {
+        if (sampleStatus == 1) {
             mapView.svg_lineChart.append('g')
                 .attr("class", "axis")
                 .attr("transform", "translate(40," + svg_height * 0.1 + ")")
@@ -55,10 +54,12 @@ var lineChart = (function () {
         }
         //画属性分界线
         let colorScale;
-        if (sampleStatus == true) {
-            colorScale =["black","#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", '#9467bd'];
-        } else {
-            colorScale = ["#AAACB2", "#AAACB2", "#AAACB2", "#AAACB2", "#AAACB2", "#AAACB2"];
+        if (sampleStatus == 1) {
+            colorScale =["black","#1f77b4", "#1f77b4", "#1f77b4", "#1f77b4", '#1f77b4'];
+        } else if(sampleStatus == 0){
+            colorScale = ["#B5B5B5", "#B5B5B5", "#B5B5B5", "#B5B5B5", "#B5B5B5", "#B5B5B5"];
+        }else{
+            colorScale = ["#FF6000", "#FF6000", "#FF6000", "#FF6000", "#FF6000", "#FF6000"];
         }
 
         let areaLine = d3.line().x(function (d) {
@@ -89,10 +90,9 @@ var lineChart = (function () {
                 .attr("stroke-width", 1)
                 .attr("fill", 'none')
                 .attr("id", "x_axis");
-
         }
         //属性标识
-        if(sampleStatus ==true){
+        if(sampleStatus == 1){
             mapView.svg_lineChart.append("a").selectAll("text").data(text_loc)
             .enter().append("text")
             .attr("transform", function (d) {
@@ -116,7 +116,7 @@ var lineChart = (function () {
 
 
         for (let i = 1; i < 6; i++) {
-            console.log(i);
+            // console.log(i);
             let lineFun = d3.line()
                 .x(function (d) {
                     let tmp_x = xScale_arr[i - 1](d[i]) + 40 + (svg_width * 0.16) * (i - 1);

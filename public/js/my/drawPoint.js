@@ -6,7 +6,7 @@ var drawPoint = (function () {
         let sampleStatus_index = parseInt(sample_rate / 10);
         //采样率不是100时
         if (sampleStatus_index != 10) {
-            for (var i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1) {
                     data[i].color = "#7483FF";
                     let circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
@@ -20,8 +20,8 @@ var drawPoint = (function () {
                     //添加点击事件
                     circle.on("click", function () {
                         mapView.svg_lineChart.selectAll("*").remove();
-
-                        console.log('$(this): ', $(this));
+                        console.log(this.options.data);
+                        // console.log('$(this): ', $(this));
                         //匹配状态点击
                         if (variable.match == true) {
                             mapView.getChosenData(this.options.data.id).then(function (data) {
@@ -31,35 +31,65 @@ var drawPoint = (function () {
                         else {
                             //非匹配状态点击
                             if (variable.around_circle.length != 0) {
-                                for (let i = 0; i < variable.around_circle.length; i++) {
-                                    variable.around_circle[i].remove();
+                                for (let j = 0; j < variable.around_circle.length; j++) {
+                                    variable.around_circle[j].remove();
                                 }
                             }
                             variable.around_circle = []; //泊松盘内其他点的path DOM
                             let tmp_aroundPt = this.options.data.around_points[sampleStatus_index];
                             let tmp_aroundPt_ids = this.options.data.around_ids[sampleStatus_index];
-                            for (let i = 0; i < tmp_aroundPt.length; i++) {
-                                let circle_around = L.circle([tmp_aroundPt[i][0], tmp_aroundPt[i][1]], {
-                                    id: "around",
-                                    radius: 5,
-                                    color: "yellow"
-                                }).addTo(mapView.map);
-                                variable.around_circle.push(circle_around);
+                            for (let j = 0; j < tmp_aroundPt.length; j++) {
+                                if (tmp_aroundPt_ids[j] in variable.index_dict) {
+                                    let tmp_status = variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]].sample_status[sampleStatus_index];
+                                    // console.log('tmp_status: ', tmp_status);
+                                    if (tmp_status == 2) {
+                                        let circle_around = L.circle([tmp_aroundPt[j][0], tmp_aroundPt[j][1]], {
+                                            id: tmp_aroundPt_ids[j],
+                                            radius: 5,
+                                            data: variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]],
+                                            color: "#F31600"
+                                        }).addTo(mapView.map);
+                                        circle_around.on("click", function () {
+                                            mapView.getChosenData(this.options.data.id).then(function (data) {
+                                                console.log('data: ', data);
+                                                lineChart.drawLineChart(data[0], 2);
+                                            })
+                                        })
+                                        variable.around_circle.push(circle_around);
+                                    } else {
+                                        let circle_around = L.circle([tmp_aroundPt[j][0], tmp_aroundPt[j][1]], {
+                                            id: "around",
+                                            radius: 5,
+                                            data: variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]],
+                                            color: "#787878"
+                                        }).addTo(mapView.map);
+                                        circle_around.on("click", function () {
+                                            mapView.getChosenData(this.options.data.id).then(function (data) {
+                                                console.log('data: ', data);
+                                                lineChart.drawLineChart(data[0], 2);
+                                            })
+                                        })
+                                        variable.around_circle.push(circle_around);
+                                    }
+                                }
+
+
                             }
-                            
+
                             for (let ai = 0; ai < tmp_aroundPt_ids.length; ai++) {
                                 mapView.getChosenData(tmp_aroundPt_ids[ai]).then(function (data) {
-                                    lineChart.drawLineChart(data[0], false);
+                                    // console.log('tmp_aroundPt_ids[ai]: ', tmp_aroundPt_ids[ai]);
+                                    // console.log('data: ', data);
+                                    lineChart.drawLineChart(data[0], 0);
                                 })
                             }
                             mapView.getChosenData(this.options.data.id).then(function (data) {
-                                console.log('data: ', data);
+                                // console.log('data: ', data);
                                 variable.chosenData = data[0];
-                                lineChart.drawLineChart(data[0], true);
+                                lineChart.drawLineChart(data[0], 1);
                             })
                         }
                     })
-
                 }
             }
         } else {
