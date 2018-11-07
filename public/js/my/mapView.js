@@ -119,7 +119,6 @@ var mapView = (function () {
             $.ajax({
                 type: "get",
                 url: "/id/ChosenId",
-                async:false,
                 data: {
                     'id': id
                 },

@@ -13,6 +13,7 @@ var variable = (function () {
     let sample_10;
     let ReSampleData;
     let index_dict = {};
+    let before_id;
     return {
         basicData,
         chosenData,
@@ -27,6 +28,7 @@ var variable = (function () {
         importance_arr,
         sample_10,
         ReSampleData,
-        index_dict
+        index_dict,
+        before_id
     }
 })()

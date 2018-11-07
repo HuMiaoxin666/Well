@@ -38,20 +38,29 @@ var drawPoint = (function () {
                             variable.around_circle = []; //泊松盘内其他点的path DOM
                             let tmp_aroundPt = this.options.data.around_points[sampleStatus_index];
                             let tmp_aroundPt_ids = this.options.data.around_ids[sampleStatus_index];
+                            let tmp_id_index = tmp_aroundPt_ids.indexOf(this.options.data.id);
+                            tmp_aroundPt_ids.splice(tmp_id_index, 1);
+                            tmp_aroundPt.splice(tmp_id_index, 1);
+
                             for (let j = 0; j < tmp_aroundPt.length; j++) {
                                 if (tmp_aroundPt_ids[j] in variable.index_dict) {
                                     let tmp_status = variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]].sample_status[sampleStatus_index];
                                     // console.log('tmp_status: ', tmp_status);
-                                    if (tmp_status == 2) {
+                                    if (tmp_status == 2 || tmp_status == 'p') {
+                                        let tmp_color = '#F31600';
+                                        if(tmp_status == 'p')
+                                            tmp_color = '#00FF1F';
                                         let circle_around = L.circle([tmp_aroundPt[j][0], tmp_aroundPt[j][1]], {
                                             id: tmp_aroundPt_ids[j],
                                             radius: 5,
                                             data: variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]],
-                                            color: "#F31600"
+                                            color: tmp_color
                                         }).addTo(mapView.map);
                                         circle_around.on("click", function () {
+                                            let tmp_id = this.options.data.id;
                                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                                 console.log('data: ', data);
+                                                variable.before_id = tmp_id;
                                                 lineChart.drawLineChart(data[0], 2);
                                             })
                                         })
@@ -72,8 +81,6 @@ var drawPoint = (function () {
                                         variable.around_circle.push(circle_around);
                                     }
                                 }
-
-
                             }
 
                             for (let ai = 0; ai < tmp_aroundPt_ids.length; ai++) {

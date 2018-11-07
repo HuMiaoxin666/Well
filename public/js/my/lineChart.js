@@ -134,11 +134,9 @@ var lineChart = (function () {
                 .attr("stroke", colorScale[i])
                 .attr("stroke-width", 0.5)
                 .attr("fill", 'none')
-                .attr("id", data.basic_attr[i]);
+                .attr("id", data.basic_attr[i] + '_' + data.id);
         }
         // console.log(text_loc);
-
-
     }
 
     function drawLineChart_2(data) {

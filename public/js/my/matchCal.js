@@ -472,27 +472,28 @@ var MatchCal = (function () {
     }
 
 
-    function CalMatchValue(well_arr) {
-        let attrs_matchValue = [];
-        for (let i = 0; i < variable.attrs.length; i++) {
-            showcurves(well_arr, variable.attrs[i]);
-            let lmdata = layermatch(wbdatas[0], wbdatas[1]);
-            let matchValue = 0;
-            let tmp_lm = lmdata.layerpairs;
-            for (let i = 0; i < tmp_lm.length; i++) {
-                matchValue += (wbdatas[0].bdata[tmp_lm[i][0]].dh + wbdatas[1].bdata[tmp_lm[i][1]].dh);
-            }
-            matchValue = matchValue / 100;
-            // console.log("temp_attr: ", variable.attrs[i])
-            // console.log('matchValue: ', matchValue);
-            // console.log('lmdata: ', lmdata);
-            attrs_matchValue.push(matchValue);
-        }
-        //
-        console.log('attrs_matchValue: ', attrs_matchValue);
-        return attrs_matchValue;
+    // function CalMatchValue(well_arr) {
+    //     let attrs_matchValue = [];
+    //     for (let i = 0; i < variable.attrs.length; i++) {
+    //         showcurves(well_arr, variable.attrs[i]);
+    //         let lmdata = layermatch(wbdatas[0], wbdatas[1]);
+    //         console.log('lmdata: ', lmdata);
+    //         let matchValue = 0;
+    //         let tmp_lm = lmdata.layerpairs;
+    //         for (let i = 0; i < tmp_lm.length; i++) {
+    //             matchValue += (wbdatas[0].bdata[tmp_lm[i][0]].dh + wbdatas[1].bdata[tmp_lm[i][1]].dh);
+    //         }
+    //         matchValue = matchValue / 100;
+    //         // console.log("temp_attr: ", variable.attrs[i])
+    //         // console.log('matchValue: ', matchValue);
+    //         // console.log('lmdata: ', lmdata);
+    //         attrs_matchValue.push(matchValue);
+    //     }
+    //     //
+    //     console.log('attrs_matchValue: ', attrs_matchValue);
+    //     return attrs_matchValue;
 
-    }
+    // }
     //深拷贝函数
     function deepCopy(o) {
         if (o instanceof Array) {
@@ -516,6 +517,7 @@ var MatchCal = (function () {
     }
 
     function ReSample() {
+        let stop = false;
         let rate_index = parseInt(variable.rate / 10);
         console.log('rate_index: ', rate_index);
         let index = 0;
@@ -523,10 +525,11 @@ var MatchCal = (function () {
             // console.log("i: ", i);
             if (variable.basicData[i].sample_status[rate_index] == 1) {
                 let tmp_chosenId = variable.basicData[i].id;
-                let MatchValue_arr = {};
+                let MatchValue_arr = {};//井的V值总和
+                let V_dict = {};
 
                 let tmp_aroundIds = deepCopy(variable.basicData[i].around_ids[rate_index]);
-                console.log('variable.basicData[i]: ', variable.basicData[i]);
+                // console.log('variable.basicData[i]: ', variable.basicData[i]);
 
                 if (tmp_aroundIds.length > 0) {
                     tmp_aroundIds.push(tmp_chosenId);
@@ -534,56 +537,98 @@ var MatchCal = (function () {
                         if (tmp_aroundIds[p] in MatchValue_arr == false) {
                             MatchValue_arr[tmp_aroundIds[p]] = 0;
                         }
-                        for (let q = p + 1; q < tmp_aroundIds.length; q++) {
+                        for (let q = 0; q < tmp_aroundIds.length; q++) {
                             // console.log('tmp_aroundIds[p]: ', tmp_aroundIds[p]);
                             // console.log('tmp_aroundIds[q]: ', tmp_aroundIds[q]);
-                            if (tmp_aroundIds[q] in MatchValue_arr == false) {
-                                MatchValue_arr[tmp_aroundIds[q]] = 0;
-                            }
-                            let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
-                            if (variable.sample_10[tmp_key]) {
-                                index += 1;
-
-                                let tmp_value = variable.sample_10[tmp_key].value;
-                                // console.log('tmp_data: ', tmp_value);
-                                for (let a = 0; a < tmp_value.length; a++) {
-                                    MatchValue_arr[tmp_aroundIds[p]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
-                                    MatchValue_arr[tmp_aroundIds[q]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
+                            if (q != p) {
+                                let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
+                                V_dict[tmp_key] = 0;
+                                if (variable.sample_10[tmp_key]) {
+                                    index += 1;
+                                    let tmp_value = variable.sample_10[tmp_key].value;
+                                    for (let a = 0; a < tmp_value.length; a++) {
+                                        MatchValue_arr[tmp_aroundIds[p]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
+                                        V_dict[tmp_key] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
+                                    }
                                 }
                             }
+
                             // console.log('tmp_data: ', tmp_data);
                         }
                     }
+
+                    //计算V值最大的井
                     console.log('MatchValue_arr: ', MatchValue_arr);
-                    let max_id, max_value = 0;
+                    let max_id_v, max_value_v = 0;
+
                     for (id in MatchValue_arr) {
-                        if (MatchValue_arr[id] > max_value) {
-                            max_id = id;
-                            max_value = MatchValue_arr[id];
+                        if (MatchValue_arr[id] > max_value_v) {
+                            max_id_v = id;
+                            max_value_v = MatchValue_arr[id];
                         }
                     }
-                    if (max_id && max_id != tmp_chosenId) {
-                        console.log('tmp_chosenId: ', tmp_chosenId);
-                        console.log('max_id: ', max_id);
+
+                    //计算P值最大的井
+                    let pValue_dict = {};
+                    for (let p = 0; p < tmp_aroundIds.length; p++) {
+                        let tmp_dm = 0;
+                        for (let q = 0; q < tmp_aroundIds.length; q++) {
+                            if (q != p) {
+                                let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
+                                tmp_dm += Math.pow(Math.E, V_dict[tmp_key]);
+                            }
+                        }
+                        for (let q = 0; q < tmp_aroundIds.length; q++) {
+                            if (q != p) {
+                                let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
+                                pValue_dict[tmp_key] = Math.pow(Math.E, V_dict[tmp_key]) / tmp_dm;
+                            };
+                        };
+                    };
+                    let pWell_dict = {}, max_id_p, max_value_p = 0;
+                    for (let p = 0; p < tmp_aroundIds.length; p++) {
+                        pWell_dict[tmp_aroundIds[p]] = 0;
+                        for (let q = 0; q < tmp_aroundIds.length; q++) {
+                            if (q != p) {
+                                let tmp_key = tmp_aroundIds[q] + "&" + tmp_aroundIds[p];
+                                pWell_dict[tmp_aroundIds[p]] += pValue_dict[tmp_key];
+                            }
+                        }
+                        if(max_value_p < pWell_dict[tmp_aroundIds[p]]){
+                            max_id_p = tmp_aroundIds[p];
+                            max_value_p = pWell_dict[tmp_aroundIds[p]];
+                        }
+                    }
+                    console.log('max_id_p: ', max_id_p);
+                    console.log('tmp_chosenId: ', tmp_chosenId);
+
+                    //对数组进行重新赋值
+                    if (max_id_v && max_id_v != tmp_chosenId) {
+                        console.log('max_id_v: ', max_id_v);
                         for (id_index in tmp_aroundIds) {
-                            if(tmp_aroundIds[id_index] in variable.index_dict)
+                            if (tmp_aroundIds[id_index] in variable.index_dict)
                                 variable.basicData[variable.index_dict[tmp_aroundIds[id_index]]].sample_status[rate_index] = 0;
                         }
+                        //将之前随机采样的点标记为2
                         variable.basicData[variable.index_dict[tmp_chosenId]].sample_status[rate_index] = 2;
                         // console.log('variable.basicData[variable.index_dict[tmp_chosenId]]: ', variable.basicData[variable.index_dict[tmp_chosenId]].sample_status);
-                        // console.log('variable.basicData[variable.index_dict[tmp_chosenId]]: ', variable.basicData[variable.index_dict[tmp_chosenId]]);
+                        //将V值最大点标记为被采样点 1
+                        variable.basicData[variable.index_dict[max_id_v]].sample_status[rate_index] = 1;
 
-                        // console.log('111 ', variable.basicData[variable.index_dict[max_id]]);
-                        variable.basicData[variable.index_dict[max_id]].sample_status[rate_index] = 1;
-
-                        variable.basicData[variable.index_dict[max_id]].around_ids[rate_index] =deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_ids[rate_index]);
-                        variable.basicData[variable.index_dict[max_id]].around_ids[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].id);
-                        variable.basicData[variable.index_dict[max_id]].around_points[rate_index] =deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_points[rate_index]);
-                        variable.basicData[variable.index_dict[max_id]].around_points[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].latlng);
+                        variable.basicData[variable.index_dict[max_id_v]].around_ids[rate_index] = deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_ids[rate_index]);
+                        variable.basicData[variable.index_dict[max_id_v]].around_ids[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].id);
+                        variable.basicData[variable.index_dict[max_id_v]].around_points[rate_index] = deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_points[rate_index]);
+                        variable.basicData[variable.index_dict[max_id_v]].around_points[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].latlng);
                         // console.log('variable.basicData[variable.index_dict[max_id]]: ', variable.basicData[variable.index_dict[max_id]]);
+                        //将P值最大井标记为 'p'
+
+                    }else if(max_id_p != tmp_chosenId){
+                        console.log('max_id_p_dif: ', max_id_p);
+                        variable.basicData[variable.index_dict[max_id_p]].sample_status[rate_index] = 'p';
                     }
                 }
-
+                if (stop == true)
+                    break;
             }
 
         }
@@ -596,7 +641,7 @@ var MatchCal = (function () {
 
     return {
         showcurves,
-        CalMatchValue,
+        // CalMatchValue,
         ReSample
     }
 })()

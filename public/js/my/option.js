@@ -36,6 +36,7 @@ var option = (function () {
     })
     $("#match").click(function () {
         MatchCal.ReSample();
+        // MatchCal.CalMatchValue(variable.chosenArr);
         variable.chosenArr = [];
     })
 
