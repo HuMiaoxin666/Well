@@ -22,13 +22,14 @@ var mapView = (function () {
         //访问令牌
     }).addTo(map);
     //初始化各svg
+
     var svg_lineChart = d3.select("#ChartSvg").attr("width", '100%').attr("height", '100%');
     getWellData().then(function (data) {
 
 
         variable.basicData = data;
         // console.log('data: ', data);
-        for(let i = 0; i < data.length; i++){
+        for (let i = 0; i < data.length; i++) {
             variable.index_dict[data[i].id] = i;
         }
         // console.log(variable.index_dict);
@@ -36,7 +37,7 @@ var mapView = (function () {
         let oriId = variable.basicData[200].id;
         getChosenData(oriId).then(function (data_in) {
             variable.chosenData = data_in;
-            lineChart.drawLineChart(data_in[0], 1);
+            lineChart.drawLineChart(data_in[0], 1, "#1f77b4");
         })
     })
     //设置初始选中井及相关View
@@ -46,7 +47,7 @@ var mapView = (function () {
             $.ajax({
                 type: "get",
                 url: "/well_data",
-                async:false,
+                async: false,
                 data: {},
                 success: function (data) {
                     resolve(data);
@@ -90,19 +91,19 @@ var mapView = (function () {
     // let t = {'id':0, 'name':'hmx'};
     // for( key in t){
     //     console.log('key: ', key);
-        
+
     // }
-    d3.json('data/sample_10&20.json', function(data){
+    d3.json('data/sample_10&20.json', function (data) {
         variable.sample_10 = data;
         // console.log('data: ', data);
     });
 
-   
+
     function getMatch(ids) {
         $.ajax({
             type: "get",
             url: "/get/test",
-            async:false,
+            async: false,
             data: {
                 well_1: ids[0],
                 well_2: ids[1]

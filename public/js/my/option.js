@@ -23,17 +23,7 @@ var option = (function () {
         //     lineChart.drawLineChart(data);
         // })
     })
-    $("#Switch").click(function () {
-        variable.type = !variable.type;
-        if (variable.type == false) {
-            lineChart.drawLineChart_2(variable.chosenData);
-            console.log('variable.chosenData: ', variable.chosenData);
-        } else {
-            lineChart.drawLineChart(variable.chosenData);
-            console.log('variable.chosenData: ', variable.chosenData);
-        }
-
-    })
+   
     $("#match").click(function () {
         MatchCal.ReSample();
         // MatchCal.CalMatchValue(variable.chosenArr);
@@ -60,10 +50,10 @@ var option = (function () {
         $("#" + attr_status[i] + 'Status').click(function () {
             let tmp_attr = String(attr_status[i]);
             if (this.checked == true) {
-                variable.attrs.push(tmp_attr.toUpperCase());
+                variable.chosen_attrs.push(tmp_attr.toUpperCase());
             } else {
-                let tmp_index = variable.attrs.indexOf(tmp_attr.toUpperCase());
-                variable.attrs.splice(tmp_index, 1);
+                let tmp_index = variable.chosen_attrs.indexOf(tmp_attr.toUpperCase());
+                variable.chosen_attrs.splice(tmp_index, 1);
             }
         })
     }

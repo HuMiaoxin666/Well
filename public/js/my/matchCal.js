@@ -472,28 +472,7 @@ var MatchCal = (function () {
     }
 
 
-    // function CalMatchValue(well_arr) {
-    //     let attrs_matchValue = [];
-    //     for (let i = 0; i < variable.attrs.length; i++) {
-    //         showcurves(well_arr, variable.attrs[i]);
-    //         let lmdata = layermatch(wbdatas[0], wbdatas[1]);
-    //         console.log('lmdata: ', lmdata);
-    //         let matchValue = 0;
-    //         let tmp_lm = lmdata.layerpairs;
-    //         for (let i = 0; i < tmp_lm.length; i++) {
-    //             matchValue += (wbdatas[0].bdata[tmp_lm[i][0]].dh + wbdatas[1].bdata[tmp_lm[i][1]].dh);
-    //         }
-    //         matchValue = matchValue / 100;
-    //         // console.log("temp_attr: ", variable.attrs[i])
-    //         // console.log('matchValue: ', matchValue);
-    //         // console.log('lmdata: ', lmdata);
-    //         attrs_matchValue.push(matchValue);
-    //     }
-    //     //
-    //     console.log('attrs_matchValue: ', attrs_matchValue);
-    //     return attrs_matchValue;
-
-    // }
+    
     //深拷贝函数
     function deepCopy(o) {
         if (o instanceof Array) {
@@ -601,31 +580,31 @@ var MatchCal = (function () {
                     }
                     console.log('max_id_p: ', max_id_p);
                     console.log('tmp_chosenId: ', tmp_chosenId);
-
+                    console.log('pWell_dict: ', pWell_dict);
                     //对数组进行重新赋值
-                    if (max_id_v && max_id_v != tmp_chosenId) {
-                        console.log('max_id_v: ', max_id_v);
-                        for (id_index in tmp_aroundIds) {
-                            if (tmp_aroundIds[id_index] in variable.index_dict)
-                                variable.basicData[variable.index_dict[tmp_aroundIds[id_index]]].sample_status[rate_index] = 0;
-                        }
-                        //将之前随机采样的点标记为2
-                        variable.basicData[variable.index_dict[tmp_chosenId]].sample_status[rate_index] = 2;
-                        // console.log('variable.basicData[variable.index_dict[tmp_chosenId]]: ', variable.basicData[variable.index_dict[tmp_chosenId]].sample_status);
-                        //将V值最大点标记为被采样点 1
-                        variable.basicData[variable.index_dict[max_id_v]].sample_status[rate_index] = 1;
+                    // if (max_id_v && max_id_v != tmp_chosenId) {
+                    //     console.log('max_id_v: ', max_id_v);
+                    //     for (id_index in tmp_aroundIds) {
+                    //         if (tmp_aroundIds[id_index] in variable.index_dict)
+                    //             variable.basicData[variable.index_dict[tmp_aroundIds[id_index]]].sample_status[rate_index] = 0;
+                    //     }
+                    //     //将之前随机采样的点标记为2
+                    //     variable.basicData[variable.index_dict[tmp_chosenId]].sample_status[rate_index] = 0;
 
-                        variable.basicData[variable.index_dict[max_id_v]].around_ids[rate_index] = deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_ids[rate_index]);
-                        variable.basicData[variable.index_dict[max_id_v]].around_ids[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].id);
-                        variable.basicData[variable.index_dict[max_id_v]].around_points[rate_index] = deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_points[rate_index]);
-                        variable.basicData[variable.index_dict[max_id_v]].around_points[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].latlng);
-                        // console.log('variable.basicData[variable.index_dict[max_id]]: ', variable.basicData[variable.index_dict[max_id]]);
-                        //将P值最大井标记为 'p'
+                    //     // console.log('variable.basicData[variable.index_dict[tmp_chosenId]]: ', variable.basicData[variable.index_dict[tmp_chosenId]].sample_status);
+                    //     //将V值最大点标记为被采样点 1
+                    //     variable.basicData[variable.index_dict[max_id_v]].sample_status[rate_index] = 1;
 
-                    }else if(max_id_p != tmp_chosenId){
-                        console.log('max_id_p_dif: ', max_id_p);
-                        variable.basicData[variable.index_dict[max_id_p]].sample_status[rate_index] = 'p';
-                    }
+                    //     variable.basicData[variable.index_dict[max_id_v]].around_ids[rate_index] = deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_ids[rate_index]);
+                    //     variable.basicData[variable.index_dict[max_id_v]].around_ids[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].id);
+                    //     variable.basicData[variable.index_dict[max_id_v]].around_points[rate_index] = deepCopy(variable.basicData[variable.index_dict[tmp_chosenId]].around_points[rate_index]);
+                    //     variable.basicData[variable.index_dict[max_id_v]].around_points[rate_index].push(variable.basicData[variable.index_dict[tmp_chosenId]].latlng);
+                    //     // console.log('variable.basicData[variable.index_dict[max_id]]: ', variable.basicData[variable.index_dict[max_id]]);
+                    //     //将P值最大井标记为 'p'
+                    // }
+                    variable.basicData[variable.index_dict[max_id_p]].tmp_pSample = 1;
+                    variable.basicData[variable.index_dict[max_id_v]].tmp_vSample = 1;
+
                 }
                 if (stop == true)
                     break;
