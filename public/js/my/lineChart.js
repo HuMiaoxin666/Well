@@ -4,6 +4,12 @@ var lineChart = (function () {
         // console.log('data[0].basic_attr: ', data.basic_attr);
         var svg_width = $("#lineChart")[0].scrollWidth;
         var svg_height = $("#lineChart")[0].scrollHeight;
+        //根据显得颜色来判断采样种类并对线宽和透明度做改变
+        let stroke_width = 0.5, stroke_opacity = 0.6;
+        if(pathColor != "#B5B5B5"){
+            stroke_width = 1;
+            stroke_opacity = 0.7;
+        }
         // 求出一些基本值
         var max_arr = [],
             min_arr = [];
@@ -123,8 +129,12 @@ var lineChart = (function () {
             mapView.svg_lineChart.append("path")
                 .attr("d", lineFun(data.value))
                 .attr("stroke", pathColor)
-                .attr("stroke-width", 0.5)
+                .attr("stroke-width", stroke_width)
                 .attr("fill", 'none')
+                .attr("opacity", function(){
+                    console.log(stroke_opacity);
+                    return stroke_opacity;
+                })
                 .attr("id", data.basic_attr[i] + '_' + data.id);
         }
         // console.log(text_loc);

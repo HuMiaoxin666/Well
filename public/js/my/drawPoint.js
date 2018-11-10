@@ -50,7 +50,7 @@ var drawPoint = (function () {
                                     let tmp_status = variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]].sample_status[sampleStatus_index];
                                     let tmp_vStatus = variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]].tmp_vSample;
                                     let tmp_pStatus = variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]].tmp_pSample;
-                                    let tmp_aroundColor = "#787878";
+                                    let tmp_aroundColor = "#B5B5B5";
                                     if (tmp_vStatus == 1) {
                                         tmp_aroundColor = '#F31600'
                                     }
