@@ -111,7 +111,6 @@ var lineChart = (function () {
         }
         
 
-
         for (let i = 1; i < 6; i++) {
             // console.log(i);
             let lineFun = d3.line()

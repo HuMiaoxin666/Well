@@ -17,8 +17,12 @@ var drawPoint = (function () {
                         color: data[i].color
                     }).addTo(mapView.map);
                     variable.circle_arr.push(circle);
-                    //添加点击事件
+
+                    //*******************添加点击事件******************
+
                     circle.on("click", function () {
+                        variable.chosenId = this.options.data.id;
+                        variable.around_wellData = [];
                         mapView.svg_lineChart.selectAll("*").remove();
                         console.log(this.options.data);
                         // console.log('$(this): ', $(this));
@@ -37,14 +41,13 @@ var drawPoint = (function () {
                             }
                             variable.around_circle = []; //泊松盘内其他点的path DOM
                             let tmp_aroundPt = this.options.data.around_points[sampleStatus_index];//当前盘内其他点的坐标
-                            let tmp_aroundPt_ids = this.options.data.around_ids[sampleStatus_index];//当前盘内其他点的ID
+                            let tmp_aroundPt_ids = MatchCal.deepCopy(this.options.data.around_ids[sampleStatus_index]);//当前盘内其他点的ID
                             let tmp_id_index = tmp_aroundPt_ids.indexOf(this.options.data.id);//
                             if (tmp_id_index) {
                                 tmp_aroundPt_ids.splice(tmp_id_index, 1);
                                 tmp_aroundPt.splice(tmp_id_index, 1);
                             }
-
-
+                            //画出周围井在地图上的点
                             for (let j = 0; j < tmp_aroundPt.length; j++) {
                                 if (tmp_aroundPt_ids[j] in variable.index_dict) {
                                     let tmp_status = variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]].sample_status[sampleStatus_index];
@@ -67,7 +70,17 @@ var drawPoint = (function () {
                                         color: tmp_aroundColor
                                     }).addTo(mapView.map);
                                     circle_around.on("click", function () {
-                                        let tmp_id = this.options.data.id;
+                                        let tmp_aroundId = this.options.data.id;
+                                        let tmp_sum = 0;
+                                        
+                                        if(variable.variance_dict[tmp_aroundId]){
+                                            for(key in variable.variance_dict[tmp_aroundId]){
+                                                for(let r = 0; r< variable.variance_dict[tmp_aroundId][key].length; r++){
+                                                    tmp_sum += 0.2*variable.variance_dict[tmp_aroundId][key][r];
+                                                }
+                                            }
+                                        }
+                                        console.log('tmp_sum: ', tmp_sum);
                                         let tmp_vSample = this.options.vSample;
                                         let tmp_pSample = this.options.pSample;
                                         let tmp_color = this.options.color;
@@ -82,21 +95,24 @@ var drawPoint = (function () {
 
                                 }
                             }
-
+                            //画出周围点的曲线
                             for (let ai = 0; ai < tmp_aroundPt_ids.length; ai++) {
                                 mapView.getChosenData(tmp_aroundPt_ids[ai]).then(function (data) {
-                                    // console.log('tmp_aroundPt_ids[ai]: ', tmp_aroundPt_ids[ai]);
-                                    // console.log('data: ', data);
+                                    variable.around_wellData.push(data[0]);
                                     lineChart.drawLineChart(data[0], 0, "#B5B5B5");
                                 })
                             }
+                            //画出当前采样点的曲线
                             mapView.getChosenData(this.options.data.id).then(function (data) {
                                 // console.log('data: ', data);
+                                variable.around_wellData.push(data[0]);
                                 variable.chosenData = data[0];
                                 lineChart.drawLineChart(data[0], 1, "#1f77b4");
                             })
-                        }
-                    })
+                            tmp_aroundPt_ids.push(this.options.data.id);
+                            variable.aroundPt_ids = tmp_aroundPt_ids;
+                        }//else判断是否匹配状态结束
+                    })//点击事件结束
                 }
             }
         }
@@ -125,7 +141,71 @@ var drawPoint = (function () {
 
 
     }
+    function calVariance() {
+        //计算方差
+        let tmp_aroundPt_ids = variable.aroundPt_ids;
+        console.log('tmp_aroundPt_ids: ', tmp_aroundPt_ids);
+
+        console.log('variable.around_wellData: ', variable.around_wellData);
+
+
+        for (let i = 0; i < tmp_aroundPt_ids.length; i++) {
+            variable.variance_dict[tmp_aroundPt_ids[i]] = {};
+            for (let j = 0; j < tmp_aroundPt_ids.length; j++) {
+                if (i != j){
+                    variable.variance_dict[tmp_aroundPt_ids[i]][tmp_aroundPt_ids[j]] = [];
+
+                    for(let r = 0; r < 5; r++){
+                        variable.variance_dict[tmp_aroundPt_ids[i]][tmp_aroundPt_ids[j]].push(0);
+                    }
+                }
+            }
+        }
+
+        console.log('variable.around_wellData.length: ', variable.around_wellData[0]);
+        for (let i = 0; i < variable.around_wellData.length; i++) {
+            for (let j = 0; j < variable.around_wellData.length; j++) {
+                if (i != j) {
+                    let len_1 = variable.around_wellData[i].value.length;
+                    let len_2 = variable.around_wellData[j].value.length;
+                    let max_well = '';
+                    let min_well = '';
+                    let max_len = d3.max([len_1, len_2]);
+                    if (len_1 > len_2){
+                        max_well = variable.around_wellData[i];
+                        min_well = variable.around_wellData[j];
+                    }
+                    else{
+                        max_well = variable.around_wellData[j];
+                        min_well = variable.around_wellData[i];
+                    }
+                    
+                    //开始计算方差
+                    for(let l =0; l < max_len; l++){
+
+                        for(let r = 2; r <= 6; r++){
+                            if(l >= min_well.value.length){
+                                variable.variance_dict[max_well.id][min_well.id][r-2] += Math.pow(max_well.value[l][r] - 0, 2);
+                                variable.variance_dict[min_well.id][max_well.id][r-2] += Math.pow(max_well.value[l][r] - 0, 2);
+                            }else{
+                                variable.variance_dict[max_well.id][min_well.id][r-2] += Math.pow(max_well.value[l][r] - min_well.value[l][r], 2);
+                                variable.variance_dict[min_well.id][max_well.id][r-2] += Math.pow(max_well.value[l][r] - min_well.value[l][r], 2);
+                            }
+                        }
+                    }
+                    for(let r =0; r< 5; r++){
+                        variable.variance_dict[max_well.id][min_well.id][r] = variable.variance_dict[max_well.id][min_well.id][r] / max_len;
+                        variable.variance_dict[min_well.id][max_well.id][r] = variable.variance_dict[min_well.id][max_well.id][r] / max_len;
+                    }
+                    
+                }
+            }
+        }//for循环计算结束
+        console.log("variance: ", variable.variance_dict);
+
+    }
     return {
-        draw: draw
+        draw,
+        calVariance
     }
 })()

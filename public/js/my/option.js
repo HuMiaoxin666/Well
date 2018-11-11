@@ -16,9 +16,10 @@ var option = (function () {
 
 
     $("#sample").click(function () {
-        variable.rate = sam_rate;
-        drawPoint.draw(variable.basicData, sam_rate);
-        console.log('variable.basicData: ', variable.basicData);
+        drawPoint.calVariance();
+        // variable.rate = sam_rate;
+        // drawPoint.draw(variable.basicData, sam_rate);
+        // console.log('variable.basicData: ', variable.basicData);
         // mapView.getWellData().then(function(data){
         //     lineChart.drawLineChart(data);
         // })
@@ -35,13 +36,6 @@ var option = (function () {
     $("#matchStatus").click(function () {
         variable.match = this.checked;
         variable.chosenArr = [];
-        // if (this.checked == true)
-        //     for (let i = 0; i < attr_status.length; i++)
-        //         $("#" + attr_status[i] + 'Status').attr("disabled", false);
-        // else
-        //     for (let i = 0; i < attr_status.length; i++)
-        //         $("#" + attr_status[i] + 'Status').attr("disabled", true);
-
     })
 
     for (let i = 0; i < attr_status.length; i++) {

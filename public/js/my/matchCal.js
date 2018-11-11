@@ -525,7 +525,7 @@ var MatchCal = (function () {
                                 if (variable.sample_10[tmp_key]) {
                                     index += 1;
                                     let tmp_value = variable.sample_10[tmp_key].value;
-                                    for (let a = 0; a < tmp_value.length; a++) {
+                                    for (let a = 1; a < tmp_value.length; a++) {
                                         MatchValue_arr[tmp_aroundIds[p]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
                                         V_dict[tmp_key] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
                                     }
@@ -621,6 +621,7 @@ var MatchCal = (function () {
     return {
         showcurves,
         // CalMatchValue,
-        ReSample
+        ReSample,
+        deepCopy
     }
 })()
