@@ -16,9 +16,10 @@ var option = (function () {
 
 
     $("#sample").click(function () {
-        drawPoint.calVariance();
-        // variable.rate = sam_rate;
-        // drawPoint.draw(variable.basicData, sam_rate);
+        // drawPoint.calVariance(); //两篇论文的匹配度
+        drawPoint.count();//统计所有情况的值
+        // variable.rate = sam_rate;//采样率
+        // drawPoint.draw(variable.basicData, sam_rate);//重画地图上的点
         // console.log('variable.basicData: ', variable.basicData);
         // mapView.getWellData().then(function(data){
         //     lineChart.drawLineChart(data);

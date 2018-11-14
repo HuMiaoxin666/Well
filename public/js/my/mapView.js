@@ -22,13 +22,27 @@ var mapView = (function () {
         //访问令牌
     }).addTo(map);
     //初始化各svg
-   
     var svg_lineChart = d3.select("#ChartSvg").attr("width", '100%').attr("height", '100%');
+    // pieChart.drawPie();
+    // function test(){
+    //     return [1, 2];
+    // }
+    // let [a,b] = test();
+    // console.log(a,b);
+    //数组转置
+    // let arr = [[1, 2, 3], [4, 5, 6], [1, 2, 3]];
+    // var newArray = arr[0].map(function(col, i) {
+    //     return arr.map(function(row) {
+    //     return row[i];
+    //    })
+    // });
+    // console.log(arr, newArray);
+
+    //画出初始地图点
     getWellData().then(function (data) {
 
-
         variable.basicData = data;
-        // console.log('data: ', data);
+        console.log('data: ', data);
         for (let i = 0; i < data.length; i++) {
             variable.index_dict[data[i].id] = i;
         }
@@ -59,18 +73,18 @@ var mapView = (function () {
         });
     }
 
-    function postData(data) {
-        $.ajax({
-            type: "POST",
-            url: "/insert/test",
-            data: {
-                value: data.value,
-                well_1: data.well_1,
-                well_2: data.well_2
-            },
-            error: function () { }
-        });
-    }
+    // function postData(data) {
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/insert/test",
+    //         data: {
+    //             value: data.value,
+    //             well_1: data.well_1,
+    //             well_2: data.well_2
+    //         },
+    //         error: function () { }
+    //     });
+    // }
 
     // $.ajax({
     //     type: "get",
@@ -99,22 +113,7 @@ var mapView = (function () {
     });
 
 
-    function getMatch(ids) {
-        $.ajax({
-            type: "get",
-            url: "/get/test",
-            async: false,
-            data: {
-                well_1: ids[0],
-                well_2: ids[1]
-            },
-            success: function (data) {
-                resolve(data);
-            },
-            error: function () { }
-        });
-    }
-
+  
     function getChosenData(id) {
         return new Promise(function (resolve, reject) {
             $.ajax({
@@ -136,7 +135,5 @@ var mapView = (function () {
         svg_lineChart,
         getWellData,
         getChosenData,
-        postData,
-        getMatch
     }
 })()

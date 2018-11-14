@@ -8,9 +8,9 @@ const allSchema = new Schema({
     basic_attr: Array,
     value: Array,
 }, {
-    collection: 'range_dept'
+    collection: 'dept_rangeData'
 });
 
-var ADModel = mongoose.model('range_dept', allSchema);
+var ADModel = mongoose.model('dept_rangeData', allSchema);
 ADModel.createIndexes({"id":1});
 module.exports = ADModel;
