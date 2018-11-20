@@ -30,7 +30,6 @@ var lineChart = (function () {
     
         console.log(min_arr, max_arr);
 
-
         console.log('max_arr[0]: ', max_arr[0]);
         //设置坐标轴
         let yScale = d3.scaleLinear().domain([min_arr[0], 1400]).range([0, svg_height * 0.85])

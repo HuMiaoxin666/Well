@@ -25,6 +25,7 @@ var drawPoint = (function () {
                         variable.around_wellData = [];
                         mapView.svg_lineChart.selectAll("*").remove();
                         console.log(this.options.data);
+
                         // console.log('$(this): ', $(this));
                         //匹配状态点击
                         if (variable.match == true) {
@@ -34,6 +35,7 @@ var drawPoint = (function () {
                         }
                         else {
                             //非匹配状态点击
+
                             if (variable.around_circle.length != 0) {
                                 for (let j = 0; j < variable.around_circle.length; j++) {
                                     variable.around_circle[j].remove();
@@ -58,7 +60,7 @@ var drawPoint = (function () {
 
                                     let tmp_aroundColor = "#B5B5B5";
                                     if (tmp_vStatus == 1 && tmp_vDishId.indexOf(this.options.data.id) != -1) {
-                                        tmp_aroundColor = '#F31600'
+                                        tmp_aroundColor = '#F3A700'
                                     }
                                     if (tmp_pStatus == 1 && tmp_pDishId.indexOf(this.options.data.id) != -1) {
                                         tmp_aroundColor = '#00FF1F';
@@ -73,6 +75,7 @@ var drawPoint = (function () {
                                         color: tmp_aroundColor
                                     }).addTo(mapView.map);
                                     circle_around.on("click", function () {
+                                        console.log("this.options.data: ",this.options.data);
                                         let tmp_aroundId = this.options.data.id;
                                         let tmp_sum = 0;
 

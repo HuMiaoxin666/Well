@@ -10,7 +10,7 @@ const poSchema = new Schema({
     collection: 'basicData'
 });
 
-var BDModel = mongoose.model('SamplesLoc_r2_v_p_all', poSchema);
+var BDModel = mongoose.model('basicData', poSchema);
 BDModel.createIndexes({"id":1});
 
 module.exports = BDModel;

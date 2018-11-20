@@ -23,6 +23,9 @@ var mapView = (function () {
     }).addTo(map);
     //初始化各svg
     var svg_lineChart = d3.select("#ChartSvg").attr("width", '100%').attr("height", '100%');
+    map.on("click", function(e){
+        console.log(e.latlng);
+    });
     // pieChart.drawPie();
     // function test(){
     //     return [1, 2];
@@ -107,7 +110,7 @@ var mapView = (function () {
     //     console.log('key: ', key);
 
     // }
-    d3.json('data/sample_10&20.json', function (data) {
+    d3.json('data/tmp_all_1.json', function (data) {
         variable.sample_10 = data;
         // console.log('data: ', data);
     });

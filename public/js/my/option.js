@@ -16,8 +16,10 @@ var option = (function () {
 
 
     $("#sample").click(function () {
+        var blob = new Blob([JSON.stringify(variable.vsample)], { type: "" });
+        saveAs(blob, "hello_10.json");
         // drawPoint.calVariance(); //两篇论文的匹配度
-        drawPoint.count();//统计所有情况的值
+        // drawPoint.count();//统计所有情况的值
         // variable.rate = sam_rate;//采样率
         // drawPoint.draw(variable.basicData, sam_rate);//重画地图上的点
         // console.log('variable.basicData: ', variable.basicData);

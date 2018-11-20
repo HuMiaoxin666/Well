@@ -496,6 +496,8 @@ var MatchCal = (function () {
     }
 
     function ReSample() {
+        let v_not_cs = [];
+        let v_is_cs = [];
         let stop = false;
         let rate_index = parseInt(variable.rate / 10);
         console.log('rate_index: ', rate_index);
@@ -531,7 +533,6 @@ var MatchCal = (function () {
                                     }
                                 }
                             }
-
                             // console.log('tmp_data: ', tmp_data);
                         }
                     }
@@ -548,52 +549,59 @@ var MatchCal = (function () {
                     }
 
                     //计算P值最大的井
-                    let pValue_dict = {};
-                    for (let p = 0; p < tmp_aroundIds.length; p++) {
-                        let tmp_dm = 0;
-                        for (let q = 0; q < tmp_aroundIds.length; q++) {
-                            if (q != p) {
-                                let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
-                                tmp_dm += Math.pow(Math.E, V_dict[tmp_key]);
-                            }
-                        }
-                        for (let q = 0; q < tmp_aroundIds.length; q++) {
-                            if (q != p) {
-                                let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
-                                pValue_dict[tmp_key] = Math.pow(Math.E, V_dict[tmp_key]) / tmp_dm;
-                            };
-                        };
-                    };
-                    let pWell_dict = {}, max_id_p, max_value_p = 0;
-                    for (let p = 0; p < tmp_aroundIds.length; p++) {
-                        pWell_dict[tmp_aroundIds[p]] = 0;
-                        for (let q = 0; q < tmp_aroundIds.length; q++) {
-                            if (q != p) {
-                                let tmp_key = tmp_aroundIds[q] + "&" + tmp_aroundIds[p];
-                                pWell_dict[tmp_aroundIds[p]] += pValue_dict[tmp_key];
-                            }
-                        }
-                        if(max_value_p < pWell_dict[tmp_aroundIds[p]]){
-                            max_id_p = tmp_aroundIds[p];
-                            max_value_p = pWell_dict[tmp_aroundIds[p]];
-                        }
-                    }
-                    console.log('max_id_p: ', max_id_p);
+                    // let pValue_dict = {};
+                    // for (let p = 0; p < tmp_aroundIds.length; p++) {
+                    //     let tmp_dm = 0;
+                    //     for (let q = 0; q < tmp_aroundIds.length; q++) {
+                    //         if (q != p) {
+                    //             let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
+                    //             tmp_dm += Math.pow(Math.E, V_dict[tmp_key]);
+                    //         }
+                    //     }
+                    //     for (let q = 0; q < tmp_aroundIds.length; q++) {
+                    //         if (q != p) {
+                    //             let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
+                    //             pValue_dict[tmp_key] = Math.pow(Math.E, V_dict[tmp_key]) / tmp_dm;
+                    //         };
+                    //     };
+                    // };
+                    // let pWell_dict = {}, max_id_p, max_value_p = 0;
+                    // for (let p = 0; p < tmp_aroundIds.length; p++) {
+                    //     pWell_dict[tmp_aroundIds[p]] = 0;
+                    //     for (let q = 0; q < tmp_aroundIds.length; q++) {
+                    //         if (q != p) {
+                    //             let tmp_key = tmp_aroundIds[q] + "&" + tmp_aroundIds[p];
+                    //             pWell_dict[tmp_aroundIds[p]] += pValue_dict[tmp_key];
+                    //         }
+                    //     }
+                    //     if(max_value_p < pWell_dict[tmp_aroundIds[p]]){
+                    //         max_id_p = tmp_aroundIds[p];
+                    //         max_value_p = pWell_dict[tmp_aroundIds[p]];
+                    //     }
+                    // }
+                    // console.log('max_id_p: ', max_id_p);
+                    console.log('max_id_v: ', max_id_v);
+
                     console.log('tmp_chosenId: ', tmp_chosenId);
-                    console.log('pWell_dict: ', pWell_dict);
-                    
-                    variable.basicData[variable.index_dict[max_id_p]].tmp_pSample = 1;
-                    variable.basicData[variable.index_dict[max_id_p]].tmp_pDishId.push(tmp_chosenId);
+                    // console.log('pWell_dict: ', pWell_dict);
+                    // if(max_id_v != tmp_chosenId)
+                    //     v_not_cs.push(max_id_v);
+                    // else if(max_id_v == tmp_chosenId)
+                    //     v_is_cs.push(max_id_v);
+                        
+                    // variable.basicData[variable.index_dict[max_id_p]].tmp_pSample = 1;
+                    // variable.basicData[variable.index_dict[max_id_p]].tmp_pDishId.push(tmp_chosenId);
                     variable.basicData[variable.index_dict[max_id_v]].tmp_vSample = 1;
-                    variable.basicData[variable.index_dict[max_id_p]].tmp_vDishId.push(tmp_chosenId);
-                    
+                    variable.basicData[variable.index_dict[max_id_v]].tmp_vDishId.push(tmp_chosenId);
+                    variable.vsample.push({'id': max_id_v, 'latlng':[variable.basicData[variable.index_dict[max_id_v]].latlng]})
                 }
                 if (stop == true)
                     break;
             }
 
         }
-
+        // console.log('v_not_cs: ', v_not_cs);
+        // console.log('v_is_cs: ', v_is_cs);
         console.log("index: ", index);
 
         drawPoint.draw(variable.basicData, variable.rate);

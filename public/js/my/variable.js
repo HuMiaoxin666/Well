@@ -12,7 +12,7 @@ var variable = (function () {
     let circle_arr = [];//保存采样点的对象
     let around_circle = [];//保存上次点击周围点的对象
     let allData = {};//
-    let importance_arr = [0.35, 0.1, 0.1, 0.1, 0.35];//计算概率时个属性的系数
+    let importance_arr = [-0.0005, 0.002 , 0.0002, -0.0004, 0.0011];//计算概率时个属性的系数
     let sample_10;//两口井之间的匹配数据
     let index_dict = {};//基础数据中每口井的id对应的index
     let around_wellData = [];
@@ -27,6 +27,9 @@ var variable = (function () {
     let p_min = 0;
     let v_min = 0;
     let r_min = 0;
+
+
+    let vsample = [];
     return {
         basicData,
         chosenData,
@@ -55,6 +58,7 @@ var variable = (function () {
         v_min,
         r_min,
         Value_attrs_index,
-        basic_attrs_index
+        basic_attrs_index,
+        vsample
     }
 })()
