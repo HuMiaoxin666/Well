@@ -1,6 +1,7 @@
 var variable = (function () {
     let basicData;//保存基础数据（包括每口井各种采样率下的采样状态和周围点）
     let basic_attrs =  ["DEPT", "SP", "COND", "ML1", "ML2", "AC"];
+    let value_attrs = ["SP", "COND", "ML1", "ML2", "AC"];
     let Value_attrs_index = [1, 2, 3, 4, 5];
     let basic_attrs_index = [0, 1, 2, 3, 4]
     let chosenData;//当前选中的采样点
@@ -13,7 +14,7 @@ var variable = (function () {
     let around_circle = [];//保存上次点击周围点的对象
     let allData = {};//
     let importance_arr = [-0.0005, 0.002 , 0.0002, -0.0004, 0.0011];//计算概率时个属性的系数
-    let sample_10;//两口井之间的匹配数据
+    let match_value;//两口井之间的匹配数据
     let index_dict = {};//基础数据中每口井的id对应的index
     let around_wellData = [];
     let aroundPt_ids = [];
@@ -27,7 +28,8 @@ var variable = (function () {
     let p_min = 0;
     let v_min = 0;
     let r_min = 0;
-
+    let last_line = '';
+    let attr_color = ["#1DFF74", '#FFEB16', '#FF9354', '#E835FF', '#3284FF'];
 
     let vsample = [];
     return {
@@ -41,7 +43,6 @@ var variable = (function () {
         around_circle,
         allData,
         importance_arr,
-        sample_10,
         index_dict,
         basic_attrs,
         around_wellData,
@@ -59,6 +60,10 @@ var variable = (function () {
         r_min,
         Value_attrs_index,
         basic_attrs_index,
-        vsample
+        vsample,
+        value_attrs,
+        last_line,
+        match_value,
+        attr_color
     }
 })()

@@ -1,5 +1,6 @@
 <link href="/css/bootstrap-switch.min.css" rel="stylesheet">
-{{!-- <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">s --}}
+{{!--
+<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">s --}}
 <link href="/css/easy-button.css" rel="stylesheet" />
 
 <link href="/css/leaflet.css" rel="stylesheet" />
@@ -30,64 +31,66 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
 <script src="js/leaflet/L.D3SvgOverlay.min.js"></script>
 <script src="js/leaflet/L.D3SvgOverlay.js"></script> --}}
-<nav class="navbar navbar-dark sticky-top  flex-md-nowrap p-0" style="border-bottom:3px solid rgb(216, 216, 216);">
+{{!-- <nav id="nav" class="navbar navbar-dark sticky-top  flex-md-nowrap p-0" style="border-bottom:3px solid rgb(216, 216, 216);">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" style="border-bottom:0.1px solid rgb(216, 216, 216);background-color:white;box-shadow:none;color:rgb(124, 124, 124);font-size:1.5em;">胜利油田</a>
-</nav>
+</nav> --}}
 
-<main id="main" role="main" class="col-md-12 ml-sm-auto col-lg-12 " id="main" style="padding-left:0px;">
+<main id="main" role="main" class="col-md-12 ml-sm-auto col-lg-12 " style="padding-left:0px;">
     <div id="left-view">
-        <div id="data-infor"></div>
-        <div id="parameter-set">
+        <div id="infor_headline" class="head-bg-color" style=""><a id="infor_headline_a">Information View</a></div>
+        <div id="infor" class="border-color"></div>
+
+        <div id="para_headline" class="head-bg-color" style=""><a id="para_headline_a">Control View</a></div>
+        <div id="para_control" class="border-color">
             <span style="margin-left:10%;margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);">采样率： </span>
             <input type="text" id="sample_rate" value=50>
             <div id="rate_slider"></div>
             <button id="sample" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sample</button>
-            <div class="checkbox" id="matchDiv">
-                <label><input id="matchStatus" type="checkbox" value="" style="padding-right:5px;">Match</label>
-            </div>
+
             <div id="attrs_select" class="checkbox">
-                <label style="left:20%;"><input id="spStatus" type="checkbox" value="" style="margin-right:5px;">SP</label>
-                <label style="left:50%;"><input id="condStatus" type="checkbox" value="" style="padding-right:5px;">COND</label>
-                <label style="left:20%;margin-top:10%"><input id="ml1Status" type="checkbox" value="" style="padding-right:5px;">ML1</label>
-                <label style="left:50%;margin-top:10%"><input id="ml2Status" type="checkbox" value="" style="padding-right:5px;">ML2</label>
-                <label style="left:20%;margin-top:20%"><input id="r4Status" type="checkbox" value="" style="padding-right:5px;">R4</label>
-                <label style="left:50%;margin-top:20%"><input id="acStatus" type="checkbox" value="" style="padding-right:5px;">AC</label>
 
             </div>
-            {{!-- <div class="checkbox" id="matchDiv">
-                <label><input id="spStatus" type="checkbox" value="" style="margin-right:5px;">SP</label>
-            </div>
-            <div class="checkbox" id="matchDiv">
-                <label><input id="condStatus" type="checkbox" value="" style="margin-right:5px;">COND</label>
-            </div>
-            <div class="checkbox" id="matchDiv">
-                <label><input id="ml1Status" type="checkbox" value="" style="margin-right:5px;">ML1</label>
-            </div>
-            <div class="checkbox" id="matchDiv">
-                <label><input id="ml2Status" type="checkbox" value="" style="margin-right:5px;">ML2</label>
-            </div>
-            <div class="checkbox" id="matchDiv">
-                <label><input id="r4Status" type="checkbox" value="" style="margin-right:5px;">R4</label>
-            </div>
-            <div class="checkbox" id="matchDiv">
-                <label><input id="acStatus" type="checkbox" value="" style="margin-right:5px;">AC</label>
-            </div> --}}
             <button id="match" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Match</button>
         </div>
-        <div id="other"></div>
+
+        <div id="other_headline" class="head-bg-color" style=""><a id="other_headline_a">Match View</a></div>
+        <div id="other" class="border-color"></div>
     </div>
-    <div id="map"></div>
+
+    <div id="map_headline" class="head-bg-color">
+        <a>Map View</a>
+    </div>
+    <div id="map" class="border-color"></div>
+
+    <div id="rect_headline" class="head-bg-color">
+        <a>Match Data View</a>
+    </div>
+    <div id="rectView" class="border-color">
+        <svg id="SpSvg"></svg>
+        <svg id="CondSvg"></svg>
+        <svg id="Ml1Svg"></svg>
+        <svg id="Ml2Svg"></svg>
+        <svg id="AcSvg"></svg>
+    </div>
+
     <div id="right-view">
-        <div id="lineChart">
+        <div id="line_headline" class="head-bg-color">
+            <a id="line_headline_a">Attribute Data View</a>
+        </div>
+        <div id="lineChart" class="border-color">
             <svg id="ChartSvg"></svg>
         </div>
-        <div id = "pieChart">
-            <svg id = "pieSvg"></svg>
+        <div id="histogram_headline" class="head-bg-color">
+            <a id="histogram_headline_a">Variance Data View</a>
+        </div>
+        <div id="histogram" class="border-color">
+            <svg id="histogramSvg"></svg>
         </div>
     </div>
 </main>
 <script src="/js/my/variable.js"></script>
 <script src="/js/my/matchCal.js"></script>
+<script src="/js/my/rectView.js"></script>
 <script src="/js/my/drawPoint.js"></script>
 <script src="/js/my/pieChart.js"></script>
 <script src="/js/my/lineChart.js"></script>

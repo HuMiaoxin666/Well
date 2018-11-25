@@ -472,7 +472,7 @@ var MatchCal = (function () {
     }
 
 
-    
+
     //深拷贝函数
     function deepCopy(o) {
         if (o instanceof Array) {
@@ -524,9 +524,9 @@ var MatchCal = (function () {
                             if (q != p) {
                                 let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
                                 V_dict[tmp_key] = 0;
-                                if (variable.sample_10[tmp_key]) {
+                                if (variable.match_value[tmp_key]) {
                                     index += 1;
-                                    let tmp_value = variable.sample_10[tmp_key].value;
+                                    let tmp_value = variable.match_value[tmp_key].value;
                                     for (let a = 0; a < variable.importance_arr.length; a++) {
                                         MatchValue_arr[tmp_aroundIds[p]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
                                         V_dict[tmp_key] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
@@ -588,12 +588,12 @@ var MatchCal = (function () {
                     //     v_not_cs.push(max_id_v);
                     // else if(max_id_v == tmp_chosenId)
                     //     v_is_cs.push(max_id_v);
-                        
+
                     // variable.basicData[variable.index_dict[max_id_p]].tmp_pSample = 1;
                     // variable.basicData[variable.index_dict[max_id_p]].tmp_pDishId.push(tmp_chosenId);
                     variable.basicData[variable.index_dict[max_id_v]].tmp_vSample = 1;
                     variable.basicData[variable.index_dict[max_id_v]].tmp_vDishId.push(tmp_chosenId);
-                    variable.vsample.push({'id': max_id_v, 'latlng':[variable.basicData[variable.index_dict[max_id_v]].latlng]})
+                    variable.vsample.push({ 'id': max_id_v, 'latlng': [variable.basicData[variable.index_dict[max_id_v]].latlng] })
                 }
                 if (stop == true)
                     break;
@@ -610,7 +610,6 @@ var MatchCal = (function () {
 
     return {
         showcurves,
-        // CalMatchValue,
         ReSample,
         deepCopy
     }

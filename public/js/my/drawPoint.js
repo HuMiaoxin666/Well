@@ -7,7 +7,7 @@ var drawPoint = (function () {
         //采样率不是100时
         if (sampleStatus_index != 10) {
             for (let i = 0; i < data.length; i++) {
-                if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1 ) {
+                if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1) {
                     data[i].color = "#7483FF";
                     let circle = L.circle([data[i].latlng[0], data[i].latlng[1]], {
                         text: data[i].id,
@@ -23,7 +23,7 @@ var drawPoint = (function () {
                     circle.on("click", function () {
                         variable.chosenId = this.options.data.id;
                         variable.around_wellData = [];
-                        mapView.svg_lineChart.selectAll("*").remove();
+                        lineChart.svg_lineChart.selectAll("*").remove();
                         console.log(this.options.data);
 
                         // console.log('$(this): ', $(this));
@@ -35,7 +35,6 @@ var drawPoint = (function () {
                         }
                         else {
                             //非匹配状态点击
-
                             if (variable.around_circle.length != 0) {
                                 for (let j = 0; j < variable.around_circle.length; j++) {
                                     variable.around_circle[j].remove();
@@ -49,6 +48,7 @@ var drawPoint = (function () {
                                 tmp_aroundPt_ids.splice(tmp_id_index, 1);
                                 tmp_aroundPt.splice(tmp_id_index, 1);
                             }
+                            console.log(tmp_aroundPt_ids.length);
                             //画出周围井在地图上的点
                             for (let j = 0; j < tmp_aroundPt.length; j++) {
                                 if (tmp_aroundPt_ids[j] in variable.index_dict) {
@@ -75,7 +75,8 @@ var drawPoint = (function () {
                                         color: tmp_aroundColor
                                     }).addTo(mapView.map);
                                     circle_around.on("click", function () {
-                                        console.log("this.options.data: ",this.options.data);
+                                        console.log("this.options.data: ", this.options.data);
+                                        console.log("id: ", this.options.id);
                                         let tmp_aroundId = this.options.data.id;
                                         let tmp_sum = 0;
 
@@ -90,23 +91,32 @@ var drawPoint = (function () {
                                         let tmp_vSample = this.options.vSample;
                                         let tmp_pSample = this.options.pSample;
                                         let tmp_color = this.options.color;
-                                        mapView.getChosenData(this.options.data.id).then(function (data) {
-                                            console.log('data: ', data);
-                                            console.log('tmp_vStatus: ', tmp_vSample);
-                                            console.log('tmp_pStatus: ', tmp_pSample);
-                                            lineChart.drawLineChart(data[0], tmp_status, tmp_color);
-                                        })
+                                        if (variable.last_line == '') {
+                                            variable.last_line = this.options.id;
+                                        } else {
+                                            for (let a = 0; a < variable.value_attrs.length; a++)
+                                                d3.select("#" + variable.value_attrs[a] + "_" + variable.last_line).attr("stroke", "#B5B5B5").attr("opacity", 0.3).attr("stroke-width", 0.5);
+                                            variable.last_line = this.options.id;
+                                        }
+                                        for (let a = 0; a < variable.value_attrs.length; a++) {
+                                            d3.select("#" + variable.value_attrs[a] + "_" + this.options.id).attr("stroke", "red").attr("opacity", 1.0).attr("stroke-width", 1);
+                                        }
+                                        // mapView.getChosenData(this.options.data.id).then(function (data) {
+                                        //     console.log('data: ', data);
+                                        //     console.log('tmp_vStatus: ', tmp_vSample);
+                                        //     console.log('tmp_pStatus: ', tmp_pSample);
+                                        //     lineChart.drawLineChart(data[0], tmp_status, tmp_color);
+                                        // })
                                     })
                                     variable.around_circle.push(circle_around);
-
                                 }
                             }
                             //画出周围点的曲线
                             for (let ai = 0; ai < tmp_aroundPt_ids.length; ai++) {
                                 mapView.getChosenData(tmp_aroundPt_ids[ai]).then(function (data) {
-                                    console.log('data: ', data);
+                                    // console.log('data: ', data);
                                     variable.around_wellData.push(data[0]);
-                                    lineChart.drawLineChart(data[0], 0, "#B5B5B5");
+                                    lineChart.drawLineChart(data[0], 0);
                                 })
                             }
                             //画出当前采样点的曲线
@@ -114,7 +124,8 @@ var drawPoint = (function () {
                                 console.log('data: ', data);
                                 variable.around_wellData.push(data[0]);
                                 variable.chosenData = data[0];
-                                lineChart.drawLineChart(data[0], 1, "#1f77b4");
+                                lineChart.drawLineChart(data[0], 1);
+                                rectView.drawRect(data[0].id);
                             })
                             tmp_aroundPt_ids.push(this.options.data.id);
                             variable.aroundPt_ids = tmp_aroundPt_ids;
@@ -275,11 +286,11 @@ var drawPoint = (function () {
 
                                 for (let r = 0; r < variable.importance_arr.length; r++) {
                                     if (l >= min_well.value.length) {
-                                        variable.variance_dict[max_well.id][min_well.id][r] += Math.pow(max_well.value[l][r+1] - 0, 2);
-                                        variable.variance_dict[min_well.id][max_well.id][r] += Math.pow(max_well.value[l][r+1] - 0, 2);
+                                        variable.variance_dict[max_well.id][min_well.id][r] += Math.pow(max_well.value[l][r + 1] - 0, 2);
+                                        variable.variance_dict[min_well.id][max_well.id][r] += Math.pow(max_well.value[l][r + 1] - 0, 2);
                                     } else {
-                                        variable.variance_dict[max_well.id][min_well.id][r] += Math.pow(max_well.value[l][r+1] - min_well.value[l][r+1], 2);
-                                        variable.variance_dict[min_well.id][max_well.id][r] += Math.pow(max_well.value[l][r+1] - min_well.value[l][r+1], 2);
+                                        variable.variance_dict[max_well.id][min_well.id][r] += Math.pow(max_well.value[l][r + 1] - min_well.value[l][r + 1], 2);
+                                        variable.variance_dict[min_well.id][max_well.id][r] += Math.pow(max_well.value[l][r + 1] - min_well.value[l][r + 1], 2);
                                     }
                                 }
                             }
@@ -289,8 +300,8 @@ var drawPoint = (function () {
                             }
                         }
                     }
-                }//for循环计算结束
-
+                }
+                //for循环计算结束
                 let tmp_sum_v = 0;
                 let tmp_sum_p = 0;
                 let tmp_sum_r = 0;
@@ -359,7 +370,7 @@ var drawPoint = (function () {
         }
         console.log('variable.v_min_p: ', variable.v_min_p);
         console.log('variable.p_min_v: ', variable.p_min_v);
-        console.log('variable.v_min: ', variable.v_min); 
+        console.log('variable.v_min: ', variable.v_min);
         console.log('variable.r_min: ', variable.r_min);
         console.log('variable.p_min: ', variable.p_min);
         console.log('variable.v_p_r: ', variable.v_p_r);
