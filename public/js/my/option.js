@@ -36,9 +36,8 @@ var option = (function () {
 
     var attr_status = ['sp', 'cond', 'ml1', 'ml2', 'r4', 'ac'];
 
-    $("#matchStatus").click(function () {
-        variable.match = this.checked;
-        variable.chosenArr = [];
+    $("#inlineCheckbox1").click(function () {
+        variable.reCalB = this.checked;
     })
 
     for (let i = 0; i < attr_status.length; i++) {

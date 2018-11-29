@@ -10,7 +10,9 @@ var mapView = (function () {
     var winHeight = $(window).height();
     console.log('winHeight: ', winHeight);
     
-    var map = L.map('map', {}).setView([37.8497143321911, 118.767564643314], 13)
+    var map = L.map('map', {
+        renderer:L.svg()
+    }).setView([37.8497143321911, 118.767564643314], 13)
     var osmUrl = 'https://api.mapbox.com/styles/v1/keypro/cjjs6cawt25iq2snp6kqxu3r3/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia2V5cHJvIiwiYSI6ImNqamliaTJtbjV0YTMzcG82bmthdW03OHEifQ.UBWsyfRiWMYly4gIc2H7cQ',
         layer = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
     L.tileLayer(osmUrl, {
@@ -45,22 +47,23 @@ var mapView = (function () {
 
         variable.basicData = data;
         console.log('data: ', data);
+        
         for (let i = 0; i < data.length; i++) {
             variable.index_dict[data[i].id] = i;
+            
         }
         // console.log(variable.index_dict);
         drawPoint.draw(data, 10);
         let oriId = variable.basicData[1500].id;
         getChosenData(oriId).then(function (data_ori) {
             variable.chosenData = data_ori;
-            lineChart.drawLineChart(data_ori[0], 1);
         })
     })
 
     d3.json('data/tmp_all.json', function (data) {
         variable.match_value = data;
-        rectView.drawRect("GD1-6-315");
-        console.log(data["GD1-6N15&GD1-6-515"]);
+        // rectView.drawRect("GD1-6-315");
+        // console.log(data["GD1-6N15&GD1-6-515"]);
     });
     //设置初始选中井及相关View
 
@@ -81,41 +84,7 @@ var mapView = (function () {
         });
     }
 
-    // function postData(data) {
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "/insert/test",
-    //         data: {
-    //             value: data.value,
-    //             well_1: data.well_1,
-    //             well_2: data.well_2
-    //         },
-    //         error: function () { }
-    //     });
-    // }
-
-    // $.ajax({
-    //     type: "get",
-    //     url: "getMatchValue",
-    //     async: false,
-    //     data: {
-    //         'well_1': 'GD1-0-503',
-    //         'well_2': "GD1-0N4"
-    //     },
-    //     success: function (tmp_data) {
-    //         if (tmp_data.length > 0) {
-    //             console.log('tmp_data: ', tmp_data);
-    //         }
-    //         // console.log('tmp_data: ', tmp_data);
-    //     },
-    //     error: function () { }
-    // });
-    // let t = {'id':0, 'name':'hmx'};
-    // for( key in t){
-    //     console.log('key: ', key);
-
-    // }
-    
+ 
 
   
     function getChosenData(id) {
@@ -134,6 +103,8 @@ var mapView = (function () {
             });
         });
     }
+
+  
     return {
         map,
         getWellData,

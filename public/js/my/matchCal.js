@@ -1,5 +1,6 @@
 var MatchCal = (function () {
     //处理文件数据
+
     var gminv = 0.0,
         gmaxv = 10.0;
     var TopH = 1000,
@@ -496,8 +497,6 @@ var MatchCal = (function () {
     }
 
     function ReSample() {
-        let v_not_cs = [];
-        let v_is_cs = [];
         let stop = false;
         let rate_index = parseInt(variable.rate / 10);
         console.log('rate_index: ', rate_index);
@@ -506,7 +505,7 @@ var MatchCal = (function () {
             // console.log("i: ", i);
             if (variable.basicData[i].sample_status[rate_index] == 1) {
                 let tmp_chosenId = variable.basicData[i].id;
-                let MatchValue_arr = {};//井的V值总和
+                let MatchValue_dict = {};//井的V值总和
                 let V_dict = {};
 
                 let tmp_aroundIds = deepCopy(variable.basicData[i].around_ids[rate_index]);
@@ -515,8 +514,8 @@ var MatchCal = (function () {
                 if (tmp_aroundIds.length > 0) {
                     tmp_aroundIds.push(tmp_chosenId);
                     for (let p = 0; p < tmp_aroundIds.length; p++) {
-                        if (tmp_aroundIds[p] in MatchValue_arr == false) {
-                            MatchValue_arr[tmp_aroundIds[p]] = 0;
+                        if (tmp_aroundIds[p] in MatchValue_dict == false) {
+                            MatchValue_dict[tmp_aroundIds[p]] = 0;
                         }
                         for (let q = 0; q < tmp_aroundIds.length; q++) {
                             // console.log('tmp_aroundIds[p]: ', tmp_aroundIds[p]);
@@ -528,89 +527,48 @@ var MatchCal = (function () {
                                     index += 1;
                                     let tmp_value = variable.match_value[tmp_key].value;
                                     for (let a = 0; a < variable.importance_arr.length; a++) {
-                                        MatchValue_arr[tmp_aroundIds[p]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
+                                        MatchValue_dict[tmp_aroundIds[p]] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
                                         V_dict[tmp_key] += parseFloat(tmp_value[a]) * variable.importance_arr[a];
                                     }
                                 }
                             }
-                            // console.log('tmp_data: ', tmp_data);
                         }
                     }
-                    // console.log("v_dict: ", V_dict);
                     //计算V值最大的井
-                    console.log('MatchValue_arr: ', MatchValue_arr);
+                    console.log('MatchValue_dict: ', MatchValue_dict);
                     let max_id_v, max_value_v = 0;
-
-                    for (id in MatchValue_arr) {
-                        if (MatchValue_arr[id] > max_value_v) {
+                    
+                    for (id in MatchValue_dict) {
+                        if (MatchValue_dict[id] > max_value_v) {
                             max_id_v = id;
-                            max_value_v = MatchValue_arr[id];
+                            max_value_v = MatchValue_dict[id];
                         }
                     }
-
-                    //计算P值最大的井
-                    // let pValue_dict = {};
-                    // for (let p = 0; p < tmp_aroundIds.length; p++) {
-                    //     let tmp_dm = 0;
-                    //     for (let q = 0; q < tmp_aroundIds.length; q++) {
-                    //         if (q != p) {
-                    //             let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
-                    //             tmp_dm += Math.pow(Math.E, V_dict[tmp_key]);
-                    //         }
-                    //     }
-                    //     for (let q = 0; q < tmp_aroundIds.length; q++) {
-                    //         if (q != p) {
-                    //             let tmp_key = tmp_aroundIds[p] + "&" + tmp_aroundIds[q];
-                    //             pValue_dict[tmp_key] = Math.pow(Math.E, V_dict[tmp_key]) / tmp_dm;
-                    //         };
-                    //     };
-                    // };
-                    // let pWell_dict = {}, max_id_p, max_value_p = 0;
-                    // for (let p = 0; p < tmp_aroundIds.length; p++) {
-                    //     pWell_dict[tmp_aroundIds[p]] = 0;
-                    //     for (let q = 0; q < tmp_aroundIds.length; q++) {
-                    //         if (q != p) {
-                    //             let tmp_key = tmp_aroundIds[q] + "&" + tmp_aroundIds[p];
-                    //             pWell_dict[tmp_aroundIds[p]] += pValue_dict[tmp_key];
-                    //         }
-                    //     }
-                    //     if(max_value_p < pWell_dict[tmp_aroundIds[p]]){
-                    //         max_id_p = tmp_aroundIds[p];
-                    //         max_value_p = pWell_dict[tmp_aroundIds[p]];
-                    //     }
-                    // }
-                    // console.log('max_id_p: ', max_id_p);
                     console.log('max_id_v: ', max_id_v);
 
                     console.log('tmp_chosenId: ', tmp_chosenId);
-                    // console.log('pWell_dict: ', pWell_dict);
-                    // if(max_id_v != tmp_chosenId)
-                    //     v_not_cs.push(max_id_v);
-                    // else if(max_id_v == tmp_chosenId)
-                    //     v_is_cs.push(max_id_v);
-
-                    // variable.basicData[variable.index_dict[max_id_p]].tmp_pSample = 1;
-                    // variable.basicData[variable.index_dict[max_id_p]].tmp_pDishId.push(tmp_chosenId);
                     variable.basicData[variable.index_dict[max_id_v]].tmp_vSample = 1;
-                    variable.basicData[variable.index_dict[max_id_v]].tmp_vDishId.push(tmp_chosenId);
-                    variable.vsample.push({ 'id': max_id_v, 'latlng': [variable.basicData[variable.index_dict[max_id_v]].latlng] })
+                    variable.vsample.push({ 'id': max_id_v, 'latlng': [variable.basicData[variable.index_dict[max_id_v]].latlng] ,"dish":tmp_chosenId})
                 }
                 if (stop == true)
                     break;
             }
 
         }
-        // console.log('v_not_cs: ', v_not_cs);
-        // console.log('v_is_cs: ', v_is_cs);
         console.log("index: ", index);
 
         drawPoint.draw(variable.basicData, variable.rate);
     }
 
-
+    function CalMatchValue(well_arr, attr) {
+        showcurves(well_arr, attr);
+        let lmdata = layermatch(wbdatas[0], wbdatas[1]);
+        return [lmdata, wbdatas[0], wbdatas[1]];
+    }
     return {
         showcurves,
         ReSample,
-        deepCopy
+        deepCopy,
+        CalMatchValue
     }
 })()

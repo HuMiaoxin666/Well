@@ -41,10 +41,8 @@ var lineChart = (function () {
         if (sampleStatus == 1) {
             svg_lineChart.append('g')
                 .attr("class", "axis")
-                .attr("stroke", "#B5B8B6")
                 .attr("transform", "translate(40," + svg_height * 0.1 + ")")
                 .call(y_axis)
-                .attr("stroke", "#B5B8B6")
         }
 
         let xScale_arr = [],

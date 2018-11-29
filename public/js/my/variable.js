@@ -13,25 +13,21 @@ var variable = (function () {
     let circle_arr = [];//保存采样点的对象
     let around_circle = [];//保存上次点击周围点的对象
     let allData = {};//
-    let importance_arr = [-0.0005, 0.002 , 0.0002, -0.0004, 0.0011];//计算概率时个属性的系数
+    let importance_arr = [-0.00009675, 0.0012, 0.00005763, -0.0004, 0.001];//[-0.0005, 0.002 , 0.0002, -0.0004, 0.0011];//计算概率时个属性的系数
     let match_value;//两口井之间的匹配数据
     let index_dict = {};//基础数据中每口井的id对应的index
     let around_wellData = [];
     let aroundPt_ids = [];
     let variance_dict = {};
-    let v_p = 0;
-    let v_min_p = 0;
-    let p_min_v = 0;
-    let v_r = 0;
-    let v_p_r = 0;
-    let r_p = 0;
-    let p_min = 0;
-    let v_min = 0;
-    let r_min = 0;
     let last_line = '';
     let attr_color = ["#1DFF74", '#FFEB16', '#FF9354', '#E835FF', '#3284FF'];
-
     let vsample = [];
+    let variance_arr = [];
+    let r_dict = {};
+    let radius_circle = {};
+    let reCalB = false;
+    let dish_idArr = [];//当重新计算系数时，将之前选中盘的id记录在内
+    let myStd_well = ['GD1-11NB12', 'GD1-13-317', 'GD1-13P511', 'GD1-14-013', 'GD1-15-215', 'GD1-17-11', 'GD1-6-914', 'GD1-7-52', 'GD1-7-711', 'GD1-8-313'];
     return {
         basicData,
         chosenData,
@@ -49,21 +45,17 @@ var variable = (function () {
         aroundPt_ids,
         variance_dict,
         chosenId,
-        v_p,
-        v_r,
-        r_p,
-        v_p_r,
-        v_min_p,
-        p_min_v,
-        p_min,
-        v_min,
-        r_min,
         Value_attrs_index,
         basic_attrs_index,
         vsample,
         value_attrs,
         last_line,
         match_value,
-        attr_color
+        attr_color,
+        variance_arr,
+        r_dict,
+        radius_circle,
+        reCalB,
+        dish_idArr
     }
 })()

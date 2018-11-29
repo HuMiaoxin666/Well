@@ -38,7 +38,14 @@
 <main id="main" role="main" class="col-md-12 ml-sm-auto col-lg-12 " style="padding-left:0px;">
     <div id="left-view">
         <div id="infor_headline" class="head-bg-color" style=""><a id="infor_headline_a">Information View</a></div>
-        <div id="infor" class="border-color"></div>
+        <div id="infor" class="border-color">
+            <span style="margin-left:10%;margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);">井的总数： </span>
+            <input type="text" id="well_count" value=1554>
+            <span style="margin-left:10%;margin-top:20%;position:absolute;color:rgb(124, 124, 124);">标准井ID： </span>
+            <input type="text" id="well_id" value=''>
+            <span style="margin-left:10%;margin-top:35%;position:absolute;color:rgb(124, 124, 124);">当前盘内井数： </span>
+            <input type="text" id="dish_count" value=''>
+        </div>
 
         <div id="para_headline" class="head-bg-color" style=""><a id="para_headline_a">Control View</a></div>
         <div id="para_control" class="border-color">
@@ -48,13 +55,23 @@
             <button id="sample" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sample</button>
 
             <div id="attrs_select" class="checkbox">
-
+                <label class="checkbox-inline" id='check_1'>
+                    <input type="checkbox" id="inlineCheckbox1" value="option1" > 重新计算系数
+                </label>
+                {{!-- <label class="radio-inline" id='check_1'>
+                    <input type="radio" name="optionsRadiosinline" id="" value="option1" checked> 重新计算系数
+                </label>
+                <label class="radio-inline" id='check_2'>
+                    <input type="radio" name="optionsRadiosinline" id="" value="option2"> 选项 2
+                </label> --}}
             </div>
             <button id="match" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Match</button>
         </div>
 
         <div id="other_headline" class="head-bg-color" style=""><a id="other_headline_a">Match View</a></div>
-        <div id="other" class="border-color"></div>
+        <div id="other" class="border-color">
+            <svg id="matchSvg"></svg>
+        </div>
     </div>
 
     <div id="map_headline" class="head-bg-color">
@@ -91,6 +108,8 @@
 <script src="/js/my/variable.js"></script>
 <script src="/js/my/matchCal.js"></script>
 <script src="/js/my/rectView.js"></script>
+<script src="/js/my/histogram.js"></script>
+<script src="/js/my/matchView.js"></script>
 <script src="/js/my/drawPoint.js"></script>
 <script src="/js/my/pieChart.js"></script>
 <script src="/js/my/lineChart.js"></script>

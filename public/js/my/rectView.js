@@ -7,7 +7,7 @@ var rectView = (function () {
     function drawRect(well_id) {
         d3.select("#rectView").selectAll("svg").selectAll("*").remove();    
         let rate_index = parseInt(variable.rate / 10);
-        console.log('well_id: ', well_id);
+        // console.log('well_id: ', well_id);
         let tmp_aroundids = MatchCal.deepCopy(variable.basicData[variable.index_dict[well_id]].around_ids[rate_index]);
         let svg_height = $("#SpSvg").height();
         let svg_width = $("#SpSvg").width();
@@ -48,7 +48,7 @@ var rectView = (function () {
                 }
             }
         }
-        console.log(matchValue_arr);
+        // console.log(matchValue_arr);
 
         function Islog(value) {
             if (value > 0)
@@ -66,9 +66,9 @@ var rectView = (function () {
             min_arr.push(Islog(tmp_min));
             max_arr.push(Islog(tmp_max));
         }
-        console.log("max： ", max_arr);
-        console.log("min： ", min_arr);
-        console.log('matchValue_arr: ', matchValue_arr);
+        // console.log("max： ", max_arr);
+        // console.log("min： ", min_arr);
+        // console.log('matchValue_arr: ', matchValue_arr);
 
         //设置颜色比例尺
         let colorScale_arr = [];
@@ -76,7 +76,7 @@ var rectView = (function () {
         let max_color = ["#76FFA5", '#FFEF58', '#FFAD7D', '#F270FF', '#70AAFF'];
         let min_color = ["#F3FFF3", '#FFFDDD', '#FFE3D3', '#FADEFF', '#D7E9FF'];
         for (let i = 0; i < max_arr.length; i++) {
-            console.log(max_arr[i]);
+            // console.log(max_arr[i]);
             let tmp_sacle = d3.scaleLinear().domain([min_arr[i], max_arr[i]]).range([0, 1]);
             let tmp_compute = d3.interpolate(min_color[i], max_color[i]);
             colorScale_arr.push(tmp_sacle);
@@ -87,7 +87,7 @@ var rectView = (function () {
         let tmp_max_b = d3.max(variable.importance_arr);
         let tmp_min_b = d3.min(variable.importance_arr);
         let bSacle = d3.scaleLinear().domain([tmp_min_b, tmp_max_b]).range([rectWidth * 2, rectWidth * (tmp_aroundids.length - 4)])
-        console.log('rectWidth * (tmp_aroundids.length - 4): ', rectWidth * (tmp_aroundids.length - 4));
+        // console.log('rectWidth * (tmp_aroundids.length - 4): ', rectWidth * (tmp_aroundids.length - 4));
 
         function renderSvg(selection, attr_index) {
             let rect_sp = selection.append("g").selectAll("rect")
@@ -106,9 +106,16 @@ var rectView = (function () {
                     let tmp_value = Islog(d['value'][attr_index]);
                     let tmp_color = compute_arr[attr_index](colorScale_arr[attr_index](tmp_value));
                     return tmp_color;
+                }).on("click",function(d){
+                    mapView.getChosenData(d['well_1']).then(function(well_1){
+                        mapView.getChosenData(d['well_2']).then(function(well_2){
+                            matchView.drawMatch([well_1[0],well_2[0]], variable.value_attrs[attr_index]);
+
+                        })
+                    })
                 });
 
-            selection.append("a").selectAll("text").data([variable.value_attrs[attr_index]])
+                selection.append("a").selectAll("text").data([variable.value_attrs[attr_index]])
                 .enter().append("text")
                 .attr("transform", function (d) {
                     let tmp_x = 1.5*rectWidth;
@@ -127,8 +134,8 @@ var rectView = (function () {
                     return 1.5*rectWidth + 8*variable.value_attrs[attr_index].length;
                 }).attr("y", 0)
                 .attr("width", function (d) {
-                    console.log(d);
-                    console.log(bSacle(d));
+                    // console.log(d);
+                    // console.log(bSacle(d));
                     return bSacle(d);
                 })
                 .attr("height", rectHeight - 0.5)

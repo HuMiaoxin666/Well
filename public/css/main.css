@@ -9,10 +9,12 @@ body {
     left: 0%;
     height: 100%;
 }
-.head-bg-color{
+
+.head-bg-color {
     background-color: #ecebeb;
 }
-.border-color{
+
+.border-color {
     background-color: white;
     border: 1.5px solid #ecebeb;
 }
@@ -30,7 +32,7 @@ div#infor_headline {
 
 #infor_headline_a {
     margin-left: 3%;
-    font-size:0.85em;
+    font-size: 0.85em;
 }
 
 #infor {
@@ -42,6 +44,35 @@ div#infor_headline {
     height: 26.6%;
     border-radius: 4px;
 }
+
+input#well_count {
+    width: 50%;
+    margin-left: 50%;
+    margin-top: 5%;
+    position: absolute;
+    border: none;
+    color: rgb(170, 170, 170);
+}
+
+input#well_id {
+    width: 40%;
+    margin-left: 50%;
+    margin-top: 20%;
+    position: absolute;
+    border: none;
+    color: rgb(170, 170, 170);
+}
+
+input#dish_count {
+    width: 40%;
+    margin-left: 60%;
+    margin-top: 35%;
+    position: absolute;
+    border: none;
+    color: rgb(170, 170, 170);
+}
+
+
 
 /* paracss */
 div#para_headline {
@@ -56,7 +87,7 @@ div#para_headline {
 
 #para_headline_a {
     margin-left: 3%;
-    font-size:0.9em;
+    font-size: 0.9em;
 
 }
 
@@ -69,6 +100,8 @@ div#para_headline {
     top: 33%;
     border-radius: 4px;
 }
+
+
 
 /* othercss */
 div#other_headline {
@@ -83,7 +116,7 @@ div#other_headline {
 
 #other_headline_a {
     margin-left: 3%;
-    font-size:0.9em;
+    font-size: 0.9em;
 
 }
 
@@ -97,6 +130,10 @@ div#other_headline {
     border-radius: 4px;
 }
 
+div#other svg {
+    width: 100%;
+    height: 100%;
+}
 
 
 /* mapcss */
@@ -115,7 +152,7 @@ div#other_headline {
 #map_headline a {
     margin-left: 4px;
     margin-right: 1px;
-    font-size:0.9em;
+    font-size: 0.9em;
 
 }
 
@@ -138,7 +175,7 @@ div#other_headline {
     left: 15%;
     margin-left: 0.2%;
     margin-right: 0.2%;
-    width: 84.6%;
+    width: 59.6%;
     height: 3%;
     border-radius: 4px;
 }
@@ -146,7 +183,7 @@ div#other_headline {
 #rect_headline a {
     margin-left: 4px;
     margin-right: 1px;
-    font-size:0.9em;
+    font-size: 0.9em;
 
 }
 
@@ -154,21 +191,23 @@ div#other_headline {
     position: absolute;
     left: 15%;
     top: 73.2%;
-    width: 84.6%;
+    width: 59.6%;
     height: 26.4%;
     margin-left: 0.2%;
     border-radius: 4px;
 }
-div#rectView svg{
-    width:20%;
-    height:100%;
-    float:left;
+
+div#rectView svg {
+    width: 20%;
+    height: 100%;
+    float: left;
 }
+
 /* rightcss */
 div#right-view {
     position: absolute;
     width: 25%;
-    height: 70%;
+    height: 100%;
     right: 0%;
 }
 
@@ -180,23 +219,23 @@ div#right-view {
     margin-top: 0.8%;
     margin-left: 0.2%;
     width: 99%;
-    height: 4.285%;
+    height: 3%;
     border-radius: 4px;
 }
 
 #line_headline_a {
     margin-left: 4px;
     margin-right: 1px;
-    font-size:0.9em;
+    font-size: 0.9em;
 
 }
 
 div#lineChart {
     position: absolute;
-    top: 4.285%;
+    top: 3.2%;
     width: 99%;
     margin-left: 0.2%;
-    height: 65.715%;
+    height: 66.8%;
     border-radius: 4px;
 }
 
@@ -204,27 +243,31 @@ div#lineChart {
 
 #histogram_headline {
     position: absolute;
-    top:70.3%;
+    top: 70.3%;
     width: 99%;
-    height: 4.285%;
+    height: 3%;
     border-radius: 4px;
 }
 
 #histogram_headline_a {
     margin-left: 4px;
     margin-right: 1px;
-    font-size:0.9em;
+    font-size: 0.9em;
 }
 
 div#histogram {
     position: absolute;
-    top: 74.285%;
+    top: 73.2%;
     width: 99%;
     margin-left: 0.2%;
-    height: 25.715%;
+    height: 26.8%;
     border-radius: 4px;
 }
 
+div#histogram svg {
+    width: 100%;
+    height: 100%;
+}
 
 .ui-draggable,
 .ui-droppable {
@@ -298,14 +341,20 @@ div#matchDiv {
 }
 
 div#attrs_select {
-    padding-top: 30%;
+    padding-top: 25%;
     margin-left: 10%;
     border-color: gray;
     color: gray;
 }
 
-div#attrs_select label {
+div#attrs_select #check_1 {
     position: absolute;
+    margin-top:0%;
+    margin-bottom: 0;
+}
+div#attrs_select #check_2 {
+    position: absolute;
+    margin-top:10%;
     margin-bottom: 0;
 }
 
