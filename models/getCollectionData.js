@@ -7,10 +7,10 @@ const poSchema = new Schema({
     latlng: Array,
     basic_attr: Array
 }, {
-    collection: 'test'
+    collection: 'allRate_1'
 });
 
-var BDModel = mongoose.model('test', poSchema);
+var BDModel = mongoose.model('allRate_1', poSchema);
 BDModel.createIndexes({"id":1});
 
 module.exports = BDModel;

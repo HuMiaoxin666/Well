@@ -10,13 +10,13 @@
         return this instanceof t ? (this._canvas = i = "string" == typeof i ? document.getElementById(i) : i, this._ctx = i.getContext("2d"), this._width = i.width, this._height = i.height, this._max = 1, void this.clear()) : new t(i)
     }
     t.prototype = {
-        defaultRadius: 25,
+        defaultRadius: 35,
         defaultGradient: {
             .2: "blue",
-            .4: "cyan",
-            .6: "lime",
-            .8: "yellow",
-            1: "red"
+            .3: "cyan",
+            .5: "lime",
+            .6: "yellow",
+            .7: "red"
         },
         data: function (t, i) {
             return this._data = t, this

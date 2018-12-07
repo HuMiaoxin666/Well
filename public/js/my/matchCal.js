@@ -10,7 +10,7 @@ var MatchCal = (function () {
     var dis_able = 0;
     var dismax, dismin;
     var xiehmax = 315.7;
-    var attrnames = ["DEPT", "SP", "COND", "ML1", "ML2", "R4", "AC"];
+    var attrnames = ["DEPT", "SP", "COND", "ML1", "ML2", "AC"];
 
     function showcurves(well_arr, attr) {
         wtdatas = [];
@@ -535,7 +535,8 @@ var MatchCal = (function () {
                         }
                     }
                     //计算V值最大的井
-                    console.log('MatchValue_dict: ', MatchValue_dict);
+                    if(tmp_chosenId == 'GD1-0-617')
+                        console.log('MatchValue_dict: ', MatchValue_dict);
                     let max_id_v, max_value_v = 0;
                     
                     for (id in MatchValue_dict) {
@@ -547,6 +548,7 @@ var MatchCal = (function () {
                     console.log('max_id_v: ', max_id_v);
 
                     console.log('tmp_chosenId: ', tmp_chosenId);
+                    variable.basicData[variable.index_dict[tmp_chosenId]].tmp_vSample = max_id_v;
                     variable.basicData[variable.index_dict[max_id_v]].tmp_vSample = 1;
                     variable.vsample.push({ 'id': max_id_v, 'latlng': [variable.basicData[variable.index_dict[max_id_v]].latlng] ,"dish":tmp_chosenId})
                 }
@@ -557,7 +559,7 @@ var MatchCal = (function () {
         }
         console.log("index: ", index);
 
-        drawPoint.draw(variable.basicData, variable.rate);
+        drawPoint.draw(variable.basicData, variable.rate, true);
     }
 
     function CalMatchValue(well_arr, attr) {

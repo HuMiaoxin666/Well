@@ -4,14 +4,28 @@ var rectView = (function () {
     var Ml1Svg = d3.select("#Ml1Svg");
     var Ml2Svg = d3.select("#Ml2Svg");
     var AcSvg = d3.select("#AcSvg");
-    function drawRect(well_id) {
-        d3.select("#rectView").selectAll("svg").selectAll("*").remove();    
+
+    var svgTuli = d3.select("#tuli");
+    let svgTuli_height = $("#tuli").height();
+    console.log('svgTuli_height: ', svgTuli_height);
+    let svgTuli_width = $("#tuli").width();
+    let tmp_width = 0;
+    let x_arr = [500, 550, 620, 675, 730];
+    svgTuli.append("a").selectAll("text").data(variable.value_attrs).enter()
+        .append("text")
+        .attr("x", function (d, i) {
+            return x_arr[i];
+        }).attr("y", svgTuli_height * 3 / 4)
+        .text(function (d) {
+            return d;
+        })
+
+    function drawRect(tmp_aroundids) {
+        d3.select("#rectView").selectAll("svg").selectAll("*").remove();
         let rate_index = parseInt(variable.rate / 10);
         // console.log('well_id: ', well_id);
-        let tmp_aroundids = MatchCal.deepCopy(variable.basicData[variable.index_dict[well_id]].around_ids[rate_index]);
         let svg_height = $("#SpSvg").height();
         let svg_width = $("#SpSvg").width();
-        tmp_aroundids.push(well_id);
         let rectHeight = svg_height / (tmp_aroundids.length + 2);
         let rectWidth = svg_width / (tmp_aroundids.length + 2);
         let matchValue_arr = [];
@@ -20,13 +34,16 @@ var rectView = (function () {
             for (let j = 0; j < tmp_aroundids.length; j++) {
                 tmp_dict = {};
                 let tmp_key = tmp_aroundids[i] + "&" + tmp_aroundids[j];
+                // console.log('tmp_key:', tmp_key);
                 tmp_dict['well_1'] = tmp_aroundids[i];
                 tmp_dict['well_2'] = tmp_aroundids[j];
                 tmp_dict['x'] = i;
                 tmp_dict['y'] = j;
+                // console.log(i,j)
                 if (i != j) {
                     tmp_dict['value'] = [];
                     // console.log(variable.match_value[tmp_key]['value']);
+                    // console.log('variable.match_value[key]: ', variable.match_value[key]);
                     for (let j = 0; j < 5; j++) {
                         tmp_dict['value'].push(variable.match_value[tmp_key]['value'][j]);
                     }
@@ -93,7 +110,7 @@ var rectView = (function () {
             let rect_sp = selection.append("g").selectAll("rect")
                 .data(matchValue_arr).enter().append("rect")
                 .attr("x", function (d) {
-                    let tmp_x = d.x * rectHeight + rectWidth * 1.5;
+                    let tmp_x = d.x * rectWidth + rectWidth * 1.5;
                     return tmp_x;
                 }).attr("y", function (d) {
                     let tmp_y = d.y * rectHeight + rectHeight * 1.5;
@@ -102,48 +119,51 @@ var rectView = (function () {
                 .attr("height", rectHeight - 0.5)
                 .attr("stroke", 'white')
                 .attr("stroke-width", 0.5)
+                .attr("id", function (d) {
+                    return d['well_1'] + '_' + d['well_2'] + '_' + variable.value_attrs[attr_index];
+                })
                 .style("fill", function (d) {
                     let tmp_value = Islog(d['value'][attr_index]);
                     let tmp_color = compute_arr[attr_index](colorScale_arr[attr_index](tmp_value));
                     return tmp_color;
-                }).on("click",function(d){
-                    mapView.getChosenData(d['well_1']).then(function(well_1){
-                        mapView.getChosenData(d['well_2']).then(function(well_2){
-                            matchView.drawMatch([well_1[0],well_2[0]], variable.value_attrs[attr_index]);
+                }).on("click", function (d) {
+                    mapView.getChosenData(d['well_1']).then(function (well_1) {
+                        mapView.getChosenData(d['well_2']).then(function (well_2) {
+                            matchView.drawMatch([well_1[0], well_2[0]], variable.value_attrs[attr_index]);
 
                         })
                     })
                 });
 
-                selection.append("a").selectAll("text").data([variable.value_attrs[attr_index]])
-                .enter().append("text")
-                .attr("transform", function (d) {
-                    let tmp_x = 1.5*rectWidth;
-                    return "translate(" + tmp_x + ',' + 10 + ")";
-                }).attr("font-size", 10)
-                .style("stroke", function () {
-                    return variable.attr_color[attr_index];
-                })
-                .text(function (d, i) {
-                    return variable.value_attrs[attr_index];
-                });
+            // selection.append("a").selectAll("text").data([variable.value_attrs[attr_index]])
+            //     .enter().append("text")
+            //     .attr("transform", function (d) {
+            //         let tmp_x = 1.5 * rectWidth;
+            //         return "translate(" + tmp_x + ',' + 10 + ")";
+            //     }).attr("font-size", 10)
+            //     .style("stroke", function () {
+            //         return variable.attr_color[attr_index];
+            //     })
+            //     .text(function (d, i) {
+            //         return variable.value_attrs[attr_index];
+            //     });
 
-            selection.append("g").selectAll("rect")
-                .data([variable.importance_arr[attr_index]]).enter().append("rect")
-                .attr("x", function (d) {
-                    return 1.5*rectWidth + 8*variable.value_attrs[attr_index].length;
-                }).attr("y", 0)
-                .attr("width", function (d) {
-                    // console.log(d);
-                    // console.log(bSacle(d));
-                    return bSacle(d);
-                })
-                .attr("height", rectHeight - 0.5)
-                .attr("stroke", 'white')
-                .attr("stroke-width", 0.5)
-                .style("fill", function () {
-                    return variable.attr_color[attr_index];
-                });
+            // selection.append("g").selectAll("rect")
+            //     .data([variable.importance_arr[attr_index]]).enter().append("rect")
+            //     .attr("x", function (d) {
+            //         return 1.5 * rectWidth + 8 * variable.value_attrs[attr_index].length;
+            //     }).attr("y", 0)
+            //     .attr("width", function (d) {
+            //         // console.log(d);
+            //         // console.log(bSacle(d));
+            //         return bSacle(d);
+            //     })
+            //     .attr("height", rectHeight - 0.5)
+            //     .attr("stroke", 'white')
+            //     .attr("stroke-width", 0.5)
+            //     .style("fill", function () {
+            //         return variable.attr_color[attr_index];
+            //     });
         }
         renderSvg(SpSvg, 0);
         renderSvg(CondSvg, 1);

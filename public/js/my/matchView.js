@@ -23,13 +23,13 @@ var matchView = (function () {
 
         //井的代表线
         let wellLine_arr = [];
-        let tmp_arr = [0.2, 0.8]
+        let tmp_arr = [0.2, 0.8];
         for (let i = 0; i < tmp_arr.length; i++) {
             wellLine_arr.push([
                 [tmp_arr[i] * svg_match_width, 0.2 * svg_match_height],
                 [tmp_arr[i] * svg_match_width, 0.95 * svg_match_height]
             ]);
-        }
+        };
         let lineFun_well = d3.line()
             .x(function (d) { return d[0]; })
             .y(function (d) { return d[1]; })
@@ -44,7 +44,7 @@ var matchView = (function () {
             .attr("fill", "none")
             .attr("id", function (d, i) {
                 return well_arr[i].id;
-            })
+            });
 
         //*****层的匹配*****
         //设置深度比例尺
@@ -58,8 +58,6 @@ var matchView = (function () {
             tmp_line.push([tmp_arr[1] * svg_match_width, depthScale(depth_arr[i][1][1])]);
             tmp_line.push([tmp_arr[1] * svg_match_width, depthScale(depth_arr[i][1][0])]);
             tmp_line.push([tmp_arr[0] * svg_match_width, depthScale(depth_arr[i][0][0])]);
-            console.log('tmp_line: ', tmp_line);
-
             layerLine_arr.push(tmp_line);
         }
 

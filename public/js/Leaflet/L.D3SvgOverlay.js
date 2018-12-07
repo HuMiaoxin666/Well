@@ -132,7 +132,7 @@ L.D3SvgOverlay = (L.version < "1.0" ? L.Class : L.Layer).extend({
             this.stream.point(point.x, point.y);
         };
         this.projection.pathFromGeojson =
-            d3.geo.path().projection(d3.geo.transform({point: this.projection._projectPoint}));
+            d3.geoPath().projection(d3.geoTransform({point: this.projection._projectPoint}));
 
         // Compatibility with v.1
         this.projection.latLngToLayerFloatPoint = this.projection.latLngToLayerPoint;

@@ -1,7 +1,8 @@
 var lineChart = (function () {
     var svg_lineChart = d3.select("#ChartSvg").attr("width", '100%').attr("height", '100%');
+    // console.log('svg_lineChart: ', svg_lineChart);
     function drawLineChart(data, sampleStatus) {
-        //console.log('data: ', data);
+        // console.log('data: ', data);
         // //console.log('data[0].basic_attr: ', data.basic_attr);
         var svg_width = $("#lineChart")[0].scrollWidth;
         var svg_height = $("#lineChart")[0].scrollHeight;
@@ -35,13 +36,13 @@ var lineChart = (function () {
 
         // //console.log('max_arr[0]: ', max_arr[0]);
         //设置坐标轴
-        let yScale = d3.scaleLinear().domain([min_arr[0], 1400]).range([0, svg_height * 0.85])
+        let yScale = d3.scaleLinear().domain([min_arr[0], 1400]).range([0, svg_height * 0.9])
 
         let y_axis = d3.axisLeft(yScale).tickPadding(5).tickSize(5);
         if (sampleStatus == 1) {
             svg_lineChart.append('g')
                 .attr("class", "axis")
-                .attr("transform", "translate(40," + svg_height * 0.1 + ")")
+                .attr("transform", "translate(40," + svg_height * 0.05 + ")")
                 .call(y_axis)
         }
 
@@ -71,8 +72,8 @@ var lineChart = (function () {
             return d[1];
         })
         let line_arr = [
-            [35, svg_height * 0.1],
-            [40 + svg_width * 0.8, svg_height * 0.1]
+            [35, svg_height * 0.05],
+            [40 + svg_width * 0.8, svg_height * 0.05]
         ];
         var text_loc = [];
 
@@ -83,9 +84,9 @@ var lineChart = (function () {
             .attr("fill", 'none')
             .attr("id", "x_axis");
         for (let i = 0; i < variable.importance_arr.length; i++) {
-            let tmp_loc = [35 + svg_width * 0.05 + svg_width * 0.16 * (i), svg_height * 0.08];
+            let tmp_loc = [35 + svg_width * 0.05 + svg_width * 0.16 * (i), svg_height * 0.03];
             text_loc.push(tmp_loc);
-            let tmp_sp = [40 + svg_width * 0.16 * (i + 1), svg_height * 0.1],
+            let tmp_sp = [40 + svg_width * 0.16 * (i + 1), svg_height * 0.05],
                 tmp_ep = [40 + svg_width * 0.16 * (i + 1), svg_height * 0.95];
             let tmp_line = [tmp_sp, tmp_ep];
             svg_lineChart.append("path")
@@ -103,7 +104,7 @@ var lineChart = (function () {
                     return "translate(" + d[0] + ',' + d[1] + ")";
                 }).attr("font-size", 10)
                 .style("stroke", function (d, i) {
-                    return variable.attr_color[i];
+                    return "gray";
                 })
                 .text(function (d, i) {
                     //console.log(data.basic_attr);
@@ -123,19 +124,15 @@ var lineChart = (function () {
             let lineFun = d3.line()
                 .x(function (d) {
                     // if(i == 1)
-                    //     //console.log(d[i+1]);
                     if (d[i + 1] < -700) {
-                        let tmp_x = xScale_arr[i](min_arr[i + 1]) + 40 + (svg_width * 0.16) * (i)
+                        let tmp_x = xScale_arr[i](min_arr[i + 1]) + 40 + (svg_width * 0.16) * (i);
                         return tmp_x;
                     }
                     else if (d[i + 1] > 9999) {
-                        let tmp_x = xScale_arr[i](max_arr[i + 1]) + 40 + (svg_width * 0.16) * (i)
-                        // //console.log(tmp_x)
-
+                        let tmp_x = xScale_arr[i](max_arr[i + 1]) + 40 + (svg_width * 0.16) * (i);
                         return tmp_x;
                     }
                     else {
-
                         let tmp_x = xScale_arr[i](d[i + 1]) + 40 + (svg_width * 0.16) * (i);
                         // //console.log(tmp_x);
                         return tmp_x;
@@ -143,7 +140,7 @@ var lineChart = (function () {
 
                 })
                 .y(function (d) {
-                    let tmp_y = yScale(d[0]) + svg_height * 0.1;
+                    let tmp_y = yScale(d[0]) + svg_height * 0.05;
                     // if(tmp_y > svg_width*0.8)
                     //     tmp_y = svg_height*0.83;
                     return tmp_y;
