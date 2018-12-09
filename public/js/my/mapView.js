@@ -5,7 +5,20 @@ var mapView = (function () {
     //https://api.mapbox.com/styles/v1/keypro/cjjs6cawt25iq2snp6kqxu3r3/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia2V5cHJvIiwiYSI6ImNqamliaTJtbjV0YTMzcG82bmthdW03OHEifQ.UBWsyfRiWMYly4gIc2H7cQ
     //地图设置
     //初始化界面
-
+    var svgTuli = d3.select("#tuli_map");
+    let svgTuli_height = $("#tuli_map").height();
+    console.log('svgTuli_height: ', svgTuli_height);
+    let svgTuli_width = $("#tuli_map").width();
+    let tmp_width = 0;
+    let x_arr = [540, 590, 660, 715, 770];
+    svgTuli.append("a").selectAll("text").data(variable.value_attrs).enter()
+        .append("text")
+        .attr("x", function (d, i) {
+            return x_arr[i];
+        }).attr("y", svgTuli_height * 3 / 4)
+        .text(function (d) {
+            return d;
+        })
 
     function showCoordinates(e) {
         alert(e.latlng);
@@ -56,8 +69,8 @@ var mapView = (function () {
     }).setView([37.8497143321911, 118.767564643314], 13)
     var osmUrl = 'https://api.mapbox.com/styles/v1/keypro/cjjs6cawt25iq2snp6kqxu3r3/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia2V5cHJvIiwiYSI6ImNqamliaTJtbjV0YTMzcG82bmthdW03OHEifQ.UBWsyfRiWMYly4gIc2H7cQ',
         layer = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
+   
     L.tileLayer(osmUrl, {
-
         minZoom: 1,
         maxZoom: 17,
         //用了mapbox的图层
@@ -219,7 +232,7 @@ var mapView = (function () {
     function drawCompareCirlce(ard_id, std_id, dish_radius, latlng) {
 
         variable.lastPieSvgArr[variable.lastPieSvgArr.length - 1].remove();
- 
+
         let tmpVariance_arr = [];
         let tmpV_dict = variable.variance_dict[ard_id];
         console.log('tmpV_dict: ', tmpV_dict);

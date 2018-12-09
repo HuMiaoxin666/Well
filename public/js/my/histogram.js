@@ -42,7 +42,8 @@ var histogram = (function () {
                 return 0.15 * svg_width * 0.8;
             }).attr("height", function (d) {
                 return svg_height * 0.8 - yScale(d);
-            })
+            }).attr('rx',5)
+            .attr('ry',5)
             .style("fill", function (d, i) {
                 return variable.attr_color[i];
             }).attr("id", "std_rect");
@@ -75,7 +76,8 @@ var histogram = (function () {
                 return 0.15 * svg_width * 0.4;
             }).attr("height", function (d) {
                 return svg_height * 0.8 - yScale(d)
-            });
+            }).attr('rx',5)
+            .attr('ry',5);
         if (variable.around_click == 1) {
             svg_histogram.append('g').selectAll("rect").data(variance_arr).enter()
                 .append("rect")
@@ -89,7 +91,8 @@ var histogram = (function () {
                     return 0.15 * svg_width * 0.4;
                 }).attr("height", function (d) {
                     return svg_height * 0.8 - yScale(d);
-                })
+                }).attr('rx',5)
+                .attr('ry',5)
                 .style("fill", "gray").attr("id", "around_rect");
         } else {
             d3.selectAll("#around_rect").transition(ts)

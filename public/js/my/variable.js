@@ -12,7 +12,7 @@ var variable = (function () {
     let around_circle = [];//保存上次点击周围点的对象
     let allData = {};//
     let importance_arr = [-0.00009675, 0.0012, 0.00005763, -0.0004, 0.001];//[-0.0005, 0.002 , 0.0002, -0.0004, 0.0011];//计算概率时个属性的系数
-    let importance_arr_12 = [-0.00006986, 0.0009, 0.0004, -0.0005, 0.0005]
+    let importance_arr_12 = [-0.00006986, 0.0009, 0.0004, -0.0005, 0.0005];
     let match_value;//两口井之间的匹配数据
     let index_dict = {};//基础数据中每口井的id对应的index
     let around_wellData = [];
@@ -26,7 +26,7 @@ var variable = (function () {
     let radius_circle = {};
     let reCalB = false;//需要重新计算系数时，查看多个盘的flag
     let dish_idArr = [];//当重新计算系数时，将之前选中盘的id记录在内
-    let myStd_well = ['GD1-11-13', 'GD1-13-714', 'GD1-13-12', 'GD1-14-413', 'GD1-15-14', 'GD1-17N11', 'GD1-6N13', 'GD1-7-5', 'GD1-7-11', 'GD1-9-13'];
+    let myStd_well = ['GD1-12-507','GD1-14X209'];
     let std_maxV;//标准井的方差最大值（用于直方图的确定比例尺）
     let around_click = 0;
     let rect_Xscale;//直方图的x轴比例尺

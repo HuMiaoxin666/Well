@@ -15,7 +15,7 @@ var lineChart = (function () {
             tmp_color = variable.attr_color;
         }
         // 求出一些基本值
-        var max_arr = [],
+        let max_arr = [],
             min_arr = [];
         //console.log()
         for (let i = 0; i < data.value[0].length; i++) {
@@ -46,23 +46,10 @@ var lineChart = (function () {
                 .call(y_axis)
         }
 
-        let xScale_arr = [],
-            xAxis_arr = [];
+        let xScale_arr = [];
         for (let i = 1; i < min_arr.length; i++) {
-            if (max_arr[i] > 0 && min_arr[i] <= 0) {
-                let tmp_ys = d3.scaleLinear().domain([min_arr[i] * 1.2, max_arr[i] * 1.2]).range([0, svg_width * 0.16])
-                xScale_arr.push(tmp_ys);
-            } else if (max_arr[i] < 0 && min_arr[i] <= 0) {
-                let tmp_ys = d3.scaleLinear().domain([min_arr[i] * 1.2, max_arr[i] * 0.8]).range([0, svg_width * 0.16])
-                xScale_arr.push(tmp_ys);
-            } else if (max_arr[i] > 0 && min_arr[i] > 0) {
-                let tmp_ys = d3.scaleLinear().domain([min_arr[i] * 0.8, max_arr[i] * 1.2]).range([0, svg_width * 0.16])
-                xScale_arr.push(tmp_ys);
-            } else {
-                let tmp_ys = d3.scaleLinear().domain([min_arr[i] * 0.8, max_arr[i] * 0.8]).range([0, svg_width * 0.16])
-                xScale_arr.push(tmp_ys);
-            }
-
+            let tmp_ys = d3.scaleLinear().domain([min_arr[i], max_arr[i]]).range([0, svg_width * 0.14])
+            xScale_arr.push(tmp_ys);
         }
         //画属性分界线
 
@@ -81,6 +68,7 @@ var lineChart = (function () {
             .attr("d", areaLine(line_arr))
             .attr("stroke", "#B5B8B6")
             .attr("stroke-width", 1)
+            .attr("stroke-dasharray", 0.03 * svg_height)
             .attr("fill", 'none')
             .attr("id", "x_axis");
         for (let i = 0; i < variable.importance_arr.length; i++) {
@@ -109,13 +97,7 @@ var lineChart = (function () {
                 .text(function (d, i) {
                     //console.log(data.basic_attr);
                     return data.basic_attr[i];
-                }).on("click", function (d, i) {
-                    for (let i = 0; i < variable.importance_arr.length; i++) {
-                        d3.select("#" + data.basic_attr[i]).attr("stroke-width", 0.5).attr("opacity", 0.5);
-                    }
-                    d3.select("#" + data.basic_attr[i]).attr("stroke-width", 2).attr("opacity", 1.0);
-                    // d3.select("#y_axis").call(yAxis_arr[i]);
-                })
+                });
         }
 
 
@@ -125,15 +107,15 @@ var lineChart = (function () {
                 .x(function (d) {
                     // if(i == 1)
                     if (d[i + 1] < -700) {
-                        let tmp_x = xScale_arr[i](min_arr[i + 1]) + 40 + (svg_width * 0.16) * (i);
+                        let tmp_x = xScale_arr[i](min_arr[i + 1]) + 40 + 0.02 * svg_width + (svg_width * 0.16) * (i);
                         return tmp_x;
                     }
                     else if (d[i + 1] > 9999) {
-                        let tmp_x = xScale_arr[i](max_arr[i + 1]) + 40 + (svg_width * 0.16) * (i);
+                        let tmp_x = xScale_arr[i](max_arr[i + 1]) + 40 + 0.02 * svg_width + (svg_width * 0.16) * (i);
                         return tmp_x;
                     }
                     else {
-                        let tmp_x = xScale_arr[i](d[i + 1]) + 40 + (svg_width * 0.16) * (i);
+                        let tmp_x = xScale_arr[i](d[i + 1]) + 40 + 0.02 * svg_width + (svg_width * 0.16) * (i);
                         // //console.log(tmp_x);
                         return tmp_x;
                     }
@@ -146,6 +128,7 @@ var lineChart = (function () {
                     return tmp_y;
                 })
                 .curve(d3.curveBasis);
+
             svg_lineChart.append("path")
                 .attr("d", lineFun(data.value))
                 .attr("stroke", function (d) {

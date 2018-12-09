@@ -5,10 +5,10 @@ var rectView = (function () {
     var Ml2Svg = d3.select("#Ml2Svg");
     var AcSvg = d3.select("#AcSvg");
 
-    var svgTuli = d3.select("#tuli");
-    let svgTuli_height = $("#tuli").height();
+    var svgTuli = d3.select("#tuli_rect");
+    let svgTuli_height = $("#tuli_rect").height();
     console.log('svgTuli_height: ', svgTuli_height);
-    let svgTuli_width = $("#tuli").width();
+    let svgTuli_width = $("#tuli_rect").width();
     let tmp_width = 0;
     let x_arr = [500, 550, 620, 675, 730];
     svgTuli.append("a").selectAll("text").data(variable.value_attrs).enter()
@@ -20,7 +20,7 @@ var rectView = (function () {
             return d;
         })
 
-    function drawRect(tmp_aroundids) {
+    function drawRect(tmp_aroundids, vstd_id) {
         d3.select("#rectView").selectAll("svg").selectAll("*").remove();
         let rate_index = parseInt(variable.rate / 10);
         // console.log('well_id: ', well_id);
@@ -107,6 +107,7 @@ var rectView = (function () {
         // console.log('rectWidth * (tmp_aroundids.length - 4): ', rectWidth * (tmp_aroundids.length - 4));
 
         function renderSvg(selection, attr_index) {
+            //画矩形
             let rect_sp = selection.append("g").selectAll("rect")
                 .data(matchValue_arr).enter().append("rect")
                 .attr("x", function (d) {
@@ -121,7 +122,8 @@ var rectView = (function () {
                 .attr("stroke-width", 0.5)
                 .attr("id", function (d) {
                     return d['well_1'] + '_' + d['well_2'] + '_' + variable.value_attrs[attr_index];
-                })
+                }).attr('rx', 3)
+                .attr('ry', 3)
                 .style("fill", function (d) {
                     let tmp_value = Islog(d['value'][attr_index]);
                     let tmp_color = compute_arr[attr_index](colorScale_arr[attr_index](tmp_value));
@@ -129,12 +131,34 @@ var rectView = (function () {
                 }).on("click", function (d) {
                     mapView.getChosenData(d['well_1']).then(function (well_1) {
                         mapView.getChosenData(d['well_2']).then(function (well_2) {
-                            matchView.drawMatch([well_1[0], well_2[0]], variable.value_attrs[attr_index]);
-
+                            matchView.drawMatch([well_1[0], well_2[0]], variable.value_attrs[attr_index], attr_index);
                         })
                     })
                 });
 
+            //画标准井矩形区域
+            let x_arr = [], y_arr = [], tmp_len = tmp_aroundids.length;
+            x_arr = [rectWidth * 1.5, (tmp_len - 1) * rectWidth + rectWidth * 1.5];
+            y_arr = [rectHeight * 1.5, (tmp_len - 1) * rectHeight + rectHeight * 1.5];
+
+            let areaRect = [{ type: 'std_row', loc: [x_arr[0], y_arr[1]], width: rectWidth * tmp_len, height: rectHeight },
+            { type: 'std_col', loc: [x_arr[1], y_arr[0]], width: rectWidth, height: rectHeight * tmp_len },
+            { type: 'ard_row', loc: [x_arr[0], y_arr[1]], width: rectWidth * tmp_len, height: rectHeight },
+            { type: 'ard_col', loc: [x_arr[1], y_arr[0]], width: rectWidth, height: rectHeight * tmp_len }
+            ];
+
+            selection.append('g').selectAll('rect').data(areaRect).enter()
+                .append('rect')
+                .attr('x', function (d) { return d.loc[0]; })
+                .attr('y', function (d) { return d.loc[1]; })
+                .attr('width', function (d) { return d.width; })
+                .attr('height', function (d) { return d.height; })
+                .attr("fill", 'none')
+                .attr('stroke', 'blue')
+                .attr('stroke-width', 1)
+                .attr('rx', 3)
+                .attr('ry', 3)
+                .attr('id', function (d) { return d.type; });
             // selection.append("a").selectAll("text").data([variable.value_attrs[attr_index]])
             //     .enter().append("text")
             //     .attr("transform", function (d) {
@@ -164,15 +188,17 @@ var rectView = (function () {
             //     .style("fill", function () {
             //         return variable.attr_color[attr_index];
             //     });
-        }
+        };
         renderSvg(SpSvg, 0);
         renderSvg(CondSvg, 1);
         renderSvg(Ml1Svg, 2);
         renderSvg(Ml2Svg, 3);
         renderSvg(AcSvg, 4);
-
+    }
+    function drawSelect() {
 
     }
+
     return {
         drawRect,
     }

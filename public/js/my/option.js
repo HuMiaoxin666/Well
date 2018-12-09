@@ -40,8 +40,8 @@ var option = (function () {
 
     var attr_status = ['sp', 'cond', 'ml1', 'ml2', 'r4', 'ac'];
 
-    $("#inlineCheckbox1").click(function () {
-        variable.reCalB = this.checked;
+    $("#regression").click(function () {
+        AttrValue.updataValue();
     })
 
     $("#updata").click(function () {

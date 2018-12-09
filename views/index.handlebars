@@ -23,14 +23,14 @@
 <script src="/js/pixi/pixi.min.js"></script>
 <script src="/js/leaflet/leaflet.min.js"> </script>
 <script src='/js/mapbox/mapbox-gl.js'></script>
-<script src="/js/leaflet/leaflet.js" ></script>
-<script src="/js/leaflet/L.D3SvgOverlay.js" ></script>
+<script src="/js/leaflet/leaflet.js"></script>
+<script src="/js/leaflet/L.D3SvgOverlay.js"></script>
 
 <script src="/js/jquery/jquery-ui.min.js"></script>
 <script src="/js/bootstrap/bootstrap.min.js"></script>
-<script src="/js/leaflet/leaflet-heat.js" ></script>
-<script src="/js/leaflet/leaflet.contextmenu.js" ></script>
-<script src="/js/leaflet/leaflet.contextmenu.min.js" ></script>
+<script src="/js/leaflet/leaflet-heat.js"></script>
+<script src="/js/leaflet/leaflet.contextmenu.js"></script>
+<script src="/js/leaflet/leaflet.contextmenu.min.js"></script>
 
 {{!-- <nav id="nav" class="navbar navbar-dark sticky-top  flex-md-nowrap p-0" style="border-bottom:3px solid rgb(216, 216, 216);">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" style="border-bottom:0.1px solid rgb(216, 216, 216);background-color:white;box-shadow:none;color:rgb(124, 124, 124);font-size:1.5em;">胜利油田</a>
@@ -40,53 +40,72 @@
     <div id="left-view">
         <div id="infor_headline" class="head-bg-color" style=""><a id="infor_headline_a">Information View</a></div>
         <div id="infor" class="border-color">
-            <span style="margin-left:10%;margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);">井的总数： </span>
+            <span style="margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);font-size:0.85em;">Total number of
+                wells：</span>
             <input type="text" id="well_count" value=1554>
-            <span style="margin-left:10%;margin-top:15%;position:absolute;color:rgb(124, 124, 124);">当前标准井数： </span>
+            <span style="margin-top:15%;position:absolute;color:rgb(124, 124, 124);">Current number of wells：</span>
             <input type="text" id="dish_count" value=''>
-            <span style="margin-left:10%;margin-top:25%;position:absolute;color:rgb(124, 124, 124);">标准井ID： </span>
+            <span style="margin-top:25%;position:absolute;color:rgb(124, 124, 124);">Current standard well id：</span>
             <input type="text" id="well_id" value=''>
-            <span style="margin-left:10%;margin-top:35%;position:absolute;color:rgb(124, 124, 124);">当前盘内井数： </span>
+            <span style="margin-top:35%;position:absolute;color:rgb(124, 124, 124);">Number of wells in disk：</span>
             <input type="text" id="IndishWell_count" value=''>
         </div>
 
         <div id="para_headline" class="head-bg-color" style=""><a id="para_headline_a">Control View</a></div>
         <div id="para_control" class="border-color">
-            <span style="margin-left:10%;margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);">采样率： </span>
+            <span style="margin-left:5%;margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);">Rate:
+            </span>
             <input type="text" id="sample_rate" value=50>
             <div id="rate_slider"></div>
             <button id="sample" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sample</button>
 
-            <div id="attrs_select" class="checkbox">
-                <label class="checkbox-inline" id='check_1'>
-                    <input type="checkbox" id="inlineCheckbox1" value="option1"> 重新计算系数
-                </label>
-                {{!-- <label class="radio-inline" id='check_1'>
-                    <input type="radio" name="optionsRadiosinline" id="" value="option1" checked> 重新计算系数
-                </label>
-                <label class="radio-inline" id='check_2'>
-                    <input type="radio" name="optionsRadiosinline" id="" value="option2"> 选项 2
-                </label> --}}
-            </div>
+
+
             <button id="Optimize" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Optimize</button>
         </div>
 
-        <div id="matchControl_headline" class="head-bg-color" style=""><a id="matchControl_headline_a">Match View</a></div>
-        <div id="matchControl" class="border-color">
-            <span style="margin-left:10%;margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);">选择采样集： </span>
-            <button id="updata" class="btn btn-outline-primary my-2 my-sm-0" type="submit">updata</button>
-            <button id="better" class="btn btn-outline-primary my-2 my-sm-0" type="submit">regression</button>
+        <div id="matchControl_headline" class="head-bg-color" style="">
+            <a id="matchControl_headline_a">Match View</a>
+        </div>
 
-            <span style="margin-left:10%;margin-top:35.5%;position:absolute;color:rgb(124, 124, 124);">SP：</span>
-            <input type="text" id="well_count" value=1554>
-            <span style="margin-left:50%;margin-top:35.5%;position:absolute;color:rgb(124, 124, 124);">COND：</span>
-            <input type="text" id="well_count" value=1554>
-            <span style="margin-left:10%;margin-top:45.5%;position:absolute;color:rgb(124, 124, 124);">ML1：</span>
-            <input type="text" id="well_count" value=1554>
-            <span style="margin-left:50%;margin-top:45.5%;position:absolute;color:rgb(124, 124, 124);">ML2：</span>
-            <input type="text" id="well_count" value=1554>
-            <span style="margin-left:10%;margin-top:55.5%;position:absolute;color:rgb(124, 124, 124);">AC：</span>
-            <input type="text" id="well_count" value=1554>
+        <div id="matchControl" class="border-color">
+            <div class="dropdown" id='Sample_set'>
+                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='font-size:0.75em;padding:.05rem .5rem;color:black;background-color:white;border-color:#AAAAAA'>
+                    Sample set
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">sample 1</a>
+                    <a class="dropdown-item" href="#">sample 2</a>
+                    <a class="dropdown-item" href="#">sample 3</a>
+                </div>
+            </div>
+
+            <div class="custom-control custom-checkbox" id="show_mlutiple" style='padding-left:.5rem;'>
+                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <label id='check_1' class="custom-control-label" for="customCheck1">Show multiple</label>
+            </div>
+
+            <button id="updata" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Updata</button>
+            <button id="regression" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Regression</button>
+            <hr style='position:absolute; top:28%;width:100%;border-top:2px solid rgb(168, 168, 168)'>
+            <svg id='attr_value'>
+                <rect x=10 y=0 width=15 height=15 style='fill:#259aef;'rx=2 ry=2></rect>
+                <text x=27 y=12 style='font-family:Arial, Helvetica, sans-serif;fill:#AAAAAA'>Negative</text>
+                <rect x=100 y=0 width=15 height=15 style='fill:#f2992c;'rx=2 ry=2></rect>
+                <text x=120 y=12 style='font-family:Arial, Helvetica, sans-serif;fill:#AAAAAA'>Positive</text>
+                {{!-- <text x=10 y=20 value=sp>SP：</text>
+                <input type="text" style="position:absolute;left:20%;top:40%;" class='xs' value=-0.7></input>
+                <text x=10 y=40>COND：</text>
+                <input type="text" style="position:absolute;left:30%;top:52%;" class='xs' value=8.6>
+                <span style="position:absolute;left:5%;top:64%;" class='attr_id'>ML1：</span>
+                <input type="text" style="position:absolute;left:22%;top:64%;" class='xs' value=3.6>
+                <span style="position:absolute;left:5%;top:76%;" class='attr_id'>ML2：</span>
+                <input type="text" style="position:absolute;left:22%;top:76%;" class='xs' value=-4.8>
+                <span style="position:absolute;left:5%;top:88%;" class='attr_id'>AC：</span>
+                <input type="text" style="position:absolute;left:20%;top:88%;" class='xs' value=4.9> --}}
+            </svg>
+
         </div>
 
         <div id="matchView_headline" class="head-bg-color" style=""><a id="matchView_headline_a">Match View</a></div>
@@ -97,18 +116,24 @@
 
     <div id="map_headline" class="head-bg-color">
         <a>Map View</a>
+        <svg id='tuli_map'>
+            <circle cx="570" cy="11" r="7" fill="#1DFF74" />
+            <circle cx="645" cy="11" r="7" fill="#FFEB16" />
+            <circle cx="700" cy="11" r="7" fill="#FF9354" />
+            <circle cx="755" cy="11" r="7" fill="#E835FF" />
+            <circle cx="800" cy="11" r="7" fill="#3284FF" />
+        </svg>
     </div>
     <div id="map" class="border-color"></div>
 
     <div id="rect_headline" class="head-bg-color">
         <a>Match Data View</a>
-        <svg id='tuli'>
+        <svg id='tuli_rect'>
             <circle cx="530" cy="11" r="7" fill="#1DFF74" />
             <circle cx="605" cy="11" r="7" fill="#FFEB16" />
             <circle cx="660" cy="11" r="7" fill="#FF9354" />
             <circle cx="715" cy="11" r="7" fill="#E835FF" />
             <circle cx="760" cy="11" r="7" fill="#3284FF" />
-
         </svg>
     </div>
     <div id="rectView" class="border-color">
@@ -136,6 +161,7 @@
 </main>
 <script src="/js/my/variable.js"></script>
 <script src="/js/my/matchCal.js"></script>
+<script src="/js/my/attrValue.js"></script>
 <script src="/js/my/rectView.js"></script>
 <script src="/js/my/heatView.js"></script>
 <script src="/js/my/histogram.js"></script>
