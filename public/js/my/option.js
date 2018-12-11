@@ -33,6 +33,7 @@ var option = (function () {
 
     $("#Optimize").click(function () {
         drawPoint.draw(variable.basicData, variable.rate, true);
+        variable.test += 1;
         // console.log(variable.basicData[variable.index_dict['GD1-0-617']]);
         // MatchCal.CalMatchValue(variable.chosenArr);
         // variable.chosenArr = [];
@@ -43,25 +44,29 @@ var option = (function () {
     $("#regression").click(function () {
         AttrValue.updataValue();
     })
-
+    $("#customCheck1").click(function () {
+        variable.reCalB = this.checked;
+        console.log('variable.reCalB: ', variable.reCalB);
+    })
     $("#updata").click(function () {
         //清空当前页面上可能存在的各种图层
         lineChart.svg_lineChart.selectAll("*").remove();
         histogram.svg_histogram.selectAll("*").remove();
         d3.select("#matchSvg").selectAll("*").remove();
         d3.select("#rectView").selectAll("svg").selectAll("*").remove();
-        if(variable.lastPieSvgArr.length > 0)
-        variable.lastPieSvgArr[i].remove();
+        if (variable.lastPieSvgArr.length > 0)
+            for (let i = 0; i < variable.lastPieSvgArr.length; i++)
+                variable.lastPieSvgArr[i].remove();
         //更新绘图数据
         variable.basicData = variable.basicData_2;
-        
+
         for (let i = 0; i < variable.basicData.length; i++) {
             variable.index_dict[variable.basicData[i].id] = i;
 
         }
         // console.log(variable.index_dict);
         drawPoint.draw(variable.basicData, 10, false);
-        
+
     })
     for (let i = 0; i < attr_status.length; i++) {
         // $("#" + attr_status[i] + 'Status').attr("disabled", true);

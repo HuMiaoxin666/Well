@@ -21,6 +21,9 @@ var rectView = (function () {
         })
 
     function drawRect(tmp_aroundids, vstd_id) {
+        //清空排名列表
+        variable.matchValueSort_arr = [];
+        //清空矩形svg
         d3.select("#rectView").selectAll("svg").selectAll("*").remove();
         let rate_index = parseInt(variable.rate / 10);
         // console.log('well_id: ', well_id);
@@ -28,45 +31,78 @@ var rectView = (function () {
         let svg_width = $("#SpSvg").width();
         let rectHeight = svg_height / (tmp_aroundids.length + 2);
         let rectWidth = svg_width / (tmp_aroundids.length + 2);
-        let matchValue_arr = [];
-
+        let tmp_matchArr = [];
+        let tmpId_indexDict = {};
         for (let i = 0; i < tmp_aroundids.length; i++) {
+            tmpId_indexDict[tmp_aroundids[i]] = i;
+            let tmp_arr = [];
             for (let j = 0; j < tmp_aroundids.length; j++) {
                 tmp_dict = {};
                 let tmp_key = tmp_aroundids[i] + "&" + tmp_aroundids[j];
                 // console.log('tmp_key:', tmp_key);
                 tmp_dict['well_1'] = tmp_aroundids[i];
                 tmp_dict['well_2'] = tmp_aroundids[j];
-                tmp_dict['x'] = i;
-                tmp_dict['y'] = j;
-                // console.log(i,j)
+                tmp_dict['x'] = j;
+                tmp_dict['y'] = i;
+                // console.log(i, j)
                 if (i != j) {
                     tmp_dict['value'] = [];
-                    // console.log(variable.match_value[tmp_key]['value']);
                     // console.log('variable.match_value[key]: ', variable.match_value[key]);
-                    for (let j = 0; j < 5; j++) {
-                        tmp_dict['value'].push(variable.match_value[tmp_key]['value'][j]);
+                    for (let a = 0; a < 5; a++) {
+                        tmp_dict['value'].push(variable.match_value[tmp_key]['value'][a]);
                     }
                 }
                 else {
                     tmp_dict['value'] = [0, 0, 0, 0, 0];
                 };
-                matchValue_arr.push(tmp_dict);
+                tmp_arr.push(tmp_dict);
             }
+            tmp_matchArr.push(tmp_arr);
         }
-
-        for (let i = 0; i < tmp_aroundids.length; i++) {
-            let tmp_index = i * tmp_aroundids.length + i;
-            for (let j = 0; j < tmp_aroundids.length; j++) {
+        console.log('tmp_matchArr: ', tmp_matchArr);
+        let well_sum_arr = [[], [], [], [], []];
+        for (let i = 0; i < tmp_matchArr.length; i++) {
+            for (let j = 0; j < tmp_matchArr[i].length; j++) {
                 if (i != j) {
                     for (let a = 0; a < 5; a++) {
-                        matchValue_arr[tmp_index]['value'][a] += matchValue_arr[i * tmp_aroundids.length + j]['value'][a];
+                        tmp_matchArr[i][i]['value'][a] += tmp_matchArr[i][j]['value'][a];
                     }
                 }
             }
+            for (let a = 0; a < 5; a++) {
+                let tmp_dict = { value: tmp_matchArr[i][i]['value'][a], id: tmp_matchArr[i][i]['well_1'] };
+                well_sum_arr[a].push(tmp_dict);
+            }
         }
-        // console.log(matchValue_arr);
 
+        function sortNumber(a, b) {
+            return a.value - b.value;
+        };
+        //将每种属性下每口井的匹配总值进行排序
+        for (let a = 0; a < 5; a++) {
+            well_sum_arr[a] = well_sum_arr[a].sort(sortNumber);
+        }
+        console.log('well_sum_arr: ', well_sum_arr);
+        //最终数组赋值
+        let matchValue_arr = [];
+        for (let a = 0; a < well_sum_arr.length; a++) {
+            variable.matchValueSort_arr.push([]);
+            matchValue_arr.push([]);
+            for (let i = 0; i < well_sum_arr[a].length; i++) {
+                variable.matchValueSort_arr[a].push(well_sum_arr[a][i]['id']);
+                let tmp_dataArr = MatchCal.deepCopy(tmp_matchArr[tmpId_indexDict[well_sum_arr[a][i]['id']]]);
+                for (let j = 0; j < tmp_dataArr.length; j++) {
+                    let tmp_dict = tmp_dataArr[tmpId_indexDict[well_sum_arr[a][j]['id']]];
+                    // console.log('tmp_dict: ', tmp_dict);
+                    tmp_dict['value'] = tmp_dict['value'][a];
+                    tmp_dict['x'] = j;
+                    tmp_dict['y'] = i;
+                    matchValue_arr[a].push(tmp_dict);
+                }
+            }
+        }
+        console.log('matchValue_arr: ', matchValue_arr);
+        // console.log(matchValue_arr);
         function Islog(value) {
             if (value > 0)
                 return Math.log2(value);
@@ -78,8 +114,8 @@ var rectView = (function () {
 
         let max_arr = [], min_arr = [];
         for (let i = 0; i < 5; i++) {
-            let tmp_max = d3.max(matchValue_arr, function (d) { return d['value'][i] });
-            let tmp_min = d3.min(matchValue_arr, function (d) { return d['value'][i] });
+            let tmp_max = d3.max(matchValue_arr[i], function (d) { return d['value'] });
+            let tmp_min = d3.min(matchValue_arr[i], function (d) { return d['value'] });
             min_arr.push(Islog(tmp_min));
             max_arr.push(Islog(tmp_max));
         }
@@ -109,7 +145,7 @@ var rectView = (function () {
         function renderSvg(selection, attr_index) {
             //画矩形
             let rect_sp = selection.append("g").selectAll("rect")
-                .data(matchValue_arr).enter().append("rect")
+                .data(matchValue_arr[attr_index]).enter().append("rect")
                 .attr("x", function (d) {
                     let tmp_x = d.x * rectWidth + rectWidth * 1.5;
                     return tmp_x;
@@ -119,27 +155,56 @@ var rectView = (function () {
                 }).attr("width", rectWidth - 0.5)
                 .attr("height", rectHeight - 0.5)
                 .attr("stroke", 'white')
-                .attr("stroke-width", 0.5)
+                .attr("stroke-width", 1)
                 .attr("id", function (d) {
                     return d['well_1'] + '_' + d['well_2'] + '_' + variable.value_attrs[attr_index];
                 }).attr('rx', 3)
                 .attr('ry', 3)
                 .style("fill", function (d) {
-                    let tmp_value = Islog(d['value'][attr_index]);
+                    let tmp_value = Islog(d['value']);
                     let tmp_color = compute_arr[attr_index](colorScale_arr[attr_index](tmp_value));
                     return tmp_color;
                 }).on("click", function (d) {
                     mapView.getChosenData(d['well_1']).then(function (well_1) {
                         mapView.getChosenData(d['well_2']).then(function (well_2) {
                             matchView.drawMatch([well_1[0], well_2[0]], variable.value_attrs[attr_index], attr_index);
+                        });
+                    });
+                }).on('mouseover', function (d, i) {
+                    d3.select('#tooltip_div')
+                        .style('z-index', 1)
+                        .style('display', 'block')
+                        .transition()
+                        .duration(1000)
+                        .style('left', function () {
+                            return d3.event.pageX + 'px';
                         })
-                    })
+                        .style('top', d3.event.pageY + 'px');
+                    d3.select('#tooltip_text').text('(' + d['well_1'] + ',' + d['well_2'] + ')' + ': ' + d['value']);
+                }).on('mousemove', function (d, i) {
+                    d3.select('#tooltip_div')
+                        .style('z-index', 1)
+                        .style('display', 'block')
+                        .transition()
+                        .duration(1000)
+                        .style('left', d3.event.pageX + 'px')
+                        .style('top', d3.event.pageY + 'px');
+                    d3.select('#tooltip_text').text('(' + d['well_1'] + ',' + d['well_2'] + ')' + ': ' + d['value']);
+                }).on('mouseout', function (d) {
+                    d3.select('#tooltip_div').style('z-index', -1).style('display', 'none')
+                        ;
                 });
 
             //画标准井矩形区域
+            let tmp_std_order;
+            for (let i = 0; i < well_sum_arr[attr_index].length; i++) {
+                if (well_sum_arr[attr_index][i]['id'] == vstd_id) {
+                    tmp_std_order = i;
+                }
+            }
             let x_arr = [], y_arr = [], tmp_len = tmp_aroundids.length;
-            x_arr = [rectWidth * 1.5, (tmp_len - 1) * rectWidth + rectWidth * 1.5];
-            y_arr = [rectHeight * 1.5, (tmp_len - 1) * rectHeight + rectHeight * 1.5];
+            x_arr = [rectWidth * 1.5, tmp_std_order * rectWidth + rectWidth * 1.5];
+            y_arr = [rectHeight * 1.5, tmp_std_order * rectHeight + rectHeight * 1.5];
 
             let areaRect = [{ type: 'std_row', loc: [x_arr[0], y_arr[1]], width: rectWidth * tmp_len, height: rectHeight },
             { type: 'std_col', loc: [x_arr[1], y_arr[0]], width: rectWidth, height: rectHeight * tmp_len },
@@ -154,11 +219,22 @@ var rectView = (function () {
                 .attr('width', function (d) { return d.width; })
                 .attr('height', function (d) { return d.height; })
                 .attr("fill", 'none')
-                .attr('stroke', 'blue')
+                .attr('stroke', function (d, i) {
+                    if (i == 0 || i == 1)
+                        return 'red';
+                    else
+                        return 'none';
+                })
                 .attr('stroke-width', 1)
                 .attr('rx', 3)
                 .attr('ry', 3)
-                .attr('id', function (d) { return d.type; });
+                .attr('opacity', function (d, i) {
+                    if (i == 0 || i == 1)
+                        return 1.0;
+                    else
+                        return 1.0;
+                })
+                .attr('id', function (d) { return d.type + '_' + attr_index; });
             // selection.append("a").selectAll("text").data([variable.value_attrs[attr_index]])
             //     .enter().append("text")
             //     .attr("transform", function (d) {

@@ -11,7 +11,6 @@ var drawPoint = (function () {
             if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1 && IsV == false) {
                 darw(data[i], data[i]);
                 tmp_count += 1;
-
             }
             //*******v最大值的井*******/
             else if (data[i].latlng.length > 0 && data[i].vSample_status[sampleStatus_index] == 1 && IsV == true) {
@@ -24,6 +23,9 @@ var drawPoint = (function () {
                 for (let m = 0; m < 2; m++) {
                     // if (dish_data['around_ids'][sampleStatus_index].indexOf(variable.myStd_well[m]) != -1)
                     //     tmp_data.color = 'red';
+
+                    if (tmp_data.id == 'GD1-16XNB1')
+                        tmp_data.color = 'red';
                 }
 
                 //画出当前盘的边界点
@@ -119,14 +121,29 @@ var drawPoint = (function () {
                     tmp_aroundPt_ids = tranform;
                     console.log(tmp_aroundPt_ids.length);
                     console.log('tmp_aroundPt_ids: ', tmp_aroundPt_ids);
+
+                    tranform = [];
+                    for (let w = 0; w < tmp_aroundPt.length; w++) {
+                        if (w != tmp_id_index)
+                            tranform.push(tmp_aroundPt[w]);
+                    }
+                    tmp_aroundPt = tranform;
+                    console.log(tmp_aroundPt.length);
+                    console.log('tmp_aroundPt_ids: ', tmp_aroundPt);
                     //画出周围井在地图上的点
                     let thisId = this.options.id;
                     let thisLoc = this.options.dish_loc;
                     for (let j = 0; j < tmp_aroundPt.length; j++) {
                         if (tmp_aroundPt_ids[j] in variable.index_dict) {
                             let tmp_aroundColor = "#B5B5B5";
-                            if (variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]]['vSample_status'][0] == 1)
-                                tmp_aroundColor = 'yellow';
+                            let tmp_data = variable.basicData_1[variable.index_dict[tmp_aroundPt_ids[j]]];
+
+                            if (variable.test > 0 && tmp_data['vSample_status'][sampleStatus_index] == 1) {
+                                tmp_aroundColor = 'red';
+                                console.log('1');
+                            }
+                            // if (variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]]['vSample_status'][0] == 1)
+                            //     tmp_aroundColor = 'blue';
                             let circle_around = L.circle([tmp_aroundPt[j][0], tmp_aroundPt[j][1]], {
                                 id: tmp_aroundPt_ids[j],
                                 radius: 5,
@@ -158,28 +175,30 @@ var drawPoint = (function () {
                                 for (let a = 0; a < variable.value_attrs.length; a++) {
                                     d3.select("#" + variable.value_attrs[a] + "_" + this.options.id).attr("stroke", "#A4A6A4").attr("opacity", 1.0).attr("stroke-width", 1);
                                 }
+
                                 //高亮当前周围井的匹配值矩阵图的样式
                                 //改变坐标
                                 let x_arr = [], y_arr = [];
                                 for (let i = 0; i < 1; i++) {
                                     for (let j = 0; j < 5; j++) {
-                                        let tmpRect_id_1 = tmp_aroundPt_ids[i] + '_' + this.options.id + '_' + variable.value_attrs[j];
-                                        let tmpRect_id_2 = this.options.id + '_' + tmp_aroundPt_ids[i] + '_' + variable.value_attrs[j];
+                                        let tmpRect_id_1 = variable.matchValueSort_arr[j][i] + '_' + this.options.id + '_' + variable.value_attrs[j];
+                                        let tmpRect_id_2 = this.options.id + '_' + variable.matchValueSort_arr[j][i] + '_' + variable.value_attrs[j];
 
-                                        let lb = $("#" + tmpRect_id_1)[0].attributes;
-                                        let rt = $("#" + tmpRect_id_2)[0].attributes;
+                                        let rt = $("#" + tmpRect_id_1)[0].attributes;
+                                        let lb = $("#" + tmpRect_id_2)[0].attributes;
                                         x_arr = [lb.x.value, rt.x.value];
                                         y_arr = [lb.y.value, rt.y.value];
+                                        d3.selectAll("#ard_row_" + j).transition().duration(2000)
+                                            .attr('stroke', 'gray')
+                                            .attr('x', function (d) { d.x = x_arr[0]; return d.x; })
+                                            .attr('y', function (d) { d.y = y_arr[0]; return d.y; });
+                                        d3.selectAll("#ard_col_" + j).transition().duration(2000)
+                                            .attr('stroke', 'gray')
+                                            .attr('x', function (d) { d.x = x_arr[1]; return d.x; })
+                                            .attr('y', function (d) { d.y = y_arr[1]; return d.y; })
                                     }
                                 }
-                                d3.selectAll("#ard_row").transition().duration(2000)
-                                    .attr('stroke', 'gray')
-                                    .attr('x', function (d) { d.x = x_arr[0]; return d.x; })
-                                    .attr('y', function (d) { d.y = y_arr[0]; return d.y; });
-                                d3.selectAll("#ard_col").transition().duration(2000)
-                                    .attr('stroke', 'gray')
-                                    .attr('x', function (d) { d.x = x_arr[1]; return d.x; })
-                                    .attr('y', function (d) { d.y = y_arr[1]; return d.y; })
+
                                 //计算当前井的方差之和
                                 let tmp_dict = variable.variance_dict[this.options.data.id];
                                 let tmp_variance_arr = [0, 0, 0, 0, 0];

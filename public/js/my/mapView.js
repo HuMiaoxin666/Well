@@ -69,7 +69,7 @@ var mapView = (function () {
     }).setView([37.8497143321911, 118.767564643314], 13)
     var osmUrl = 'https://api.mapbox.com/styles/v1/keypro/cjjs6cawt25iq2snp6kqxu3r3/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia2V5cHJvIiwiYSI6ImNqamliaTJtbjV0YTMzcG82bmthdW03OHEifQ.UBWsyfRiWMYly4gIc2H7cQ',
         layer = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
-   
+
     L.tileLayer(osmUrl, {
         minZoom: 1,
         maxZoom: 17,
@@ -229,6 +229,9 @@ var mapView = (function () {
         variable.lastPieSvgArr.push(tmp_svg);
     }
 
+  
+
+   
     function drawCompareCirlce(ard_id, std_id, dish_radius, latlng) {
 
         variable.lastPieSvgArr[variable.lastPieSvgArr.length - 1].remove();
@@ -483,6 +486,6 @@ var mapView = (function () {
         getChosenData,
         drawCircleOut,
         drawCompareCirlce,
-        getWellData_2
+        getWellData_2,
     }
 })()

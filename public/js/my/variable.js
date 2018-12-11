@@ -34,6 +34,8 @@ var variable = (function () {
     let stdPie_dataArr = [];//用于保存标准井的从里到外的井id和值的字典数组
     let lastPieSvgArr = []; //保存pie的svg
     let wait_circle; //当前选中的周围井对象，用于替换标准井
+    let test = 0;
+    let matchValueSort_arr =[];//保存当前各属性下井的总匹配值排列(用于点击周围井是改变矩形选中框位置)
     return {
         basicData,
         chosenData,
@@ -69,6 +71,8 @@ var variable = (function () {
         basicData_2,
         importance_arr_12,
         wait_circle,
-        basicData_1
+        basicData_1,
+        test,
+        matchValueSort_arr
     }
 })()

@@ -14,7 +14,9 @@
 <link href="/css/bootstrap-combobox.css" type="text/css" rel="stylesheet">
 <link href="/css/bootstrap.min.css" rel="stylesheet">
 <link href="/css/main.css" rel="stylesheet" type="text/css">
-
+{{!--
+<link rel="stylesheet" type="text/css" href="/css/jq22-demo.css"> --}}
+<link rel="stylesheet" type="text/css" href="/css/tooltip.css">
 <title>E-Commerce</title>
 
 <script src="/js/jquery/jquery-3.3.1.min.js"></script>
@@ -31,6 +33,7 @@
 <script src="/js/leaflet/leaflet-heat.js"></script>
 <script src="/js/leaflet/leaflet.contextmenu.js"></script>
 <script src="/js/leaflet/leaflet.contextmenu.min.js"></script>
+<script type="text/javascript" src="js/jquery/tooltip.js"></script>
 
 {{!-- <nav id="nav" class="navbar navbar-dark sticky-top  flex-md-nowrap p-0" style="border-bottom:3px solid rgb(216, 216, 216);">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" style="border-bottom:0.1px solid rgb(216, 216, 216);background-color:white;box-shadow:none;color:rgb(124, 124, 124);font-size:1.5em;">胜利油田</a>
@@ -51,7 +54,7 @@
             <input type="text" id="IndishWell_count" value=''>
         </div>
 
-        <div id="para_headline" class="head-bg-color" style=""><a id="para_headline_a">Control View</a></div>
+        <div id="para_headline" class="head-bg-color" style=""><a id="para_headline_a">Sampling Panel</a></div>
         <div id="para_control" class="border-color">
             <span style="margin-left:5%;margin-top:5.5%;position:absolute;color:rgb(124, 124, 124);">Rate:
             </span>
@@ -65,7 +68,7 @@
         </div>
 
         <div id="matchControl_headline" class="head-bg-color" style="">
-            <a id="matchControl_headline_a">Match View</a>
+            <a id="matchControl_headline_a">Selection Panel</a>
         </div>
 
         <div id="matchControl" class="border-color">
@@ -90,9 +93,9 @@
             <button id="regression" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Regression</button>
             <hr style='position:absolute; top:28%;width:100%;border-top:2px solid rgb(168, 168, 168)'>
             <svg id='attr_value'>
-                <rect x=10 y=0 width=15 height=15 style='fill:#259aef;'rx=2 ry=2></rect>
+                <rect x=10 y=0 width=15 height=15 style='fill:#259aef;' rx=2 ry=2></rect>
                 <text x=27 y=12 style='font-family:Arial, Helvetica, sans-serif;fill:#AAAAAA'>Negative</text>
-                <rect x=100 y=0 width=15 height=15 style='fill:#f2992c;'rx=2 ry=2></rect>
+                <rect x=100 y=0 width=15 height=15 style='fill:#f2992c;' rx=2 ry=2></rect>
                 <text x=120 y=12 style='font-family:Arial, Helvetica, sans-serif;fill:#AAAAAA'>Positive</text>
                 {{!-- <text x=10 y=20 value=sp>SP：</text>
                 <input type="text" style="position:absolute;left:20%;top:40%;" class='xs' value=-0.7></input>
@@ -127,7 +130,7 @@
     <div id="map" class="border-color"></div>
 
     <div id="rect_headline" class="head-bg-color">
-        <a>Match Data View</a>
+        <a>Collection View</a>
         <svg id='tuli_rect'>
             <circle cx="530" cy="11" r="7" fill="#1DFF74" />
             <circle cx="605" cy="11" r="7" fill="#FFEB16" />
@@ -146,19 +149,22 @@
 
     <div id="right-view">
         <div id="line_headline" class="head-bg-color">
-            <a id="line_headline_a">Attribute Data View</a>
+            <a id="line_headline_a">Attribute View</a>
         </div>
         <div id="lineChart" class="border-color">
             <svg id="ChartSvg"></svg>
         </div>
         <div id="histogram_headline" class="head-bg-color">
-            <a id="histogram_headline_a">Variance Data View</a>
+            <a id="histogram_headline_a">Variance View</a>
         </div>
         <div id="histogram" class="border-color">
             <svg id="histogramSvg"></svg>
         </div>
     </div>
 </main>
+<div id='tooltip_div'>
+    <text id='tooltip_text'>这是一个Tooltip</text>
+</div>
 <script src="/js/my/variable.js"></script>
 <script src="/js/my/matchCal.js"></script>
 <script src="/js/my/attrValue.js"></script>
