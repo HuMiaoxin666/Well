@@ -18,7 +18,7 @@ a{
 }
 
 .head-bg-color {
-    background-color: #ecebeb;
+    background-color: #4f92ce;
 }
 
 .border-color {
@@ -56,11 +56,13 @@ div#infor_headline {
     width: 99%;
     height: 3%;
     border-radius: 4px;
+    
 }
 
 #infor_headline_a {
     margin-left: 3%;
     font-size: 0.9em;
+    color:white;
 }
 
 #infor {
@@ -126,7 +128,7 @@ div#para_headline {
 #para_headline_a {
     margin-left: 3%;
     font-size: 0.9em;
-
+    color:white;
 }
 
 #para_control {
@@ -195,7 +197,7 @@ div#matchControl_headline {
 #matchControl_headline_a {
     margin-left: 3%;
     font-size: 0.9em;
-
+    color:white;
 }
 
 #matchControl {
@@ -281,7 +283,7 @@ div#matchView_headline {
 #matchView_headline_a {
     margin-left: 3%;
     font-size: 0.9em;
-
+    color:white;
 }
 
 #matchView {
@@ -323,6 +325,7 @@ div#matchView svg {
     margin-right: 1px;
     font-size: 0.9em;
     top:-7px;
+    color:white;
 }
 
 #map {
@@ -368,6 +371,7 @@ div#matchView svg {
     margin-left: 4px;
     margin-right: 1px;
     font-size: 0.9em;
+    color:white;
 }
 
 #rectView {
@@ -410,7 +414,7 @@ div#right-view {
     margin-left: 4px;
     margin-right: 1px;
     font-size: 0.9em;
-
+    color:white;
 }
 
 div#lineChart {
@@ -436,6 +440,7 @@ div#lineChart {
     margin-left: 4px;
     margin-right: 1px;
     font-size: 0.9em;
+    color:white;
 }
 
 div#histogram {

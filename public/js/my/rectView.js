@@ -16,6 +16,7 @@ var rectView = (function () {
         .attr("x", function (d, i) {
             return x_arr[i];
         }).attr("y", svgTuli_height * 3 / 4)
+        .style('fill','white')
         .text(function (d) {
             return d;
         })
@@ -123,11 +124,11 @@ var rectView = (function () {
         // console.log("min： ", min_arr);
         // console.log('matchValue_arr: ', matchValue_arr);
 
-        //设置颜色比例尺
+        //设置颜色比例尺["#1DFF74", '#FFFF00', '#FFAB7C', '#EE89FF', '#00D8FF'];
         let colorScale_arr = [];
         let compute_arr = [];
-        let max_color = ["#76FFA5", '#FFEF58', '#FFAD7D', '#F270FF', '#70AAFF'];
-        let min_color = ["#F3FFF3", '#FFFDDD', '#FFE3D3', '#FADEFF', '#D7E9FF'];
+        let max_color = ["#76FFA5", '#FFFF00', '#FFAB7C', '#F270FF', '#00D8FF'];
+        let min_color = ["#F3FFF3", '#FFFDDD', '#FFE3D3', '#FADEFF', '#DDF7FF'];
         for (let i = 0; i < max_arr.length; i++) {
             // console.log(max_arr[i]);
             let tmp_sacle = d3.scaleLinear().domain([min_arr[i], max_arr[i]]).range([0, 1]);

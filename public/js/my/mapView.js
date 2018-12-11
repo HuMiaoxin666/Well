@@ -16,6 +16,7 @@ var mapView = (function () {
         .attr("x", function (d, i) {
             return x_arr[i];
         }).attr("y", svgTuli_height * 3 / 4)
+        .style('fill','white')
         .text(function (d) {
             return d;
         })
