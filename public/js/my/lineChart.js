@@ -68,7 +68,6 @@ var lineChart = (function () {
             .attr("d", areaLine(line_arr))
             .attr("stroke", "#B5B8B6")
             .attr("stroke-width", 1)
-            .attr("stroke-dasharray", 0.03 * svg_height)
             .attr("fill", 'none')
             .attr("id", "x_axis");
         for (let i = 0; i < variable.importance_arr.length; i++) {
@@ -81,6 +80,7 @@ var lineChart = (function () {
                 .attr("d", areaLine(tmp_line))
                 .attr("stroke", "#B5B8B6")
                 .attr("stroke-width", 1)
+                .attr("stroke-dasharray", 0.01 * svg_height)
                 .attr("fill", 'none')
                 .attr("id", "x_axis");
         } //console.log('text_loc: ', text_loc);

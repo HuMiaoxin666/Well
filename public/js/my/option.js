@@ -9,6 +9,7 @@ var option = (function () {
         slide: function (event, ui) {
             let cur_val = ui.value;
             sam_rate = ui.value;
+            variable.rate = sam_rate;
             $("#sample_rate").val(cur_val);
         }
     })
@@ -16,15 +17,18 @@ var option = (function () {
 
 
     $("#sample").click(function () {
+
         // var blob = new Blob([JSON.stringify(variable.vsample)], { type: "" });
         // saveAs(blob, "hello_10.json");
         // drawPoint.calVariance(); //两篇论文的匹配度
         // drawPoint.count();//统计所有情况的值
         // variable.rate = sam_rate;//采样率
         // heatView.drawHeat(sam_rate);
-
-        drawPoint.draw(variable.basicData, sam_rate, false);//重画地图上的点
+        if (variable.heatStatus == false)
+            drawPoint.drawP(variable.basicData, sam_rate, false);//重画地图上的点
         console.log('sam_rate: ', sam_rate);
+        if (variable.heatStatus == true)
+            heatView.drawHeat(variable.rate);
         // console.log('variable.basicData: ', variable.basicData);
         // mapView.getWellData().then(function(data){
         //     lineChart.drawLineChart(data);
@@ -32,7 +36,14 @@ var option = (function () {
     })
 
     $("#Optimize").click(function () {
-        drawPoint.draw(variable.basicData, variable.rate, true);
+        lineChart.svg_lineChart.selectAll("*").remove();
+        histogram.svg_histogram.selectAll("*").remove();
+        d3.select("#matchSvg").selectAll("*").remove();
+        d3.select("#rectView").selectAll("svg").selectAll("*").remove();
+        if (variable.lastPieSvgArr.length > 0)
+            for (let i = 0; i < variable.lastPieSvgArr.length; i++)
+                variable.lastPieSvgArr[i].remove();
+        drawPoint.drawP(variable.basicData, variable.rate, true);
         variable.test += 1;
         // console.log(variable.basicData[variable.index_dict['GD1-0-617']]);
         // MatchCal.CalMatchValue(variable.chosenArr);
@@ -42,11 +53,23 @@ var option = (function () {
     var attr_status = ['sp', 'cond', 'ml1', 'ml2', 'r4', 'ac'];
 
     $("#regression").click(function () {
-        AttrValue.updataValue();
+        variable.regression += 1;
+        AttrValue.updataValue(variable.regression);
     })
     $("#customCheck1").click(function () {
         variable.reCalB = this.checked;
         console.log('variable.reCalB: ', variable.reCalB);
+    })
+    $("#heatcheck_input").click(function () {
+        d3.select("#map").selectAll("path").remove();
+        variable.heatStatus = this.checked;
+        if (this.checked == true)
+            heatView.drawHeat(variable.rate);
+        else {
+            let container = $("#map").find("canvas");
+            container.remove();
+        }
+
     })
     $("#updata").click(function () {
         //清空当前页面上可能存在的各种图层
@@ -65,7 +88,7 @@ var option = (function () {
 
         }
         // console.log(variable.index_dict);
-        drawPoint.draw(variable.basicData, 10, false);
+        drawPoint.drawP(variable.basicData, 10, false);
 
     })
     for (let i = 0; i < attr_status.length; i++) {

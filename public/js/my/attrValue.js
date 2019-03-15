@@ -25,7 +25,7 @@ var AttrValue = (function () {
         })
         .attr('y', function (d, i) {
             return i * 20 + 40;
-        }).text(function (d) { return d; })
+        }).text('')
         .style('fill', '#AAAAAA')
         .style('font-size', '0.9em')
         .attr('id', 'attrValue_text');
@@ -45,21 +45,21 @@ var AttrValue = (function () {
                 return 150;
         }).attr('y', function (d, i) {
             return i * 20 + 25;
-        }).attr('width', function (d) { return widthScale(Math.abs(d)); })
+        }).attr('width', 0)
         .attr('height', 15)
-        .attr('rx',2)
-        .attr('ry',2)
-        .attr('fill', function (d) {
-            if (d < 0)
-                return '#259aef';
-            else
-                return '#f2992c';
-        }).attr('id', 'value_rect');
+        .attr('rx', 2)
+        .attr('ry', 2)
+        .attr('fill', 'none').attr('id', 'value_rect');
 
-    function updataValue() {
-        let tmp_value = MatchCal.deepCopy(variable.importance_arr_12);
+    function updataValue(regression) {
+        let tmp_value;
+        if (regression == 1)
+            tmp_value = MatchCal.deepCopy(variable.importance_arr);
+        else
+            tmp_value = MatchCal.deepCopy(variable.importance_arr_12);
+
         for (let i = 0; i < tmp_value.length; i++) {
-            tmp_value[i] = parseFloat((tmp_value[i] * 10000).toFixed(2));
+            tmp_value[i] = parseFloat((tmp_value[i] * 1000).toFixed(2));
 
         }
         let max_width = d3.max([-d3.min(tmp_value), d3.max(tmp_value)]);
@@ -88,10 +88,10 @@ var AttrValue = (function () {
             });
 
         svg_attrValue.selectAll('#attrValue_text')
-        .text(function(d,i){
-            d = tmp_value[i];
-            return d;
-        })
+            .text(function (d, i) {
+                d = tmp_value[i];
+                return d;
+            })
     }
 
 

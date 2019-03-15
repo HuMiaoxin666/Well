@@ -16,7 +16,7 @@ var mapView = (function () {
         .attr("x", function (d, i) {
             return x_arr[i];
         }).attr("y", svgTuli_height * 3 / 4)
-        .style('fill','white')
+        .style('fill', 'white')
         .text(function (d) {
             return d;
         })
@@ -46,6 +46,8 @@ var mapView = (function () {
     console.log('winHeight: ', winHeight);
 
     var map = L.map('map', {
+        zoomSnap:0,
+        zoomDelta:0.1,
         renderer: L.svg(),
         contextmenu: true,
         contextmenuWidth: 140,
@@ -67,17 +69,20 @@ var mapView = (function () {
             icon: 'img/zoom-out.png',
             callback: zoomOut
         }]
-    }).setView([37.8497143321911, 118.767564643314], 13)
+    }).setView([37.862651, 118.781876], 13)
     var osmUrl = 'https://api.mapbox.com/styles/v1/keypro/cjjs6cawt25iq2snp6kqxu3r3/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia2V5cHJvIiwiYSI6ImNqamliaTJtbjV0YTMzcG82bmthdW03OHEifQ.UBWsyfRiWMYly4gIc2H7cQ',
         layer = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>'
 
     L.tileLayer(osmUrl, {
-        minZoom: 1,
+        minZoom: 10,
         maxZoom: 17,
         //用了mapbox的图层
         attribution: layer
         //访问令牌
     }).addTo(map);
+
+
+    // control.addTo(map);
 
     //画出初始地图点
     getWellData().then(function (data) {
@@ -91,14 +96,11 @@ var mapView = (function () {
 
         }
         // console.log(variable.index_dict);
-        drawPoint.draw(data, 10, false);
+        drawPoint.drawP(data, 10, false);
         let oriId = variable.basicData[1500].id;
         getChosenData(oriId).then(function (data_ori) {
             variable.chosenData = data_ori;
         })
-
-        // heatView.drawHeat(10);
-
     })
 
     d3.json('data/tmp_all.json', function (data) {
@@ -219,7 +221,28 @@ var mapView = (function () {
                     .attr('fill', "gray")
                     .attr("stroke", "white")
                     .attr("stroke-width", 0.5);
+
+
             }
+
+            //画边界pie
+            let pie = d3.pie().value(d => d);
+            let arc = d3.arc()
+                .innerRadius(radius + 10)
+                .outerRadius(radius + tmpVariance_arr.length * 10 + 10);
+            let area_data = pie([1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+            console.log('area_data: ', area_data);
+            area_data.forEach(function (d, i) {
+                d.duration = 1000;
+            })
+            selection.append("g").selectAll("path").data(area_data).enter()
+                .append("path")
+                .attr("transform", 'translate(' + tmp_loc.x + ',' + tmp_loc.y + ')')
+                .attr("d", arc)
+                .attr('fill', "none")
+                .attr("stroke", "gray")
+                .attr("stroke-width", 0.5);
+
         });
         // map.addLayer(d3Overlay);
         //保存本次绘图svg
@@ -230,126 +253,84 @@ var mapView = (function () {
         variable.lastPieSvgArr.push(tmp_svg);
     }
 
-  
 
-   
+
+
     function drawCompareCirlce(ard_id, std_id, dish_radius, latlng) {
 
+        variable.ard_id = ard_id;
         variable.lastPieSvgArr[variable.lastPieSvgArr.length - 1].remove();
 
-        let tmpVariance_arr = [];
-        let tmpV_dict = variable.variance_dict[ard_id];
-        console.log('tmpV_dict: ', tmpV_dict);
-        let tmp_maxV = [];
-        let tmp_minV = [];
-        for (let i = 0; i < 5; i++) {
-            tmp_maxV.push(Number.MIN_VALUE);
-            tmp_minV.push(Number.MAX_VALUE);
-        }
-        for (key in tmpV_dict) {
-            // console.log(tmpV_dict[key]);
-            tmpVariance_arr.push({ 'id': key, value: tmpV_dict[key] });
 
-            for (i in tmpV_dict[key]) {
-                if (tmp_maxV[i] < tmpV_dict[key][i])
-                    tmp_maxV[i] = tmpV_dict[key][i];
-                if (tmp_minV[i] > tmpV_dict[key][i])
-                    tmp_minV[i] = tmpV_dict[key][i];
-            }
-        };
-        //比较个属性上的最大值并重新设置各个属性的值的比例尺
-
-
-        for (let i = 0; i < 5; i++) {
-            if (tmp_minV[i] > variable.variance_extremeArr[0][i])
-                tmp_minV[i] = variable.variance_extremeArr[0][i];
-            if (tmp_maxV[i] < variable.variance_extremeArr[1][i])
-                tmp_maxV[i] = variable.variance_extremeArr[1][i];
-        }
-
-        let angleScale_arr_std = [];
-        let angleScale_arr_ard = [];
-
-        for (let i = 0; i < 5; i++) {
-            let tmp_scale_std = d3.scaleLinear().domain([tmp_minV[i], tmp_maxV[i]]).range([2 * i * Math.PI / 5 + Math.PI / 24, i * 2 * Math.PI / 5 + Math.PI / 5]);
-            angleScale_arr_std.push(tmp_scale_std);
-            let tmp_scale_ard = d3.scaleLinear().domain([tmp_minV[i], tmp_maxV[i]]).range([i * 2 * Math.PI / 5 - Math.PI / 24, 2 * i * Math.PI / 5 - Math.PI / 5]);
-            angleScale_arr_ard.push(tmp_scale_ard);
-        };
-        console.log(' variable.stdPie_dataArr: ', variable.stdPie_dataArr);
-        //修改标准井的数据顺序，与当前选中井的方差排列在最外层
-        variable.stdPie_dataArr.forEach(d => {
-
-            if (d.id == ard_id) {
-                let tmp_std_ard = {};
-                let len = variable.stdPie_dataArr.length;
-                tmp_std_ard = d;
-                d = variable.stdPie_dataArr[len - 1];
-                variable.stdPie_dataArr[len - 1] = tmp_std_ard;
-            }
-        });
-        //修改pie                     
-        // for (let w = 0; w < variable.stdPie_dataArr.length; w++) {
-
-        //     for (let i = 0; i < 5; i++) {
-        //         let arc = d3.arc()
-        //             .innerRadius(dish_radius + 10 * w + 10)
-        //             .outerRadius(dish_radius + 10 * (w + 1) + 10);
-
-        //         let tmp_pathId = variable.value_attrs[i] + "_" + w + "_pie";
-        //         d3.select("#" + tmp_pathId)
-        //             .transition()
-        //             .duration(2000)
-        //             .attrTween("d", function (d, j) {//过度器
-        //                 d.endAngle = angleScale_arr_std[i](variable.stdPie_dataArr[w].value[i]);
-        //                 let inp = d3.interpolate(d.startAngle, d.endAngle);
-        //                 // console.log(d);
-        //                 return function (t) {
-        //                     d.endAngle = inp(t);
-        //                     return arc(d);
-        //                 }
-        //             })
-        //     }
-        // }
-        //修改当前周围井的数据顺序，与标准井的方差排在最外层
-        // console.log('variable.stdPie_dataArr: ', variable.stdPie_dataArr);
-        // console.log('tmpVariance_arr: ', tmpVariance_arr);
-        tmpVariance_arr.forEach(d => {
-
-            if (d.id == std_id) {
-                let tmp_std_ard = {};
-                let len = tmpVariance_arr.length;
-                tmp_std_ard = d;
-                d = tmpVariance_arr[len - 1];
-                tmpVariance_arr[len - 1] = tmp_std_ard;
-            }
-        });
-        // for (let w = 0; w < tmpVariance_arr.length; w++) {
-        //     for (let i = 0; i < 5; i++) {
-        //         let arc = d3.arc()
-        //             .innerRadius(dish_radius + 10 * w + 10)
-        //             .outerRadius(dish_radius + 10 * (w + 1) + 10);
-
-        //         let tmp_pathId = variable.value_attrs[i] + '_' + w + "_around_pie";
-        //         d3.select("#" + tmp_pathId)
-        //             .transition()
-        //             .duration(2000)
-        //             .attrTween("d", function (d, j) {//过度器
-        //                 d.endAngle = angleScale_arr_ard[i](tmpVariance_arr[w].value[i]);
-        //                 // console.log("d: ",d);
-        //                 let inp = d3.interpolate(d.startAngle, d.endAngle);
-        //                 return function (t) {
-        //                     d.endAngle = inp(t);
-        //                     return arc(d);
-        //                 }
-        //             })
-        //     }
-        // }
 
         //添加过渡效果
         let d3Overlay = L.d3SvgOverlay(function (selection, projection) {
+            let tmpVariance_arr = [];
+            let tmpV_dict = variable.variance_dict[variable.ard_id];
+            console.log('ard_id: ', variable.ard_id);
+            console.log('std_id: ', std_id);
+            console.log('tmpV_dict: ', tmpV_dict);
+            let tmp_maxV = [];
+            let tmp_minV = [];
+            for (let i = 0; i < 5; i++) {
+                tmp_maxV.push(Number.MIN_VALUE);
+                tmp_minV.push(Number.MAX_VALUE);
+            }
+            for (key in tmpV_dict) {
+                // console.log(tmpV_dict[key]);
+                tmpVariance_arr.push({ 'id': key, value: tmpV_dict[key] });
+
+                for (i in tmpV_dict[key]) {
+                    if (tmp_maxV[i] < tmpV_dict[key][i])
+                        tmp_maxV[i] = tmpV_dict[key][i];
+                    if (tmp_minV[i] > tmpV_dict[key][i])
+                        tmp_minV[i] = tmpV_dict[key][i];
+                }
+            };
+            //比较个属性上的最大值并重新设置各个属性的值的比例尺
+
+
+            for (let i = 0; i < 5; i++) {
+                if (tmp_minV[i] > variable.variance_extremeArr[0][i])
+                    tmp_minV[i] = variable.variance_extremeArr[0][i];
+                if (tmp_maxV[i] < variable.variance_extremeArr[1][i])
+                    tmp_maxV[i] = variable.variance_extremeArr[1][i];
+            }
+
+            let angleScale_arr_std = [];
+            let angleScale_arr_ard = [];
+
+            for (let i = 0; i < 5; i++) {
+                let tmp_scale_std = d3.scaleLinear().domain([tmp_minV[i], tmp_maxV[i]]).range([2 * i * Math.PI / 5 + Math.PI / 24, i * 2 * Math.PI / 5 + Math.PI / 5]);
+                angleScale_arr_std.push(tmp_scale_std);
+                let tmp_scale_ard = d3.scaleLinear().domain([tmp_minV[i], tmp_maxV[i]]).range([i * 2 * Math.PI / 5 - Math.PI / 24, 2 * i * Math.PI / 5 - Math.PI / 5]);
+                angleScale_arr_ard.push(tmp_scale_ard);
+            };
+            //修改标准井的数据顺序，与当前选中井的方差排列在最外层
+            variable.stdPie_dataArr.forEach(d => {
+
+                if (d.id == variable.ard_id) {
+                    let tmp_std_ard = {};
+                    let len = variable.stdPie_dataArr.length;
+                    tmp_std_ard = d;
+                    d = variable.stdPie_dataArr[len - 1];
+                    variable.stdPie_dataArr[len - 1] = tmp_std_ard;
+                }
+            });
+
+            tmpVariance_arr.forEach(d => {
+                if (d.id == std_id) {
+                    let tmp_std_ard = {};
+                    let len = tmpVariance_arr.length;
+                    tmp_std_ard = d;
+                    d = tmpVariance_arr[len - 1];
+                    tmpVariance_arr[len - 1] = tmp_std_ard;
+                }
+            });
+            console.log(' variable.stdPie_dataArr: ', variable.stdPie_dataArr);
+            console.log('tmpVariance_arr: ', tmpVariance_arr);
             //给svg添加id
-            selection.attr("id", "variance_" + ard_id);
+            selection.attr("id", "variance_" + variable.ard_id);
             let tmp_loc = projection.latLngToLayerPoint(latlng);
 
             for (let w = 0; w < variable.stdPie_dataArr.length; w++) {
@@ -417,11 +398,31 @@ var mapView = (function () {
                     .attr("stroke", "white")
                     .attr("stroke-width", 0.5);
             }
+
+            //画边界pie
+            let pie = d3.pie().value(d => d);
+            let arc = d3.arc()
+                .innerRadius(dish_radius + 10)
+                .outerRadius(dish_radius + tmpVariance_arr.length * 10 + 10);
+            let area_data = pie([1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+            console.log('area_data: ', area_data);
+            area_data.forEach(function (d, i) {
+                d.duration = 1000;
+            })
+            selection.append("g").selectAll("path").data(area_data).enter()
+                .append("path")
+                .attr("transform", 'translate(' + tmp_loc.x + ',' + tmp_loc.y + ')')
+                .attr("d", arc)
+                .attr('fill', "none")
+                .attr("stroke", "gray")
+                .attr("stroke-width", 0.5);
+
+            let tmp_svg = $("#variance_" + variable.ard_id).parent();
+            console.log('tmp_svg: ', tmp_svg);
+            variable.lastPieSvgArr.push(tmp_svg);
         });
         d3Overlay.addTo(map);
-        let tmp_svg = $("#variance_" + ard_id).parent();
 
-        variable.lastPieSvgArr.push(tmp_svg);
     }
 
 

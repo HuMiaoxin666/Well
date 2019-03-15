@@ -12,7 +12,7 @@ var variable = (function () {
     let around_circle = [];//保存上次点击周围点的对象
     let allData = {};//
     let importance_arr = [-0.00009675, 0.0012, 0.00005763, -0.0004, 0.001];//[-0.0005, 0.002 , 0.0002, -0.0004, 0.0011];//计算概率时个属性的系数
-    let importance_arr_12 = [-0.00006986, 0.0009, 0.0004, -0.0005, 0.0005];
+    let importance_arr_12 = [0.0048, -0.0029, 0.0008, -0.0023, 0.0023];
     let match_value;//两口井之间的匹配数据
     let index_dict = {};//基础数据中每口井的id对应的index
     let around_wellData = [];
@@ -35,7 +35,10 @@ var variable = (function () {
     let lastPieSvgArr = []; //保存pie的svg
     let wait_circle; //当前选中的周围井对象，用于替换标准井
     let test = 0;
+    let tmp_ard;//保留当前周围点id
     let matchValueSort_arr =[];//保存当前各属性下井的总匹配值排列(用于点击周围井是改变矩形选中框位置)
+    let heatStatus = false;
+    let regression = 0;
     return {
         basicData,
         chosenData,
@@ -73,6 +76,9 @@ var variable = (function () {
         wait_circle,
         basicData_1,
         test,
-        matchValueSort_arr
+        matchValueSort_arr,
+        tmp_ard,
+        heatStatus,
+        regression
     }
 })()

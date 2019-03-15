@@ -1,7 +1,7 @@
 var drawPoint = (function () {
 
     //画井
-    function draw(data, sample_rate, IsV) {
+    function drawP(data, sample_rate, IsV) {
         d3.select("#map").selectAll("path").remove();
         let sampleStatus_index = parseInt(sample_rate / 10) - 1;
         let tmp_count = 0;//当前标准井数量
@@ -9,23 +9,24 @@ var drawPoint = (function () {
         for (let i = 0; i < data.length; i++) {
             // console.log('data[i].vSample_status[sampleStatus_index]: ', data[i].vSample_status[sampleStatus_index]);
             if (data[i].latlng.length > 0 && data[i].sample_status[sampleStatus_index] == 1 && IsV == false) {
-                darw(data[i], data[i]);
+                darw(data[i], data[i], data[i]);
                 tmp_count += 1;
             }
             //*******v最大值的井*******/
             else if (data[i].latlng.length > 0 && data[i].vSample_status[sampleStatus_index] == 1 && IsV == true) {
                 let tmp_dish_data = variable.basicData[variable.index_dict[data[i]['dish_id'][sampleStatus_index]]];
-                darw(tmp_dish_data, data[i]);
+                let dish_data_1 = variable.basicData_1[variable.index_dict[data[i]['dish_id'][sampleStatus_index]]];
+                darw(tmp_dish_data, data[i], dish_data_1);
                 tmp_count += 1;
             }
-            function darw(dish_data, tmp_data) {
+            function darw(dish_data, tmp_data, dish_data_1) {
                 tmp_data.color = "#7483FF";
                 for (let m = 0; m < 2; m++) {
                     // if (dish_data['around_ids'][sampleStatus_index].indexOf(variable.myStd_well[m]) != -1)
                     //     tmp_data.color = 'red';
 
-                    if (tmp_data.id == 'GD1-16XNB1')
-                        tmp_data.color = 'red';
+                    // if (tmp_data.id == 'GD1-7-42')
+                    //     tmp_data.color = 'red';
                 }
 
                 //画出当前盘的边界点
@@ -130,20 +131,25 @@ var drawPoint = (function () {
                     tmp_aroundPt = tranform;
                     console.log(tmp_aroundPt.length);
                     console.log('tmp_aroundPt_ids: ', tmp_aroundPt);
-                    //画出周围井在地图上的点
+
+                    //********画出周围井在地图上的点********
                     let thisId = this.options.id;
                     let thisLoc = this.options.dish_loc;
                     for (let j = 0; j < tmp_aroundPt.length; j++) {
                         if (tmp_aroundPt_ids[j] in variable.index_dict) {
                             let tmp_aroundColor = "#B5B5B5";
                             let tmp_data = variable.basicData_1[variable.index_dict[tmp_aroundPt_ids[j]]];
+                            console.log(' v_std', dish_data_1['v_std'][sampleStatus_index]);
+                            if (variable.test > 0 && dish_data_1['v_std'][sampleStatus_index] == tmp_aroundPt_ids[j]) {
 
-                            if (variable.test > 0 && tmp_data['vSample_status'][sampleStatus_index] == 1) {
-                                tmp_aroundColor = 'red';
+                                tmp_aroundColor = '#FFBD00';
                                 console.log('1');
                             }
+                            let tmp_opacity = 1.0
                             // if (variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]]['vSample_status'][0] == 1)
                             //     tmp_aroundColor = 'blue';
+                            if (tmp_aroundPt_ids[j] == 'GD1-11-5')
+                                tmp_opacity = 0;
                             let circle_around = L.circle([tmp_aroundPt[j][0], tmp_aroundPt[j][1]], {
                                 id: tmp_aroundPt_ids[j],
                                 radius: 5,
@@ -151,7 +157,8 @@ var drawPoint = (function () {
                                 dish_loc: thisLoc,
                                 dish_radius: tmp_radius,
                                 data: variable.basicData[variable.index_dict[tmp_aroundPt_ids[j]]],
-                                color: tmp_aroundColor
+                                color: tmp_aroundColor,
+                                opacity: tmp_opacity
                             }).addTo(mapView.map);
 
                             //*********周围井的点击设置**********
@@ -381,7 +388,7 @@ var drawPoint = (function () {
     }
 
     return {
-        draw,
+        drawP,
         calVariance,
     }
 })()

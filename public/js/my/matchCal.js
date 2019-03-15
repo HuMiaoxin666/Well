@@ -559,7 +559,7 @@ var MatchCal = (function () {
         }
         console.log("index: ", index);
 
-        drawPoint.draw(variable.basicData, variable.rate, true);
+        drawPoint.drawP(variable.basicData, variable.rate, true);
     }
 
     function CalMatchValue(well_arr, attr) {

@@ -1,5 +1,4 @@
 body {
-    font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(240, 255, 247);
 }
 a{
@@ -183,6 +182,7 @@ button#Optimize {
     font-size:0.8em;
 
 }
+
 /* matchControlcsss */
 div#matchControl_headline {
     position: absolute;
@@ -237,6 +237,11 @@ button#regression {
     font-size: 0.8em;
 }
 
+#Sample_set{
+    position: absolute;
+    top:-10%;
+    left:60%;
+}
 div#show_mlutiple {
     position: relative;
     top:5%;
@@ -267,7 +272,6 @@ div#show_mlutiple #check_1 {
     color:rgb(124, 124, 124);
     position: absolute;
     font-size: 0.9em;
-
 }
 /* matchcss */
 div#matchView_headline {
@@ -300,13 +304,15 @@ div#matchView svg {
     width: 100%;
     height: 100%;
 }
-#Sample_set{
-    position: absolute;
-    top:-22;
-    left:60%;
-}
+
 
 /* mapcss */
+#heatCheckbox{
+    z-index:1;
+    position: absolute;
+    left:45%;
+}
+
 
 #map_headline {
     position: absolute;

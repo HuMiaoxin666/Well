@@ -12,11 +12,11 @@
     t.prototype = {
         defaultRadius: 35,
         defaultGradient: {
-            .2: "blue",
-            .3: "cyan",
-            .5: "lime",
-            .6: "yellow",
-            .7: "red"
+            .1: "blue",
+            .2: "cyan",
+            .3: "lime",
+            .4: "yellow",
+            .5: "red"
         },
         data: function (t, i) {
             return this._data = t, this

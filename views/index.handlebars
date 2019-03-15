@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">s --}}
 <link href="/css/easy-button.css" rel="stylesheet" />
 
-<link href="/css/leaflet.css" rel="stylesheet" />
 <link href="/css/leaflet.contextmenu.min.css" rel="stylesheet" type="text/css">
 <link href="/css/leaflet.contextmenu.css" rel="stylesheet" type="text/css">
 
@@ -17,6 +16,8 @@
 {{!--
 <link rel="stylesheet" type="text/css" href="/css/jq22-demo.css"> --}}
 <link rel="stylesheet" type="text/css" href="/css/tooltip.css">
+<link href="/css/leaflet.css" rel="stylesheet" />
+
 <title>E-Commerce</title>
 
 <script src="/js/jquery/jquery-3.3.1.min.js"></script>
@@ -74,7 +75,7 @@
         <div id="matchControl" class="border-color">
             <div class="dropdown" id='Sample_set'>
                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='font-size:0.75em;padding:.05rem .5rem;color:black;background-color:white;border-color:#AAAAAA'>
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='font-size:0.75em;padding:.0rem .5rem;color:black;background-color:rgb(238, 238, 238);border-color:#AAAAAA'>
                     Sample set
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -83,7 +84,6 @@
                     <a class="dropdown-item" href="#">sample 3</a>
                 </div>
             </div>
-
             <div class="custom-control custom-checkbox" id="show_mlutiple" style='padding-left:.5rem;'>
                 <input type="checkbox" class="custom-control-input" id="customCheck1">
                 <label id='check_1' class="custom-control-label" for="customCheck1">Show multiple</label>
@@ -127,6 +127,10 @@
             <circle cx="800" cy="11" r="7" fill="#00D8FF" />
         </svg>
     </div>
+    <div class="checkbox" id='heatCheckbox'>
+        <input id='heatcheck_input' type="checkbox" value=""style='width:15;height:15;position:absolute;top:5px;background-color:white;' >
+        <label style='color:white;margin-left:20;' for='heatcheck_input'>HeatMap</label>
+    </div>
     <div id="map" class="border-color"></div>
 
     <div id="rect_headline" class="head-bg-color">
@@ -155,7 +159,7 @@
             <svg id="ChartSvg"></svg>
         </div>
         <div id="histogram_headline" class="head-bg-color">
-            <a id="histogram_headline_a">Variance View</a>
+            <a id="histogram_headline_a">Difference View</a>
         </div>
         <div id="histogram" class="border-color">
             <svg id="histogramSvg"></svg>

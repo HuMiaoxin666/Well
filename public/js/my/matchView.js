@@ -13,10 +13,10 @@ var matchView = (function () {
         let layerMatch = matchResult.layerpairs;
         let matchLine_left = 0.25;
         let matchLine_right = 0.75;
-        let rect_height = 0.75;//矩形的高度占比
+        let rect_height = 0.85;//矩形的高度占比
         let rect_width = 0.2;
-        let rect_top = 0.2;
-        let rect_bottom = 0.95;
+        let rect_top = 0.05;
+        let rect_bottom = 0.9;
         console.log('layerMatch: ', layerMatch);
         let wbdatas = [arr[1], arr[2]];
         console.log('wbdatas: ', wbdatas);
@@ -49,7 +49,7 @@ var matchView = (function () {
         svg_match.append("a").selectAll("text").data(id_arr)
             .enter().append("text")
             .attr("transform", function (d, i) {
-                return "translate(" + x_arr_text[i] + ',' + (0.1 * svg_match_height) + ")";
+                return "translate(" + x_arr_text[i] + ',' + (0.99 * svg_match_height) + ")";
             }).attr("font-size", 12)
             .style("color", function (d, i) {
                 return "gray";

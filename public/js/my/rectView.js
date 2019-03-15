@@ -178,9 +178,9 @@ var rectView = (function () {
                         .transition()
                         .duration(1000)
                         .style('left', function () {
-                            return d3.event.pageX + 'px';
+                            return d3.event.pageX+10 + 'px';
                         })
-                        .style('top', d3.event.pageY + 'px');
+                        .style('top', d3.event.pageY+10 + 'px');
                     d3.select('#tooltip_text').text('(' + d['well_1'] + ',' + d['well_2'] + ')' + ': ' + d['value']);
                 }).on('mousemove', function (d, i) {
                     d3.select('#tooltip_div')
@@ -188,8 +188,8 @@ var rectView = (function () {
                         .style('display', 'block')
                         .transition()
                         .duration(1000)
-                        .style('left', d3.event.pageX + 'px')
-                        .style('top', d3.event.pageY + 'px');
+                        .style('left', d3.event.pageX+10 + 'px')
+                        .style('top', d3.event.pageY +10+ 'px');
                     d3.select('#tooltip_text').text('(' + d['well_1'] + ',' + d['well_2'] + ')' + ': ' + d['value']);
                 }).on('mouseout', function (d) {
                     d3.select('#tooltip_div').style('z-index', -1).style('display', 'none')
